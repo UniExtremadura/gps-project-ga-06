@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">OpenBook</string>
+    <string name="app_name" translatable="false">OpenBook</string>
+    <string name="loginButtonText">Login</string>
+    <string name="passwordHintText">Password</string>
+    <string name="registerButtonText">Register</string>
+    <string name="userHintText">User</string>
+    <string name="repeatPasswordText">Repeat password</string>
+    <string name="logoDescription">Application logo</string>
 </resources>

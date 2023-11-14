@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenBook</string>
+    <string name="loginButtonText">Iniciar sesión</string>
+    <string name="passwordHintText">Contraseña</string>
+    <string name="registerButtonText">Registrarse</string>
+    <string name="userHintText">Usuario</string>
+    <string name="repeatPasswordText">Repetir contraseña</string>
+    <string name="logoDescription">Logo de la aplicación</string>
+</resources>
