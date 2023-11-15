@@ -8,7 +8,7 @@ import com.aseegpsproject.openbook.model.User
 @Dao
 interface UserDao {
     @Query("SELECT * FROM User WHERE username = :username LIMIT 1")
-    suspend fun findByName(username: String): User
+    suspend fun getByUsername(username: String): User?
 
     @Insert
     suspend fun insert(user: User): Long
