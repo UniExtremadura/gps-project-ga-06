@@ -9,6 +9,7 @@ import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.ActivityLoginBinding
 import com.aseegpsproject.openbook.model.User
 import com.aseegpsproject.openbook.util.CredentialCheck
+import com.aseegpsproject.openbook.view.home.HomeActivity
 import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
@@ -83,8 +84,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun navigateToHomeActivity(user: User, msg: String) {
-        // TODO: Navigate to HomeActivity
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        HomeActivity.start(this, user)
     }
 
     private fun notifyInvalidCredentials(msg: String) {

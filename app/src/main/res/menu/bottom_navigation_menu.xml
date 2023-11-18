@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_discover"
+        android:enabled="true"
+        android:icon="@drawable/baseline_discover_24"
+        android:title="@string/discover_option"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_books"
+        android:enabled="true"
+        android:icon="@drawable/baseline_books_24"
+        android:title="@string/books_option"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_profile"
+        android:enabled="true"
+        android:icon="@drawable/baseline_profile_24"
+        android:title="@string/profile_option"
+        app:showAsAction="ifRoom" />
+</menu>

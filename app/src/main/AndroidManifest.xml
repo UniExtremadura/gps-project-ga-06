@@ -13,6 +13,9 @@
         android:theme="@style/Theme.OpenBook"
         tools:targetApi="31">
         <activity
+            android:name=".view.home.HomeActivity"
+            android:exported="true" />
+        <activity
             android:name=".view.RegisterActivity"
             android:exported="true" />
         <activity

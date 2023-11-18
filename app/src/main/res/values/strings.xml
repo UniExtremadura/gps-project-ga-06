@@ -6,4 +6,9 @@
     <string name="userHintText">User</string>
     <string name="repeatPasswordText">Repeat password</string>
     <string name="logoDescription">Application logo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="discover_option">Discover</string>
+    <string name="books_option">Books</string>
+    <string name="profile_option">Profile</string>
 </resources>
