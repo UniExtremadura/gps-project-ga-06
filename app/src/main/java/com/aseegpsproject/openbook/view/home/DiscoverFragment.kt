@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.aseegpsproject.openbook.R
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.aseegpsproject.openbook.data.dummyBooks
+import com.aseegpsproject.openbook.databinding.FragmentDiscoverBinding
+import com.aseegpsproject.openbook.model.Book
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -18,6 +22,17 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class DiscoverFragment : Fragment() {
+
+    private lateinit var listener: OnBookClickListener
+
+    interface OnBookClickListener {
+        fun onBookClick(book: Book)
+    }
+
+    private var _binding: FragmentDiscoverBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: DiscoverAdapter
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -30,12 +45,47 @@ class DiscoverFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: android.content.Context) {
+        super.onAttach(context)
+        if (context is OnBookClickListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnBookClickListener")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_discover, container, false)
+        _binding = FragmentDiscoverBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpRecyclerView()
+    }
+
+    private fun setUpRecyclerView() {
+        adapter = DiscoverAdapter(books = dummyBooks, onClick = {
+            listener.onBookClick(it)
+        },
+            onLongClick = {
+                Toast.makeText(context, "long click on: " + it.title, Toast.LENGTH_SHORT).show()
+            }
+        )
+        with(binding) {
+            rvBookList.layoutManager = LinearLayoutManager(context)
+            rvBookList.adapter = adapter
+        }
+        android.util.Log.d("DiscoverFragment", "setUpRecyclerView")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null // avoid memory leaks
     }
 
     companion object {
