@@ -101,6 +101,7 @@ class DiscoverFragment : Fragment() {
 
     private fun setUpSearchView() {
         // Set up SearchView and use search api efficiently
+        binding.searchView.setOnClickListener { binding.searchView.isIconified = false }
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
@@ -117,6 +118,7 @@ class DiscoverFragment : Fragment() {
                                 Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
                                     .show()
                             } finally {
+                                binding.rvBookList.scrollToPosition(0)
                                 binding.spinner.visibility = View.GONE
                                 binding.rvBookList.visibility = View.VISIBLE
                             }

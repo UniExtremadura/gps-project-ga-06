@@ -31,7 +31,7 @@ class LoginActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@LoginActivity,
-                        "New user ($name/$password) created",
+                        "New user ($name) created",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -56,6 +56,10 @@ class LoginActivity : AppCompatActivity() {
             }
             btnRegister.setOnClickListener {
                 navigateToRegister()
+            }
+            etPassword.setOnEditorActionListener { _, _, _ ->
+                login()
+                true
             }
         }
     }
