@@ -60,5 +60,6 @@ class DiscoverAdapter(
 
     fun updateData(works: List<Work>) {
         this.works = works
+        notifyDataSetChanged()
     }
 }

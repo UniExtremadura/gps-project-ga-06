@@ -4,7 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Author (
-
   @SerializedName("key" ) var key : String? = null
-
 )

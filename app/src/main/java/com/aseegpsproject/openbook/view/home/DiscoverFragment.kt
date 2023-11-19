@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.api.getNetworkService
+import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.apimodel.TrendingWork
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.toWork
@@ -77,6 +79,7 @@ class DiscoverFragment : Fragment() {
 
         lifecycleScope.launch {
             if (_works.isEmpty()) {
+                binding.searchView.visibility = View.GONE
                 binding.spinner.visibility = View.VISIBLE
 
                 try {
@@ -88,9 +91,97 @@ class DiscoverFragment : Fragment() {
                     Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
                 } finally {
                     binding.spinner.visibility = View.GONE
+                    binding.searchView.visibility = View.VISIBLE
                 }
             }
         }
+
+        setUpSearchView()
+    }
+
+    private fun setUpSearchView() {
+        // Set up SearchView and use search api efficiently
+        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    lifecycleScope.launch {
+                        if (query.isNotEmpty()) {
+                            binding.rvBookList.visibility = View.GONE
+                            binding.spinner.visibility = View.VISIBLE
+                            try {
+                                val searchWorks = fetchSearchBooksByTitle(query)
+                                _works = searchWorks.map { it.toWork() }
+                                adapter.updateData(_works)
+                            } catch (cause: Throwable) {
+                                Log.e("DiscoverFragment", "Error fetching data", cause)
+                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
+                                    .show()
+                            } finally {
+                                binding.spinner.visibility = View.GONE
+                                binding.rvBookList.visibility = View.VISIBLE
+                            }
+                        } else {
+                            lifecycleScope.launch {
+                                if (_works.isEmpty()) {
+                                    binding.rvBookList.visibility = View.GONE
+                                    binding.spinner.visibility = View.VISIBLE
+                                    try {
+                                        val trendingWorks = fetchTrendingBooks()
+                                        _works = trendingWorks.map { it.toWork() }
+                                        adapter.updateData(_works)
+                                    } catch (cause: Throwable) {
+                                        Log.e("DiscoverFragment", "Error fetching data", cause)
+                                        Toast.makeText(
+                                            context,
+                                            "Error fetching data",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } finally {
+                                        binding.spinner.visibility = View.GONE
+                                        binding.rvBookList.visibility = View.VISIBLE
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    if (newText.isEmpty()) {
+                        lifecycleScope.launch {
+                            binding.rvBookList.visibility = View.GONE
+                            binding.spinner.visibility = View.VISIBLE
+                            try {
+                                val trendingWorks = fetchTrendingBooks()
+                                _works = trendingWorks.map { it.toWork() }
+                                adapter.updateData(_works)
+                            } catch (cause: Throwable) {
+                                Log.e("DiscoverFragment", "Error fetching data", cause)
+                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
+                                    .show()
+                            } finally {
+                                binding.spinner.visibility = View.GONE
+                                binding.rvBookList.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                }
+                return false
+            }
+        })
+    }
+
+    private suspend fun fetchSearchBooksByTitle(title: String): List<Doc> {
+        val searchWorks: List<Doc>
+        try {
+            searchWorks = getNetworkService().getSearchBooksByTitle(title, 1).docs
+        } catch (cause: Throwable) {
+            throw APIError("Unable to fetch data from API", cause)
+        }
+        return searchWorks
     }
 
     private suspend fun fetchTrendingBooks(): List<TrendingWork> {

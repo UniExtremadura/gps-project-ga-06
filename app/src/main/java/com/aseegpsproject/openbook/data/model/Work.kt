@@ -8,6 +8,5 @@ data class Work(
     val firstPublishYear: Int? = null,
     val coverPaths: ArrayList<String> = arrayListOf(),
     val subjects: ArrayList<String> = arrayListOf(),
-    val subjectPlaces: ArrayList<String> = arrayListOf(),
-    val subjectPeople: ArrayList<String> = arrayListOf()
+    val numEditions: Int? = null,
 )

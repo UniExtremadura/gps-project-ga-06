@@ -15,8 +15,6 @@ val dummyWorks = listOf(
             "https://covers.openlibrary.org/b/id/6979861-S.jpg"
         ),
         arrayListOf("Fiction", "Fantasy", "Adventure"),
-        arrayListOf("Middle Earth"),
-        arrayListOf("Frodo Baggins", "Gandalf", "Aragorn")
     ),
     Work(
         "OL7353618M",
@@ -30,8 +28,6 @@ val dummyWorks = listOf(
             "https://covers.openlibrary.org/b/id/6979861-S.jpg"
         ),
         arrayListOf("Fiction", "Fantasy", "Adventure"),
-        arrayListOf("Middle Earth"),
-        arrayListOf("Bilbo Baggins", "Gandalf", "Thorin Oakenshield")
     ),
     Work(
         "OL7353619M",
@@ -45,8 +41,6 @@ val dummyWorks = listOf(
             "https://covers.openlibrary.org/b/id/6979861-S.jpg"
         ),
         arrayListOf("Fiction", "Fantasy", "Adventure"),
-        arrayListOf("Middle Earth"),
-        arrayListOf("Fëanor", "Morgoth", "Manwë")
     ),
     Work(
         "OL7353620M",
@@ -60,8 +54,6 @@ val dummyWorks = listOf(
             "https://covers.openlibrary.org/b/id/6979861-S.jpg"
         ),
         arrayListOf("Fiction", "Fantasy", "Adventure"),
-        arrayListOf("Middle Earth"),
-        arrayListOf("Túrin Turambar", "Morgoth", "Glaurung")
     ),
     Work(
         "OL7353621M",
@@ -75,7 +67,5 @@ val dummyWorks = listOf(
             "https://covers.openlibrary.org/b/id/6979861-S.jpg"
         ),
         arrayListOf("Fiction", "Fantasy", "Adventure"),
-        arrayListOf("Middle Earth"),
-        arrayListOf("Tuor", "Morgoth", "Glaurung")
     ),
 )

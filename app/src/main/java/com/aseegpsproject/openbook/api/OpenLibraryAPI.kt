@@ -1,11 +1,13 @@
 package com.aseegpsproject.openbook.api
 
+import com.aseegpsproject.openbook.data.apimodel.SearchQuery
 import com.aseegpsproject.openbook.data.apimodel.TrendingQuery
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 private const val BASE_URL = "https://openlibrary.org/"
 
@@ -28,6 +30,12 @@ fun getNetworkService() = service
 interface OpenLibraryAPI {
     @GET("trending/daily.json")
     suspend fun getDailyTrendingBooks() : TrendingQuery
+
+    @GET("search.json")
+    suspend fun getSearchBooksByTitle(
+        @Query("title") query: String,
+        @Query("page") page: Int
+    ) : SearchQuery
 }
 
 class APIError(message: String, cause: Throwable? = null) : Throwable(message, cause)
