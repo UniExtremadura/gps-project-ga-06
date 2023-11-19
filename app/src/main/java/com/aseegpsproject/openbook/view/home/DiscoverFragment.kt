@@ -7,16 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aseegpsproject.openbook.api.APICallback
 import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.api.getNetworkService
 import com.aseegpsproject.openbook.data.apimodel.TrendingWork
-import com.aseegpsproject.openbook.data.dummyWorks
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.toWork
 import com.aseegpsproject.openbook.databinding.FragmentDiscoverBinding
-import java.util.concurrent.Executors
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,8 +32,6 @@ class DiscoverFragment : Fragment() {
     private lateinit var listener: OnBookClickListener
 
     private var _works = listOf<Work>()
-
-    val BACKGROUND = Executors.newFixedThreadPool(2)
 
     interface OnBookClickListener {
         fun onBookClick(work: Work)
@@ -78,67 +75,44 @@ class DiscoverFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
 
-        if (_works.isEmpty()) {
-            binding.spinner.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            if (_works.isEmpty()) {
+                binding.spinner.visibility = View.VISIBLE
 
-            fetchTrendingBooks(object : APICallback<List<TrendingWork>> {
-                override fun onSuccess(result: List<TrendingWork>) {
-                    Log.d("DiscoverFragment", "APICallback onCompleted")
-                    val works = result.map {
-                        it.toWork()
-                    }
-                    // Update the UI on the main thread
-                    activity?.runOnUiThread {
-                        _works = works // ?: dummyWorks
-                        adapter.updateData(_works)
-                        binding.spinner.visibility = View.GONE
-                    }
-                }
-
-                override fun onError(cause: Throwable) {
-                    Log.e("DiscoverFragment", "APICallback onError")
-                    // Update the UI on the main thread
-                    activity?.runOnUiThread {
-                        Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
-                        binding.spinner.visibility = View.GONE
-                    }
+                try {
+                    val trendingWorks = fetchTrendingBooks()
+                    _works = trendingWorks.map { it.toWork() }
+                    adapter.updateData(_works)
+                } catch (cause: Throwable) {
+                    Log.e("DiscoverFragment", "Error fetching data", cause)
+                    Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
+                } finally {
+                    binding.spinner.visibility = View.GONE
                 }
             }
-            )
         }
     }
 
-    private fun fetchTrendingBooks(apiCallback: APICallback<List<TrendingWork>>) {
-        BACKGROUND.submit{
-            try {
-                // Make network request using a blocking call
-                val result = getNetworkService().getDailyTrendingBooks().execute()
-
-                if (result.isSuccessful)
-                    apiCallback.onSuccess(result.body()!!.trendingWorks)
-                else
-                    apiCallback.onError(APIError("API Response error ${result.errorBody()}", null))
-            } catch (cause: Throwable) {
-                // Update the UI on the main thread if something goes wrong
-                // Bad modularization, we should not know about the UI thread here
-                activity?.runOnUiThread {
-                    Toast.makeText(context, "Connection error", Toast.LENGTH_SHORT).show()
-                    binding.spinner.visibility = View.GONE
-                }
-                Log.e("DiscoverFragment", "APICallback connection error")
-                // If anything throws an exception, inform the caller
-                throw APIError("Unable to fetch data from API", cause)
-            }
+    private suspend fun fetchTrendingBooks(): List<TrendingWork> {
+        val trendingWorks: List<TrendingWork>
+        try {
+            trendingWorks = getNetworkService().getDailyTrendingBooks().trendingWorks
+        } catch (cause: Throwable) {
+            throw APIError("Unable to fetch data from API", cause)
         }
+        return trendingWorks
     }
 
     private fun setUpRecyclerView() {
-        adapter = DiscoverAdapter(works = dummyWorks, onClick = {
-            listener.onBookClick(it)
-        },
+        adapter = DiscoverAdapter(
+            works = _works,
+            onClick = {
+                listener.onBookClick(it)
+            },
             onLongClick = {
                 Toast.makeText(context, "long click on: " + it.title, Toast.LENGTH_SHORT).show()
-            }
+            },
+            context = context
         )
         with(binding) {
             rvBookList.layoutManager = LinearLayoutManager(context)

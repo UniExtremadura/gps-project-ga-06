@@ -3,7 +3,6 @@ package com.aseegpsproject.openbook.api
 import com.aseegpsproject.openbook.data.apimodel.TrendingQuery
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -28,12 +27,7 @@ fun getNetworkService() = service
 
 interface OpenLibraryAPI {
     @GET("trending/daily.json")
-    fun getDailyTrendingBooks() : Call<TrendingQuery>
+    suspend fun getDailyTrendingBooks() : TrendingQuery
 }
 
 class APIError(message: String, cause: Throwable? = null) : Throwable(message, cause)
-
-interface APICallback<T> {
-    fun onSuccess(result: T)
-    fun onError(cause: Throwable)
-}
