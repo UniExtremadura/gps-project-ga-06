@@ -1,6 +1,6 @@
-package com.aseegpsproject.openbook.model
+package com.aseegpsproject.openbook.data.model
 
-data class Book(
+data class Edition (
     val id: Long?,
     val title: String,
     val author: String,

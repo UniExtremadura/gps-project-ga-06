@@ -5,9 +5,9 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.ActivityLoginBinding
-import com.aseegpsproject.openbook.model.User
 import com.aseegpsproject.openbook.util.CredentialCheck
 import com.aseegpsproject.openbook.view.home.HomeActivity
 import kotlinx.coroutines.launch
@@ -76,14 +76,14 @@ class LoginActivity : AppCompatActivity() {
                 } else {
                     val checkPassword = CredentialCheck.passwordOk(password, user.password)
                     if (checkPassword.fail) notifyInvalidCredentials(checkPassword.msg)
-                    else navigateToHomeActivity(user, checkPassword.msg)
+                    else navigateToHomeActivity(user)
                 }
             }
         }
 
     }
 
-    private fun navigateToHomeActivity(user: User, msg: String) {
+    private fun navigateToHomeActivity(user: User) {
         HomeActivity.start(this, user)
     }
 

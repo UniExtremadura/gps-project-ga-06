@@ -3,31 +3,31 @@ package com.aseegpsproject.openbook.view.home
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.databinding.DiscoverItemListBinding
-import com.aseegpsproject.openbook.model.Book
 
 class DiscoverAdapter(
-    private val books: List<Book>,
-    private val onClick: (book: Book) -> Unit,
-    private val onLongClick: (title: Book) -> Unit
+    private var works: List<Work>,
+    private val onClick: (work: Work) -> Unit,
+    private val onLongClick: (work: Work) -> Unit
 ) : RecyclerView.Adapter<DiscoverAdapter.BookViewHolder>() {
 
     class BookViewHolder(
         private val binding: DiscoverItemListBinding,
-        private val onClick: (book: Book) -> Unit,
-        private val onLongClick: (title: Book) -> Unit,
+        private val onClick: (work: Work) -> Unit,
+        private val onLongClick: (work: Work) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(book: Book) {
+        fun bind(work: Work) {
             with(binding) {
-                bookTitle.text = book.title
-                bookAuthor.text = book.author
-                bookYear.text = book.year
-                bookCover.setImageResource(book.coverImage)
+                workTitle.text = work.title
+                workAuthor.text = work.authors.joinToString(", ")
+                workYear.text = work.firstPublishYear.toString()
+                workCover.setImageResource(/*work.coverPaths[0]*/ 0)
                 clItem.setOnClickListener {
-                    onClick(book)
+                    onClick(work)
                 }
                 clItem.setOnLongClickListener {
-                    onLongClick(book)
+                    onLongClick(work)
                     true
                 }
             }
@@ -40,10 +40,14 @@ class DiscoverAdapter(
         return BookViewHolder(binding, onClick, onLongClick)
     }
 
-    override fun getItemCount() = books.size
+    override fun getItemCount() = works.size
 
     override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
-        holder.bind(books[position])
+        holder.bind(works[position])
     }
 
+
+    fun updateData(works: List<Work>) {
+        this.works = works
+    }
 }

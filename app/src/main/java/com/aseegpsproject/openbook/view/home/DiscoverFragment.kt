@@ -1,15 +1,22 @@
 package com.aseegpsproject.openbook.view.home
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aseegpsproject.openbook.data.dummyBooks
+import com.aseegpsproject.openbook.api.APICallback
+import com.aseegpsproject.openbook.api.APIError
+import com.aseegpsproject.openbook.api.getNetworkService
+import com.aseegpsproject.openbook.data.apimodel.TrendingWork
+import com.aseegpsproject.openbook.data.dummyWorks
+import com.aseegpsproject.openbook.data.model.Work
+import com.aseegpsproject.openbook.data.toWork
 import com.aseegpsproject.openbook.databinding.FragmentDiscoverBinding
-import com.aseegpsproject.openbook.model.Book
+import java.util.concurrent.Executors
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -25,8 +32,12 @@ class DiscoverFragment : Fragment() {
 
     private lateinit var listener: OnBookClickListener
 
+    private var _works = listOf<Work>()
+
+    val BACKGROUND = Executors.newFixedThreadPool(2)
+
     interface OnBookClickListener {
-        fun onBookClick(book: Book)
+        fun onBookClick(work: Work)
     }
 
     private var _binding: FragmentDiscoverBinding? = null
@@ -66,10 +77,63 @@ class DiscoverFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
+
+        if (_works.isEmpty()) {
+            binding.spinner.visibility = View.VISIBLE
+
+            fetchTrendingBooks(object : APICallback<List<TrendingWork>> {
+                override fun onSuccess(result: List<TrendingWork>) {
+                    Log.d("DiscoverFragment", "APICallback onCompleted")
+                    val works = result.map {
+                        it.toWork()
+                    }
+                    // Update the UI on the main thread
+                    activity?.runOnUiThread {
+                        _works = works // ?: dummyWorks
+                        adapter.updateData(_works)
+                        binding.spinner.visibility = View.GONE
+                    }
+                }
+
+                override fun onError(cause: Throwable) {
+                    Log.e("DiscoverFragment", "APICallback onError")
+                    // Update the UI on the main thread
+                    activity?.runOnUiThread {
+                        Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
+                        binding.spinner.visibility = View.GONE
+                    }
+                }
+            }
+            )
+        }
+    }
+
+    private fun fetchTrendingBooks(apiCallback: APICallback<List<TrendingWork>>) {
+        BACKGROUND.submit{
+            try {
+                // Make network request using a blocking call
+                val result = getNetworkService().getDailyTrendingBooks().execute()
+
+                if (result.isSuccessful)
+                    apiCallback.onSuccess(result.body()!!.trendingWorks)
+                else
+                    apiCallback.onError(APIError("API Response error ${result.errorBody()}", null))
+            } catch (cause: Throwable) {
+                // Update the UI on the main thread if something goes wrong
+                // Bad modularization, we should not know about the UI thread here
+                activity?.runOnUiThread {
+                    Toast.makeText(context, "Connection error", Toast.LENGTH_SHORT).show()
+                    binding.spinner.visibility = View.GONE
+                }
+                Log.e("DiscoverFragment", "APICallback connection error")
+                // If anything throws an exception, inform the caller
+                throw APIError("Unable to fetch data from API", cause)
+            }
+        }
     }
 
     private fun setUpRecyclerView() {
-        adapter = DiscoverAdapter(books = dummyBooks, onClick = {
+        adapter = DiscoverAdapter(works = dummyWorks, onClick = {
             listener.onBookClick(it)
         },
             onLongClick = {
@@ -80,7 +144,7 @@ class DiscoverFragment : Fragment() {
             rvBookList.layoutManager = LinearLayoutManager(context)
             rvBookList.adapter = adapter
         }
-        android.util.Log.d("DiscoverFragment", "setUpRecyclerView")
+        Log.d("DiscoverFragment", "setUpRecyclerView")
     }
 
     override fun onDestroyView() {

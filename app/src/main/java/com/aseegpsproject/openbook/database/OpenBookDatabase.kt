@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.database.dao.UserDao
-import com.aseegpsproject.openbook.model.User
 
 @Database(entities = [User::class], version = 1)
 abstract class OpenBookDatabase : RoomDatabase() {

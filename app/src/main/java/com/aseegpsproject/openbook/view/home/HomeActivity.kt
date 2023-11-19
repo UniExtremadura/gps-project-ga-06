@@ -6,9 +6,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.aseegpsproject.openbook.R
+import com.aseegpsproject.openbook.data.model.User
+import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.databinding.ActivityHomeBinding
-import com.aseegpsproject.openbook.model.Book
-import com.aseegpsproject.openbook.model.User
 
 class HomeActivity : AppCompatActivity(), DiscoverFragment.OnBookClickListener {
     private lateinit var binding: ActivityHomeBinding
@@ -68,7 +68,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnBookClickListener {
         }
     }
 
-    override fun onBookClick(book: Book) {
+    override fun onBookClick(work: Work) {
         // TODO: Implement onBookClick
     }
 }

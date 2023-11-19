@@ -7,9 +7,9 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.ActivityRegisterBinding
-import com.aseegpsproject.openbook.model.User
 import com.aseegpsproject.openbook.util.CredentialCheck
 import kotlinx.coroutines.launch
 

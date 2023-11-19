@@ -11,4 +11,8 @@
     <string name="discover_option">Discover</string>
     <string name="books_option">Books</string>
     <string name="profile_option">Profile</string>
+    <string name="coverText">cover</string>
+    <string name="titleText">title</string>
+    <string name="authorText">author</string>
+    <string name="yearText">year</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.aseegpsproject.openbook.model
+package com.aseegpsproject.openbook.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

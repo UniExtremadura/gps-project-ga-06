@@ -22,45 +22,45 @@
             android:backgroundTintMode="screen">
 
             <ImageView
-                android:id="@+id/book_cover"
+                android:id="@+id/work_cover"
                 android:layout_width="70dp"
                 android:layout_height="120dp"
-                android:contentDescription="cover"
+                android:contentDescription="@string/coverText"
                 android:scaleType="centerCrop"
                 android:src="@drawable/el_imperio_final"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/book_title"
+                android:id="@+id/work_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="4dp"
-                android:text="title"
+                android:text="@string/titleText"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintStart_toEndOf="@id/book_cover"
-                app:layout_constraintTop_toTopOf="@id/book_cover" />
+                app:layout_constraintStart_toEndOf="@id/work_cover"
+                app:layout_constraintTop_toTopOf="@id/work_cover" />
 
             <TextView
-                android:id="@+id/book_author"
+                android:id="@+id/work_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:text="author"
+                android:text="@string/authorText"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/book_title"
-                app:layout_constraintTop_toBottomOf="@+id/book_title" />
+                app:layout_constraintStart_toStartOf="@+id/work_title"
+                app:layout_constraintTop_toBottomOf="@+id/work_title" />
 
             <TextView
-                android:id="@+id/book_year"
+                android:id="@+id/work_year"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="year"
+                android:text="@string/yearText"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/book_author"
-                app:layout_constraintTop_toBottomOf="@+id/book_author" />
+                app:layout_constraintStart_toStartOf="@+id/work_author"
+                app:layout_constraintTop_toBottomOf="@+id/work_author" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
