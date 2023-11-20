@@ -6,11 +6,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.aseegpsproject.openbook.R
+import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.databinding.ActivityHomeBinding
 
-class HomeActivity : AppCompatActivity(), DiscoverFragment.OnBookClickListener {
+class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, AuthorsFragment.OnAuthorClickListener {
     private lateinit var binding: ActivityHomeBinding
 
     private lateinit var discoverFragment: DiscoverFragment
@@ -71,7 +72,11 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnBookClickListener {
         }
     }
 
-    override fun onBookClick(work: Work) {
+    override fun onWorkClick(work: Work) {
         // TODO: Implement onBookClick
+    }
+
+    override fun onAuthorClick(author: Author) {
+        // TODO: Implement onAuthorClick
     }
 }

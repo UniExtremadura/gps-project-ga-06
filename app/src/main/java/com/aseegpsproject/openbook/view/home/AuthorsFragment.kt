@@ -1,11 +1,21 @@
 package com.aseegpsproject.openbook.view.home
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.aseegpsproject.openbook.R
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.aseegpsproject.openbook.data.model.Author
+import com.aseegpsproject.openbook.data.toWork
+import com.aseegpsproject.openbook.database.OpenBookDatabase
+import com.aseegpsproject.openbook.databinding.FragmentAuthorsBinding
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +32,19 @@ class AuthorsFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var _binding: FragmentAuthorsBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: AuthorsAdapter
+    private lateinit var listener: OnAuthorClickListener
+
+    private var _authors = listOf<Author>()
+    private var favAuthors = listOf<Author>()
+    private lateinit var db: OpenBookDatabase
+
+    interface OnAuthorClickListener {
+        fun onAuthorClick(author: Author)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -30,12 +53,147 @@ class AuthorsFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnAuthorClickListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnBookClickListener")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_authors, container, false)
+    ): View {
+        _binding = FragmentAuthorsBinding.inflate(inflater, container, false)
+        db = OpenBookDatabase.getInstance(requireContext())!!
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpRecyclerView()
+
+        lifecycleScope.launch {
+            if (favAuthors.isEmpty()) {
+                loadFavoriteAuthors()
+            }
+
+            adapter.updateData(favAuthors)
+        }
+
+        //setUpSearchView()
+    }
+
+    /*private fun setUpSearchView() {
+        binding.authorSearchView.setOnClickListener { binding.authorSearchView.isIconified = false }
+        binding.authorSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                if (query != null) {
+                    lifecycleScope.launch {
+                        if (query.isNotEmpty()) {
+                            binding.rvAuthorList.visibility = View.GONE
+                            binding.authorSpinner.visibility = View.VISIBLE
+                            try {
+                                val searchAuthors = fetchSearchAuthorsByName(query)
+                                _authors = searchAuthors.map { it.toWork() }
+                                adapter.updateData(_authors)
+                            } catch (cause: Throwable) {
+                                Log.e("DiscoverFragment", "Error fetching data", cause)
+                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
+                                    .show()
+                            } finally {
+                                binding.rvAuthorList.scrollToPosition(0)
+                                binding.authorSpinner.visibility = View.GONE
+                                binding.rvAuthorList.visibility = View.VISIBLE
+                            }
+                        } else {
+                            lifecycleScope.launch {
+                                if (_authors.isEmpty()) {
+                                    binding.rvAuthorList.visibility = View.GONE
+                                    binding.authorSpinner.visibility = View.VISIBLE
+                                    try {
+                                        val trendingWorks = fetchTrendingBooks()
+                                        _authors = trendingWorks.map { it.toWork() }
+                                        adapter.updateData(_authors)
+                                    } catch (cause: Throwable) {
+                                        Log.e("DiscoverFragment", "Error fetching data", cause)
+                                        Toast.makeText(
+                                            context,
+                                            "Error fetching data",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } finally {
+                                        binding.authorSpinner.visibility = View.GONE
+                                        binding.rvAuthorList.visibility = View.VISIBLE
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    if (newText.isEmpty()) {
+                        lifecycleScope.launch {
+                            binding.rvAuthorList.visibility = View.GONE
+                            binding.authorSpinner.visibility = View.VISIBLE
+                            try {
+                                val trendingWorks = loadFavoriteAuthors()
+                                _authors = trendingWorks.map { it.toWork() }
+                                adapter.updateData(_authors)
+                            } catch (cause: Throwable) {
+                                Log.e("DiscoverFragment", "Error fetching data", cause)
+                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
+                                    .show()
+                            } finally {
+                                binding.authorSpinner.visibility = View.GONE
+                                binding.rvAuthorList.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                }
+                return false
+            }
+        })
+    }*/
+
+    private fun loadFavoriteAuthors() {
+        lifecycleScope.launch {
+            binding.authorSearchView.visibility = View.GONE
+            binding.authorSpinner.visibility = View.VISIBLE
+
+            favAuthors = db.userDao().getByUsername("admin")?.userId?.let {
+                db.authorDao().getUserWithAuthors(
+                    it
+                ).authors
+            }!!
+
+            binding.authorSpinner.visibility = View.GONE
+            binding.authorSearchView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setUpRecyclerView() {
+        adapter = AuthorsAdapter(
+            authors = _authors,
+            onClick = {
+                listener.onAuthorClick(it)
+            },
+            onLongClick = {
+                Toast.makeText(context, "long click on: " + it.name, Toast.LENGTH_SHORT).show()
+            },
+            context = context
+        )
+        with(binding) {
+            rvAuthorList.layoutManager = LinearLayoutManager(context)
+            rvAuthorList.adapter = adapter
+        }
+        Log.d("DiscoverFragment", "setUpRecyclerView")
     }
 
     companion object {

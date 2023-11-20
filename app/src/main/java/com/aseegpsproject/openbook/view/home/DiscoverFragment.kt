@@ -16,6 +16,7 @@ import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.apimodel.TrendingWork
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.toWork
+import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentDiscoverBinding
 import kotlinx.coroutines.launch
 
@@ -31,12 +32,13 @@ private const val ARG_PARAM2 = "param2"
  */
 class DiscoverFragment : Fragment() {
 
-    private lateinit var listener: OnBookClickListener
+    private lateinit var listener: OnWorkClickListener
 
     private var _works = listOf<Work>()
+    private lateinit var db: OpenBookDatabase
 
-    interface OnBookClickListener {
-        fun onBookClick(work: Work)
+    interface OnWorkClickListener {
+        fun onWorkClick(work: Work)
     }
 
     private var _binding: FragmentDiscoverBinding? = null
@@ -57,7 +59,7 @@ class DiscoverFragment : Fragment() {
 
     override fun onAttach(context: android.content.Context) {
         super.onAttach(context)
-        if (context is OnBookClickListener) {
+        if (context is OnWorkClickListener) {
             listener = context
         } else {
             throw RuntimeException("$context must implement OnBookClickListener")
@@ -70,6 +72,7 @@ class DiscoverFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentDiscoverBinding.inflate(inflater, container, false)
+        db = OpenBookDatabase.getInstance(requireContext())!!
         return binding.root
     }
 
@@ -100,7 +103,6 @@ class DiscoverFragment : Fragment() {
     }
 
     private fun setUpSearchView() {
-        // Set up SearchView and use search api efficiently
         binding.searchView.setOnClickListener { binding.searchView.isIconified = false }
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -200,7 +202,7 @@ class DiscoverFragment : Fragment() {
         adapter = DiscoverAdapter(
             works = _works,
             onClick = {
-                listener.onBookClick(it)
+                listener.onWorkClick(it)
             },
             onLongClick = {
                 Toast.makeText(context, "long click on: " + it.title, Toast.LENGTH_SHORT).show()

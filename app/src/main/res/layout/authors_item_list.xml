@@ -32,7 +32,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/author_personal_name"
+                android:id="@+id/author_name"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -44,7 +44,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/author_name"
+                android:id="@+id/author_full_name"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -52,8 +52,8 @@
                 android:maxLines="2"
                 android:text="@string/authorText"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/author_personal_name"
-                app:layout_constraintTop_toBottomOf="@+id/author_personal_name" />
+                app:layout_constraintStart_toStartOf="@+id/author_name"
+                app:layout_constraintTop_toBottomOf="@+id/author_name" />
 
             <TextView
                 android:id="@+id/author_birth_date"
@@ -62,8 +62,8 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/yearText"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/author_name"
-                app:layout_constraintTop_toBottomOf="@+id/author_name" />
+                app:layout_constraintStart_toStartOf="@+id/author_full_name"
+                app:layout_constraintTop_toBottomOf="@+id/author_full_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

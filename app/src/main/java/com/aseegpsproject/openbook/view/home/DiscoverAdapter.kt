@@ -25,7 +25,7 @@ class DiscoverAdapter(
         fun bind(work: Work) {
             with(binding) {
                 workTitle.text = work.title
-                workAuthor.text = work.authors.joinToString(", ")
+                workAuthor.text = work.authorNames.joinToString(", ")
                 workYear.text = work.firstPublishYear.toString()
                 //workCover.setImageResource(/*work.coverPaths[0]*/ 0)
                 context?.let {

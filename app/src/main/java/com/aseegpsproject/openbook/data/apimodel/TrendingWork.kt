@@ -8,5 +8,6 @@ data class TrendingWork (
     @SerializedName("title"              ) var title            : String?           = null,
     @SerializedName("first_publish_year" ) var firstPublishYear : Int?              = null,
     @SerializedName("cover_i"            ) var coverI           : Int?              = null,
-    @SerializedName("author_name"        ) var authorName       : ArrayList<String> = arrayListOf()
+    @SerializedName("author_name"        ) var authorName       : ArrayList<String> = arrayListOf(),
+    @SerializedName("author_key"         ) var authorKey        : ArrayList<String> = arrayListOf()
 )

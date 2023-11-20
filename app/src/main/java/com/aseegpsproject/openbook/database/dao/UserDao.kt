@@ -7,7 +7,7 @@ import com.aseegpsproject.openbook.data.model.User
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM User WHERE username = :username LIMIT 1")
+    @Query("SELECT * FROM user WHERE username = :username LIMIT 1")
     suspend fun getByUsername(username: String): User?
 
     @Insert
