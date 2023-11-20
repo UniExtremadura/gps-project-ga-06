@@ -189,11 +189,11 @@ class DiscoverFragment : Fragment() {
     }
 
     private suspend fun fetchTrendingBooks(): List<TrendingWork> {
-        val trendingWorks: List<TrendingWork>
+        var trendingWorks: List<TrendingWork> = listOf()
         try {
             trendingWorks = getNetworkService().getDailyTrendingBooks().trendingWorks
         } catch (cause: Throwable) {
-            throw APIError("Unable to fetch data from API", cause)
+            Log.e("DiscoverFragment", "Error fetching data", cause)
         }
         return trendingWorks
     }

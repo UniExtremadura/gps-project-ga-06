@@ -43,6 +43,12 @@ interface OpenLibraryAPI {
     suspend fun getAuthorInfo(
         @Path("key", encoded = true) key: String
     ) : APIAuthor
+
+    @GET("search/authors.json")
+    suspend fun getSearchAuthorsByName(
+        @Query("q") query: String,
+        @Query("page") page: Int
+    ) : SearchQuery
 }
 
 class APIError(message: String, cause: Throwable? = null) : Throwable(message, cause)

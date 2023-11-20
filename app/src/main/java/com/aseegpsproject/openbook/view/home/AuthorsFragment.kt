@@ -11,7 +11,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aseegpsproject.openbook.api.APIError
+import com.aseegpsproject.openbook.api.getNetworkService
+import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.model.Author
+import com.aseegpsproject.openbook.data.toAuthor
 import com.aseegpsproject.openbook.data.toWork
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentAuthorsBinding
@@ -83,10 +87,10 @@ class AuthorsFragment : Fragment() {
             adapter.updateData(favAuthors)
         }
 
-        //setUpSearchView()
+        setUpSearchView()
     }
 
-    /*private fun setUpSearchView() {
+    private fun setUpSearchView() {
         binding.authorSearchView.setOnClickListener { binding.authorSearchView.isIconified = false }
         binding.authorSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -97,10 +101,10 @@ class AuthorsFragment : Fragment() {
                             binding.authorSpinner.visibility = View.VISIBLE
                             try {
                                 val searchAuthors = fetchSearchAuthorsByName(query)
-                                _authors = searchAuthors.map { it.toWork() }
+                                _authors = searchAuthors.map { it.toAuthor() }
                                 adapter.updateData(_authors)
                             } catch (cause: Throwable) {
-                                Log.e("DiscoverFragment", "Error fetching data", cause)
+                                Log.e("AuthorsFragment", "Error fetching data", cause)
                                 Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
                                     .show()
                             } finally {
@@ -110,25 +114,7 @@ class AuthorsFragment : Fragment() {
                             }
                         } else {
                             lifecycleScope.launch {
-                                if (_authors.isEmpty()) {
-                                    binding.rvAuthorList.visibility = View.GONE
-                                    binding.authorSpinner.visibility = View.VISIBLE
-                                    try {
-                                        val trendingWorks = fetchTrendingBooks()
-                                        _authors = trendingWorks.map { it.toWork() }
-                                        adapter.updateData(_authors)
-                                    } catch (cause: Throwable) {
-                                        Log.e("DiscoverFragment", "Error fetching data", cause)
-                                        Toast.makeText(
-                                            context,
-                                            "Error fetching data",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } finally {
-                                        binding.authorSpinner.visibility = View.GONE
-                                        binding.rvAuthorList.visibility = View.VISIBLE
-                                    }
-                                }
+                                loadFavoriteAuthors()
                             }
                         }
                     }
@@ -139,28 +125,23 @@ class AuthorsFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != null) {
                     if (newText.isEmpty()) {
-                        lifecycleScope.launch {
-                            binding.rvAuthorList.visibility = View.GONE
-                            binding.authorSpinner.visibility = View.VISIBLE
-                            try {
-                                val trendingWorks = loadFavoriteAuthors()
-                                _authors = trendingWorks.map { it.toWork() }
-                                adapter.updateData(_authors)
-                            } catch (cause: Throwable) {
-                                Log.e("DiscoverFragment", "Error fetching data", cause)
-                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
-                                    .show()
-                            } finally {
-                                binding.authorSpinner.visibility = View.GONE
-                                binding.rvAuthorList.visibility = View.VISIBLE
-                            }
-                        }
+                        loadFavoriteAuthors()
                     }
                 }
                 return false
             }
         })
-    }*/
+    }
+
+    private suspend fun fetchSearchAuthorsByName(name: String): List<Doc> {
+        val searchAuthors: List<Doc>
+        try {
+            searchAuthors = getNetworkService().getSearchAuthorsByName(name, 1).docs
+        } catch (cause: Throwable) {
+            throw APIError("Unable to fetch data from API", cause)
+        }
+        return searchAuthors
+    }
 
     private fun loadFavoriteAuthors() {
         lifecycleScope.launch {
@@ -182,6 +163,7 @@ class AuthorsFragment : Fragment() {
         adapter = AuthorsAdapter(
             authors = _authors,
             onClick = {
+                addAuthor(it)
                 listener.onAuthorClick(it)
             },
             onLongClick = {
@@ -194,6 +176,12 @@ class AuthorsFragment : Fragment() {
             rvAuthorList.adapter = adapter
         }
         Log.d("DiscoverFragment", "setUpRecyclerView")
+    }
+
+    private fun addAuthor(author: Author) {
+        lifecycleScope.launch {
+            db.authorDao().insert(author)
+        }
     }
 
     companion object {
