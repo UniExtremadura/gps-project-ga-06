@@ -34,10 +34,10 @@ class DiscoverAdapter(
                         .placeholder(R.drawable.placeholder)
                         .into(workCover)
                 }
-                clItem.setOnClickListener {
+                discoverClItem.setOnClickListener {
                     onClick(work)
                 }
-                clItem.setOnLongClickListener {
+                discoverClItem.setOnLongClickListener {
                     onLongClick(work)
                     true
                 }

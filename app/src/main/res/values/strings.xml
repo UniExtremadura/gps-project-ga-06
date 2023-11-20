@@ -15,4 +15,6 @@
     <string name="titleText">title</string>
     <string name="authorText">author</string>
     <string name="yearText">year</string>
+    <string name="authors_option">Authors</string>
+    <string name="authorPhotoText">Author Photo</string>
 </resources>

@@ -14,6 +14,12 @@
         android:title="@string/books_option"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/action_authors"
+        android:enabled="true"
+        android:icon="@drawable/authors"
+        android:title="@string/authors_option"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/action_profile"
         android:enabled="true"
         android:icon="@drawable/baseline_profile_24"

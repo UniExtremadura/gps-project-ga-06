@@ -1,10 +1,10 @@
 package com.aseegpsproject.openbook.data
 
 import com.aseegpsproject.openbook.data.apimodel.APIWork
-import com.aseegpsproject.openbook.data.apimodel.Author
 import com.aseegpsproject.openbook.data.apimodel.Authors
 import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.apimodel.TrendingWork
+import com.aseegpsproject.openbook.data.apimodel.WorkAuthor
 import com.aseegpsproject.openbook.data.model.Work
 
 fun APIWork.toWork() = Work(
@@ -26,9 +26,9 @@ fun TrendingWork.toWork() = Work(
     subjects = arrayListOf(),
 )
 
-fun Author.toStr() = this.key ?: "Unknown"
+fun WorkAuthor.toStr() = this.key ?: "Unknown"
 
-fun Authors.toStr() = this.author?.toStr() ?: "Unknown"
+fun Authors.toStr() = this.workAuthor?.toStr() ?: "Unknown"
 
 fun Doc.toWork() = Work(
     key = this.key,

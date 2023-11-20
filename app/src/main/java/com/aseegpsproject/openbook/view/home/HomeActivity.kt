@@ -15,6 +15,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnBookClickListener {
 
     private lateinit var discoverFragment: DiscoverFragment
     private lateinit var booksFragment: BooksFragment
+    private lateinit var authorsFragment: AuthorsFragment
     private lateinit var profileFragment: ProfileFragment
 
     companion object {
@@ -43,6 +44,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnBookClickListener {
     private fun setupUI(user: User) {
         discoverFragment = DiscoverFragment()
         booksFragment = BooksFragment()
+        authorsFragment = AuthorsFragment()
         profileFragment = ProfileFragment()
 
         setCurrentFragment(discoverFragment)
@@ -61,6 +63,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnBookClickListener {
                 when (it.itemId) {
                     R.id.action_discover -> setCurrentFragment(discoverFragment)
                     R.id.action_books -> setCurrentFragment(booksFragment)
+                    R.id.action_authors -> setCurrentFragment(authorsFragment)
                     R.id.action_profile -> setCurrentFragment(profileFragment)
                 }
                 true

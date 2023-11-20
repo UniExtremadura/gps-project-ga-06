@@ -14,4 +14,6 @@
     <string name="authorText">autor</string>
     <string name="yearText">año</string>
     <string name="coverText">portada</string>
+    <string name="authors_option">Autores</string>
+    <string name="authorPhotoText">Foto del autor</string>
 </resources>

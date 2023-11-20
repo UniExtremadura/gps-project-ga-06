@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/discover_cl_item"
+    android:id="@+id/author_cl_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/discover_cv_Item"
+        android:id="@+id/author_cv_Item"
         android:layout_width="match_parent"
         android:layout_height="125dp"
         android:layout_margin="5dp"
@@ -22,17 +22,17 @@
             android:backgroundTintMode="screen">
 
             <ImageView
-                android:id="@+id/work_cover"
+                android:id="@+id/author_photo"
                 android:layout_width="80dp"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/coverText"
+                android:contentDescription="@string/authorPhotoText"
                 android:scaleType="centerCrop"
-                android:src="@drawable/el_imperio_final"
+                android:src="@drawable/jk_rowling"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/work_title"
+                android:id="@+id/author_personal_name"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
@@ -40,11 +40,11 @@
                 android:maxLines="2"
                 android:text="@string/titleText"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                app:layout_constraintStart_toEndOf="@id/work_cover"
+                app:layout_constraintStart_toEndOf="@id/author_photo"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/work_author"
+                android:id="@+id/author_name"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -52,18 +52,18 @@
                 android:maxLines="2"
                 android:text="@string/authorText"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/work_title"
-                app:layout_constraintTop_toBottomOf="@+id/work_title" />
+                app:layout_constraintStart_toStartOf="@+id/author_personal_name"
+                app:layout_constraintTop_toBottomOf="@+id/author_personal_name" />
 
             <TextView
-                android:id="@+id/work_year"
+                android:id="@+id/author_birth_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/yearText"
                 android:textSize="20sp"
-                app:layout_constraintStart_toStartOf="@+id/work_author"
-                app:layout_constraintTop_toBottomOf="@+id/work_author" />
+                app:layout_constraintStart_toStartOf="@+id/author_name"
+                app:layout_constraintTop_toBottomOf="@+id/author_name" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
