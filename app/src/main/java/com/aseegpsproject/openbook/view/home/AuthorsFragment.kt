@@ -15,6 +15,7 @@ import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.api.getNetworkService
 import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.model.Author
+import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.toAuthor
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentAuthorsBinding
@@ -43,6 +44,7 @@ class AuthorsFragment : Fragment() {
     private var _authors = listOf<Author>()
     private var favAuthors = listOf<Author>()
     private lateinit var db: OpenBookDatabase
+    private lateinit var user: User
 
     interface OnAuthorClickListener {
         fun onAuthorClick(author: Author)
@@ -71,6 +73,7 @@ class AuthorsFragment : Fragment() {
     ): View {
         _binding = FragmentAuthorsBinding.inflate(inflater, container, false)
         db = OpenBookDatabase.getInstance(requireContext())!!
+        user = activity?.intent?.getSerializableExtra("USER_INFO") as User
         return binding.root
     }
 
@@ -86,48 +89,43 @@ class AuthorsFragment : Fragment() {
     }
 
     private fun setUpSearchView() {
-        binding.authorSearchView.setOnClickListener { binding.authorSearchView.isIconified = false }
-        binding.authorSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.authorsSearchView.setOnClickListener { binding.authorsSearchView.isIconified = false }
+        binding.authorsSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
-                    lifecycleScope.launch {
-                        if (query.isNotEmpty()) {
-                            binding.rvAuthorList.visibility = View.GONE
-                            binding.authorSpinner.visibility = View.VISIBLE
-                            try {
-                                val searchAuthors = fetchSearchAuthorsByName(query)
-                                _authors = searchAuthors.map { it.toAuthor() }
-                                adapter.updateData(_authors)
-                            } catch (cause: Throwable) {
-                                Log.e("AuthorsFragment", "Error fetching data", cause)
-                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
-                                    .show()
-                            } finally {
-                                binding.rvAuthorList.scrollToPosition(0)
-                                binding.authorSpinner.visibility = View.GONE
-                                binding.rvAuthorList.visibility = View.VISIBLE
-                            }
-                        } else {
-                            lifecycleScope.launch {
-                                loadFavoriteAuthors()
-                                adapter.updateData(favAuthors)
-                            }
-                        }
-                    }
-                }
+                handleSearch(query ?: "")
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    if (newText.isEmpty()) {
-                        loadFavoriteAuthors()
-                        adapter.updateData(favAuthors)
-                    }
+                if (newText?.isEmpty() == true) {
+                    loadFavoriteAuthors()
                 }
                 return false
             }
         })
+    }
+
+    private fun handleSearch(query: String) {
+        lifecycleScope.launch {
+            if (query.isNotEmpty()) {
+                binding.rvAuthorList.visibility = View.GONE
+                binding.authorSpinner.visibility = View.VISIBLE
+                try {
+                    val searchAuthors = fetchSearchAuthorsByName(query)
+                    _authors = searchAuthors.map { it.toAuthor() }
+                    adapter.updateData(_authors)
+                } catch (cause: Throwable) {
+                    Log.e("AuthorsFragment", "Error fetching data", cause)
+                    Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
+                } finally {
+                    binding.authorSpinner.visibility = View.GONE
+                    binding.rvAuthorList.scrollToPosition(0)
+                    binding.rvAuthorList.visibility = View.VISIBLE
+                }
+            } else {
+                loadFavoriteAuthors()
+            }
+        }
     }
 
     private suspend fun fetchSearchAuthorsByName(name: String): List<Doc> {
@@ -142,17 +140,12 @@ class AuthorsFragment : Fragment() {
 
     private fun loadFavoriteAuthors() {
         lifecycleScope.launch {
-            binding.authorSearchView.visibility = View.GONE
             binding.authorSpinner.visibility = View.VISIBLE
 
-            val user = db.userDao().getByUsername("admin")
-            if (user != null) {
-                favAuthors = user.userId?.let { db.authorDao().getUserWithAuthors(it).authors }!!
-            }
+            favAuthors = user.userId?.let { db.authorDao().getUserWithAuthors(it).authors }!!
             adapter.updateData(favAuthors)
 
             binding.authorSpinner.visibility = View.GONE
-            binding.authorSearchView.visibility = View.VISIBLE
         }
     }
 
@@ -183,7 +176,7 @@ class AuthorsFragment : Fragment() {
             }
             else {
                 author.isFavorite = true
-                db.authorDao().insertAndRelate(author, 1)
+                db.authorDao().insertAndRelate(author, user.userId!!)
                 Toast.makeText(context, "Author added to favorites", Toast.LENGTH_SHORT).show()
             }
 

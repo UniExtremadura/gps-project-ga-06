@@ -2,25 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_discover"
+        android:id="@+id/discoverFragment"
         android:enabled="true"
         android:icon="@drawable/baseline_discover_24"
         android:title="@string/discover_option"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_books"
+        android:id="@+id/booksFragment"
         android:enabled="true"
         android:icon="@drawable/baseline_books_24"
         android:title="@string/books_option"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_authors"
+        android:id="@+id/authorsFragment"
         android:enabled="true"
         android:icon="@drawable/authors"
         android:title="@string/authors_option"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_profile"
+        android:id="@+id/profileFragment"
         android:enabled="true"
         android:icon="@drawable/baseline_profile_24"
         android:title="@string/profile_option"

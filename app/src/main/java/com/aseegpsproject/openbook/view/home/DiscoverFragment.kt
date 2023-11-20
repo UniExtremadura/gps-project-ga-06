@@ -82,66 +82,68 @@ class DiscoverFragment : Fragment() {
 
         lifecycleScope.launch {
             if (_works.isEmpty()) {
-                binding.searchView.visibility = View.GONE
-                binding.spinner.visibility = View.VISIBLE
-
-                try {
-                    val trendingWorks = fetchTrendingBooks()
-                    _works = trendingWorks.map { it.toWork() }
-                    adapter.updateData(_works)
-                } catch (cause: Throwable) {
-                    Log.e("DiscoverFragment", "Error fetching data", cause)
-                    Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
-                } finally {
-                    binding.spinner.visibility = View.GONE
-                    binding.searchView.visibility = View.VISIBLE
-                }
+                loadTrendingBooks()
             }
         }
 
         setUpSearchView()
     }
 
+    private fun loadTrendingBooks() {
+        lifecycleScope.launch {
+            try {
+                binding.rvBookList.visibility = View.GONE
+                binding.spinner.visibility = View.VISIBLE
+                val trendingWorks = fetchTrendingBooks()
+                _works = trendingWorks.map { it.toWork() }
+                adapter.updateData(_works)
+            } catch (cause: Throwable) {
+                Log.e("DiscoverFragment", "Error fetching data", cause)
+                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
+            } finally {
+                binding.spinner.visibility = View.GONE
+                binding.rvBookList.visibility = View.VISIBLE
+            }
+        }
+    }
+
     private fun setUpSearchView() {
-        binding.searchView.setOnClickListener { binding.searchView.isIconified = false }
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        binding.discoverSearchView.setOnClickListener { binding.discoverSearchView.isIconified = false }
+        binding.discoverSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    lifecycleScope.launch {
-                        handleSearchQuery(it)
-                    }
+                val searchQuery = query ?: ""
+                lifecycleScope.launch {
+                    handleSearch(searchQuery)
                 }
-                return false
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                newText?.let {
-                    if (it.isEmpty()) {
-                        lifecycleScope.launch {
-                            handleSearchQuery(it)
-                        }
-                    }
+                if (newText?.isEmpty() == true) {
+                    loadTrendingBooks()
                 }
-                return false
+                return true
             }
         })
     }
 
-    private suspend fun handleSearchQuery(query: String) {
+    fun handleSearch(query: String) {
         showLoading()
-        runCatching {
-            if (query.isNotEmpty()) {
-                fetchSearchBooksByTitle(query).map { it.toWork() }
-            } else {
-                fetchTrendingBooks().map { it.toWork() }
+        lifecycleScope.launch {
+            runCatching {
+                if (query.isNotEmpty()) {
+                    fetchSearchBooksByTitle(query).map { it.toWork() }
+                } else {
+                    fetchTrendingBooks().map { it.toWork() }
+                }
+            }.onSuccess { works ->
+                _works = works
+                adapter.updateData(_works)
+            }.onFailure { cause ->
+                Log.e("DiscoverFragment", "Error fetching data", cause)
+                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
             }
-        }.onSuccess { works ->
-            _works = works
-            adapter.updateData(_works)
             hideLoading()
-        }.onFailure { cause ->
-            Log.e("DiscoverFragment", "Error fetching data", cause)
-            Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
         }
     }
 

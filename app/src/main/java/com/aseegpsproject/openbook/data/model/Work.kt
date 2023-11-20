@@ -1,11 +1,11 @@
 package com.aseegpsproject.openbook.data.model
 
 data class Work(
-    val key: String? = null,
+    val key: String,
     val title: String? = null,
     val description: String? = null,
-    val authorNames: ArrayList<String> = arrayListOf(),
-    val authorKeys: ArrayList<String>,
+    val authorNames: ArrayList<String>? = arrayListOf(),
+    val authorKeys: ArrayList<String>? = arrayListOf(),
     val firstPublishYear: Int? = null,
     val coverPaths: ArrayList<String> = arrayListOf(),
     val subjects: ArrayList<String> = arrayListOf(),
