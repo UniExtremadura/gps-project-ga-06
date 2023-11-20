@@ -15,5 +15,6 @@ data class Author(
     @ColumnInfo("photo_path") val photoPath: String? = null,
     val wikipedia: String? = null,
     val bio: String? = null,
-    @ColumnInfo("num_works") val numWorks: Int? = null
+    @ColumnInfo("num_works") val numWorks: Int? = null,
+    @ColumnInfo("is_favorite") var isFavorite: Boolean = false
 ) : Serializable

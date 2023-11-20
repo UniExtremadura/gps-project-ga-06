@@ -106,76 +106,54 @@ class DiscoverFragment : Fragment() {
         binding.searchView.setOnClickListener { binding.searchView.isIconified = false }
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
+                query?.let {
                     lifecycleScope.launch {
-                        if (query.isNotEmpty()) {
-                            binding.rvBookList.visibility = View.GONE
-                            binding.spinner.visibility = View.VISIBLE
-                            try {
-                                val searchWorks = fetchSearchBooksByTitle(query)
-                                _works = searchWorks.map { it.toWork() }
-                                adapter.updateData(_works)
-                            } catch (cause: Throwable) {
-                                Log.e("DiscoverFragment", "Error fetching data", cause)
-                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
-                                    .show()
-                            } finally {
-                                binding.rvBookList.scrollToPosition(0)
-                                binding.spinner.visibility = View.GONE
-                                binding.rvBookList.visibility = View.VISIBLE
-                            }
-                        } else {
-                            lifecycleScope.launch {
-                                if (_works.isEmpty()) {
-                                    binding.rvBookList.visibility = View.GONE
-                                    binding.spinner.visibility = View.VISIBLE
-                                    try {
-                                        val trendingWorks = fetchTrendingBooks()
-                                        _works = trendingWorks.map { it.toWork() }
-                                        adapter.updateData(_works)
-                                    } catch (cause: Throwable) {
-                                        Log.e("DiscoverFragment", "Error fetching data", cause)
-                                        Toast.makeText(
-                                            context,
-                                            "Error fetching data",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } finally {
-                                        binding.spinner.visibility = View.GONE
-                                        binding.rvBookList.visibility = View.VISIBLE
-                                    }
-                                }
-                            }
-                        }
+                        handleSearchQuery(it)
                     }
                 }
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    if (newText.isEmpty()) {
+                newText?.let {
+                    if (it.isEmpty()) {
                         lifecycleScope.launch {
-                            binding.rvBookList.visibility = View.GONE
-                            binding.spinner.visibility = View.VISIBLE
-                            try {
-                                val trendingWorks = fetchTrendingBooks()
-                                _works = trendingWorks.map { it.toWork() }
-                                adapter.updateData(_works)
-                            } catch (cause: Throwable) {
-                                Log.e("DiscoverFragment", "Error fetching data", cause)
-                                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT)
-                                    .show()
-                            } finally {
-                                binding.spinner.visibility = View.GONE
-                                binding.rvBookList.visibility = View.VISIBLE
-                            }
+                            handleSearchQuery(it)
                         }
                     }
                 }
                 return false
             }
         })
+    }
+
+    private suspend fun handleSearchQuery(query: String) {
+        showLoading()
+        runCatching {
+            if (query.isNotEmpty()) {
+                fetchSearchBooksByTitle(query).map { it.toWork() }
+            } else {
+                fetchTrendingBooks().map { it.toWork() }
+            }
+        }.onSuccess { works ->
+            _works = works
+            adapter.updateData(_works)
+            hideLoading()
+        }.onFailure { cause ->
+            Log.e("DiscoverFragment", "Error fetching data", cause)
+            Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun showLoading() {
+        binding.rvBookList.visibility = View.GONE
+        binding.spinner.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        binding.rvBookList.scrollToPosition(0)
+        binding.spinner.visibility = View.GONE
+        binding.rvBookList.visibility = View.VISIBLE
     }
 
     private suspend fun fetchSearchBooksByTitle(title: String): List<Doc> {
@@ -214,11 +192,6 @@ class DiscoverFragment : Fragment() {
             rvBookList.adapter = adapter
         }
         Log.d("DiscoverFragment", "setUpRecyclerView")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null // avoid memory leaks
     }
 
     companion object {

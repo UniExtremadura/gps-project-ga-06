@@ -16,7 +16,6 @@ import com.aseegpsproject.openbook.api.getNetworkService
 import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.toAuthor
-import com.aseegpsproject.openbook.data.toWork
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentAuthorsBinding
 import kotlinx.coroutines.launch
@@ -80,11 +79,7 @@ class AuthorsFragment : Fragment() {
         setUpRecyclerView()
 
         lifecycleScope.launch {
-            if (favAuthors.isEmpty()) {
-                loadFavoriteAuthors()
-            }
-
-            adapter.updateData(favAuthors)
+            loadFavoriteAuthors()
         }
 
         setUpSearchView()
@@ -115,6 +110,7 @@ class AuthorsFragment : Fragment() {
                         } else {
                             lifecycleScope.launch {
                                 loadFavoriteAuthors()
+                                adapter.updateData(favAuthors)
                             }
                         }
                     }
@@ -126,6 +122,7 @@ class AuthorsFragment : Fragment() {
                 if (newText != null) {
                     if (newText.isEmpty()) {
                         loadFavoriteAuthors()
+                        adapter.updateData(favAuthors)
                     }
                 }
                 return false
@@ -148,11 +145,11 @@ class AuthorsFragment : Fragment() {
             binding.authorSearchView.visibility = View.GONE
             binding.authorSpinner.visibility = View.VISIBLE
 
-            favAuthors = db.userDao().getByUsername("admin")?.userId?.let {
-                db.authorDao().getUserWithAuthors(
-                    it
-                ).authors
-            }!!
+            val user = db.userDao().getByUsername("admin")
+            if (user != null) {
+                favAuthors = user.userId?.let { db.authorDao().getUserWithAuthors(it).authors }!!
+            }
+            adapter.updateData(favAuthors)
 
             binding.authorSpinner.visibility = View.GONE
             binding.authorSearchView.visibility = View.VISIBLE
@@ -163,11 +160,10 @@ class AuthorsFragment : Fragment() {
         adapter = AuthorsAdapter(
             authors = _authors,
             onClick = {
-                addAuthor(it)
                 listener.onAuthorClick(it)
             },
             onLongClick = {
-                Toast.makeText(context, "long click on: " + it.name, Toast.LENGTH_SHORT).show()
+                changeFavoriteAuthor(it)
             },
             context = context
         )
@@ -175,12 +171,23 @@ class AuthorsFragment : Fragment() {
             rvAuthorList.layoutManager = LinearLayoutManager(context)
             rvAuthorList.adapter = adapter
         }
-        Log.d("DiscoverFragment", "setUpRecyclerView")
+        Log.d("AuthorFragment", "setUpRecyclerView")
     }
 
-    private fun addAuthor(author: Author) {
+    private fun changeFavoriteAuthor(author: Author) {
         lifecycleScope.launch {
-            db.authorDao().insert(author)
+            if (author.isFavorite) {
+                author.isFavorite = false
+                db.authorDao().delete(author)
+                Toast.makeText(context, "Author removed from favorites", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                author.isFavorite = true
+                db.authorDao().insertAndRelate(author, 1)
+                Toast.makeText(context, "Author added to favorites", Toast.LENGTH_SHORT).show()
+            }
+
+            loadFavoriteAuthors()
         }
     }
 
