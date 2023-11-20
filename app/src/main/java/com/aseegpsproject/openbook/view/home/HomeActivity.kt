@@ -3,21 +3,26 @@ package com.aseegpsproject.openbook.view.home
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
 import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.databinding.ActivityHomeBinding
 
+interface SearchHandler {
+    fun handleSearch(query: String)
+    fun clearSearch()
+}
+
 class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, AuthorsFragment.OnAuthorClickListener {
     private lateinit var binding: ActivityHomeBinding
-
-    private lateinit var discoverFragment: DiscoverFragment
-    private lateinit var booksFragment: BooksFragment
-    private lateinit var authorsFragment: AuthorsFragment
-    private lateinit var profileFragment: ProfileFragment
+    private val navController by lazy {
+        (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+    }
 
     companion object {
         const val USER_INFO = "USER_INFO"
@@ -31,52 +36,33 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val user = intent.getSerializableExtra(USER_INFO) as User
-
-        setupUI(user)
-        setUpListeners()
+        setupUI()
     }
 
-    private fun setupUI(user: User) {
-        discoverFragment = DiscoverFragment()
-        booksFragment = BooksFragment()
-        authorsFragment = AuthorsFragment()
-        profileFragment = ProfileFragment()
+    private fun setupUI() {
+        binding.bottomNavigation.setupWithNavController(navController)
 
-        setCurrentFragment(discoverFragment)
-    }
-
-    private fun setCurrentFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, fragment)
-            commit()
-        }
-    }
-
-    private fun setUpListeners() {
-        with(binding) {
-            bottomNavigation.setOnNavigationItemSelectedListener {
-                when (it.itemId) {
-                    R.id.action_discover -> setCurrentFragment(discoverFragment)
-                    R.id.action_books -> setCurrentFragment(booksFragment)
-                    R.id.action_authors -> setCurrentFragment(authorsFragment)
-                    R.id.action_profile -> setCurrentFragment(profileFragment)
-                }
-                true
+        // Hide toolbar and bottom navigation when in detail or settings fragment
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if ((destination.id == R.id.workDetailFragment) ||
+                (destination.id == R.id.settingsFragment)) {
+                binding.bottomNavigation.visibility = View.GONE
+            } else {
+                binding.bottomNavigation.visibility = View.VISIBLE
             }
         }
     }
 
     override fun onWorkClick(work: Work) {
-        // TODO: Implement onBookClick
+        val action = DiscoverFragmentDirections.actionDiscoverFragmentToWorkDetailFragment(work.key)
+        navController.navigate(action)
     }
 
     override fun onAuthorClick(author: Author) {
-        // TODO: Implement onAuthorClick
+
     }
 }

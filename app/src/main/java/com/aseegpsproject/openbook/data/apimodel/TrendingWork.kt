@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 
 data class TrendingWork (
-    @SerializedName("key"                ) var key              : String?           = null,
+    @SerializedName("key"                ) var key              : String,
     @SerializedName("title"              ) var title            : String?           = null,
     @SerializedName("first_publish_year" ) var firstPublishYear : Int?              = null,
     @SerializedName("cover_i"            ) var coverI           : Int?              = null,
