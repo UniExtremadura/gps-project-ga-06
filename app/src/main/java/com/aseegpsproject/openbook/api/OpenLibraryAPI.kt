@@ -1,6 +1,8 @@
 package com.aseegpsproject.openbook.api
 
 import com.aseegpsproject.openbook.data.apimodel.APIAuthor
+import com.aseegpsproject.openbook.data.apimodel.APIWork
+import com.aseegpsproject.openbook.data.apimodel.Rating
 import com.aseegpsproject.openbook.data.apimodel.SearchQuery
 import com.aseegpsproject.openbook.data.apimodel.TrendingQuery
 import okhttp3.OkHttpClient
@@ -49,6 +51,16 @@ interface OpenLibraryAPI {
         @Query("q") query: String,
         @Query("page") page: Int
     ) : SearchQuery
+
+    @GET("{key}.json")
+    suspend fun getWorkInfo(
+        @Path("key", encoded = true) key: String
+    ) : APIWork
+
+    @GET("{key}/ratings.json")
+    suspend fun getWorkRatings(
+        @Path("key", encoded = true) key: String
+    ) : Rating
 }
 
 class APIError(message: String, cause: Throwable? = null) : Throwable(message, cause)
