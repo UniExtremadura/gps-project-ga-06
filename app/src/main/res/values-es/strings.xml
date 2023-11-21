@@ -9,13 +9,13 @@
     <string name="discover_option">Explorar</string>
     <string name="books_option">Libros</string>
     <string name="profile_option">Perfil</string>
-    <string name="titleText">título</string>
-    <string name="authorText">autor</string>
-    <string name="yearText">año</string>
+    <string name="titleText">El Imperio Final</string>
     <string name="coverText">portada</string>
     <string name="authors_option">Autores</string>
     <string name="authorPhotoText">Foto del autor</string>
     <string name="action_search">Buscar</string>
     <string name="action_settings">Ajustes</string>
     <string name="work_detail">Detalles de la obra</string>
+    <string name="favText">Favorito</string>
+    <string name="starText">estrella</string>
 </resources>

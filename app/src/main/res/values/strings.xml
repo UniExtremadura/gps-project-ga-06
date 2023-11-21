@@ -11,12 +11,16 @@
     <string name="books_option">Books</string>
     <string name="profile_option">Profile</string>
     <string name="coverText">cover</string>
-    <string name="titleText">title</string>
-    <string name="authorText">author</string>
-    <string name="yearText">year</string>
+    <string name="titleText">The Final Empire</string>
+    <string name="authorText" translatable="false">Brandon Sanderson</string>
+    <string name="yearText" translatable="false">2001</string>
     <string name="authors_option">Authors</string>
     <string name="authorPhotoText">Author Photo</string>
     <string name="action_search">Search</string>
     <string name="action_settings">Settings</string>
     <string name="work_detail">Work details</string>
+    <string name="descriptionText" translatable="false">For a thousand years ashes have fallen from the sky.  For a thousand years nothing has flourished.  For a thousand years the skaa have been enslaved and live in misery, mired in inevitable fear.  For a thousand years the Lord Ruler has reigned with absolute power, ruling thanks to terror, his powers and his immortality, aided by \"benders\" and \"inquisitors\", along with the powerful magic of Allomancy.</string>
+    <string name="favText">Favourite</string>
+    <string name="ratingText" translatable="false">4.5/5 (90%)</string>
+    <string name="starText">star</string>
 </resources>

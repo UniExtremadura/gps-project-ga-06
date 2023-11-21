@@ -5,5 +5,10 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
+    <!-- Add cardView background color for light -->
+    <style name="Theme.OpenBook.Light" parent="Base.Theme.OpenBook">
+        <item name="cardViewStyle">@color/light_gray</item>
+    </style>
+
     <style name="Theme.OpenBook" parent="Base.Theme.OpenBook" />
 </resources>
