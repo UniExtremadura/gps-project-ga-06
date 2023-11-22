@@ -5,7 +5,9 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
 
-    <style name="Theme.OpenBook.Light" parent="Base.Theme.OpenBook">
-        <item name="cardViewStyle">@color/dark_gray</item>
+    <style name="cardViewStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:backgroundTint">@color/dark_gray</item>
     </style>
+
+    <style name="Theme.OpenBook" parent="Base.Theme.OpenBook" />
 </resources>
