@@ -5,7 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.aseegpsproject.openbook.R
+import com.aseegpsproject.openbook.api.getNetworkService
+import com.aseegpsproject.openbook.data.model.Author
+import com.aseegpsproject.openbook.databinding.FragmentAuthorDetailsBinding
+import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +29,10 @@ class AuthorDetailsFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private val args: AuthorDetailsFragmentArgs by navArgs()
+    private lateinit var binding: FragmentAuthorDetailsBinding
+    private lateinit var author: Author
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -36,6 +47,24 @@ class AuthorDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_author_details, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding = FragmentAuthorDetailsBinding.bind(view)
+        author = args.author
+
+        with (binding) {
+            tvAuthorName.text = author.name
+            tvAuthorDates.text = author.birthDate
+            tvAuthorDates2.text = author.deathDate
+            lifecycleScope.launch {
+                tvAuthorBio.text = getNetworkService().getAuthorInfo(author.authorKey).bio
+            }
+            Glide.with(requireContext())
+                .load(author.photoPath)
+                .into(ivAuthorPhoto)
+        }
     }
 
     companion object {

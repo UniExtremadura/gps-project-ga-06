@@ -13,7 +13,11 @@
         android:id="@+id/authorsFragment"
         android:name="com.aseegpsproject.openbook.view.home.AuthorsFragment"
         android:label="@string/authors_option"
-        tools:layout="@layout/fragment_authors" />
+        tools:layout="@layout/fragment_authors" >
+        <action
+            android:id="@+id/action_authorsFragment_to_authorDetailsFragment"
+            app:destination="@id/authorDetailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/discoverFragment"
         android:name="com.aseegpsproject.openbook.view.home.DiscoverFragment"
@@ -51,4 +55,13 @@
         android:name="com.aseegpsproject.openbook.view.home.SettingsFragment"
         android:label="@string/action_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/authorDetailsFragment"
+        android:name="com.aseegpsproject.openbook.view.home.AuthorDetailsFragment"
+        android:label="fragment_author_details"
+        tools:layout="@layout/fragment_author_details">
+        <argument
+            android:name="author"
+            app:argType="com.aseegpsproject.openbook.data.model.Author" />
+    </fragment>
 </navigation>
