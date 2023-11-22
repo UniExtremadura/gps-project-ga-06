@@ -29,9 +29,9 @@
     </fragment>
     <fragment
         android:id="@+id/booksFragment"
-        android:name="com.aseegpsproject.openbook.view.home.BooksFragment"
+        android:name="com.aseegpsproject.openbook.view.home.WorksFragment"
         android:label="@string/books_option"
-        tools:layout="@layout/fragment_books" />
+        tools:layout="@layout/fragment_works" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.aseegpsproject.openbook.view.home.ProfileFragment"
