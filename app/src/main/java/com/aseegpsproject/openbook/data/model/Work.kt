@@ -1,15 +1,19 @@
 package com.aseegpsproject.openbook.data.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.Serializable
 
+@Entity
 data class Work(
-    val key: String,
+    @PrimaryKey(autoGenerate = false) val workKey: String,
     val title: String? = null,
     var description: String? = null,
-    val authorNames: ArrayList<String>? = arrayListOf(),
-    val authorKeys: ArrayList<String>? = arrayListOf(),
-    val firstPublishYear: Int? = null,
-    val coverPaths: ArrayList<String> = arrayListOf(),
+    @ColumnInfo("author_names") val authorNames: ArrayList<String>? = arrayListOf(),
+    @ColumnInfo("author_keys") val authorKeys: ArrayList<String>? = arrayListOf(),
+    @ColumnInfo("first_publish_year") val firstPublishYear: Int? = null,
+    @ColumnInfo("cover_paths") val coverPaths: ArrayList<String> = arrayListOf(),
     val subjects: ArrayList<String> = arrayListOf(),
-    val numEditions: Int? = null,
+    @ColumnInfo("num_editions") val numEditions: Int? = null,
 ) : Serializable
