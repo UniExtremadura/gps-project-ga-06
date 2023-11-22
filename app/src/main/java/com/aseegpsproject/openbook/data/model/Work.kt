@@ -16,4 +16,5 @@ data class Work(
     @ColumnInfo("cover_paths") val coverPaths: ArrayList<String> = arrayListOf(),
     val subjects: ArrayList<String> = arrayListOf(),
     @ColumnInfo("num_editions") val numEditions: Int? = null,
+    @ColumnInfo("is_favorite") var isFavorite: Boolean = false
 ) : Serializable

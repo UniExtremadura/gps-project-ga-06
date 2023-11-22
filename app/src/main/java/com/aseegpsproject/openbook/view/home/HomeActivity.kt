@@ -11,6 +11,7 @@ import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
+import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.ActivityHomeBinding
 
 interface SearchHandler {
@@ -20,6 +21,7 @@ interface SearchHandler {
 
 class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, AuthorsFragment.OnAuthorClickListener {
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var db: OpenBookDatabase
     private val navController by lazy {
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
     }
@@ -58,7 +60,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
     }
 
     override fun onWorkClick(work: Work) {
-        val action = DiscoverFragmentDirections.actionDiscoverFragmentToWorkDetailFragment(work)
+        val action = DiscoverFragmentDirections.actionWorkListFragmentToWorkDetailFragment(work)
         navController.navigate(action)
     }
 

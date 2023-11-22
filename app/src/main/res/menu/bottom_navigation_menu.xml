@@ -8,7 +8,7 @@
         android:title="@string/discover_option"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/booksFragment"
+        android:id="@+id/worksFragment"
         android:enabled="true"
         android:icon="@drawable/baseline_books_24"
         android:title="@string/books_option"
