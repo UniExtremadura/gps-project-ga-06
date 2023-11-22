@@ -14,6 +14,7 @@ import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.api.getNetworkService
 import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.apimodel.TrendingWork
+import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.toWork
 import com.aseegpsproject.openbook.database.OpenBookDatabase
@@ -36,6 +37,7 @@ class DiscoverFragment : Fragment() {
 
     private var _works = listOf<Work>()
     private lateinit var db: OpenBookDatabase
+    private lateinit var user: User
 
     interface OnWorkClickListener {
         fun onWorkClick(work: Work)
@@ -73,6 +75,7 @@ class DiscoverFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentDiscoverBinding.inflate(inflater, container, false)
         db = OpenBookDatabase.getInstance(requireContext())!!
+        user = activity?.intent?.getSerializableExtra("USER_INFO") as User
         return binding.root
     }
 
@@ -185,7 +188,7 @@ class DiscoverFragment : Fragment() {
                 listener.onWorkClick(it)
             },
             onLongClick = {
-                Toast.makeText(context, "long click on: " + it.title, Toast.LENGTH_SHORT).show()
+                changeFavoriteWork(it)
             },
             context = context
         )
@@ -194,6 +197,19 @@ class DiscoverFragment : Fragment() {
             rvBookList.adapter = adapter
         }
         Log.d("DiscoverFragment", "setUpRecyclerView")
+    }
+
+    private fun changeFavoriteWork(work: Work) {
+        lifecycleScope.launch {
+            if (work.isFavorite) {
+                db.workDao().delete(work)
+                Toast.makeText(context, "Work removed from favorites", Toast.LENGTH_SHORT).show()
+            } else {
+                work.isFavorite = true
+                db.workDao().insertAndRelate(work, user.userId!!)
+                Toast.makeText(context, "Work added to favorites", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     companion object {

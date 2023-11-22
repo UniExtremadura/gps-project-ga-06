@@ -60,7 +60,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
     }
 
     override fun onWorkClick(work: Work) {
-        val action = DiscoverFragmentDirections.actionDiscoverFragmentToWorkDetailFragment(work)
+        val action = DiscoverFragmentDirections.actionWorkListFragmentToWorkDetailFragment(work)
         navController.navigate(action)
     }
 

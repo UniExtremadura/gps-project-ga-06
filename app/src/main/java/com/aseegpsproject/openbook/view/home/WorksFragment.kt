@@ -86,12 +86,26 @@ class WorksFragment : Fragment() {
         adapter = WorksAdapter(
             _works,
             { work -> listener.onWorkClick(work) },
-            { work -> Toast.makeText(context, work.title, Toast.LENGTH_SHORT).show() },
+            { work -> changeFavoriteWork(work) },
             requireContext()
         )
         with(binding) {
             rvBooksList.layoutManager = LinearLayoutManager(context)
             rvBooksList.adapter = adapter
+        }
+    }
+
+    private fun changeFavoriteWork(work: Work) {
+        lifecycleScope.launch {
+            if (work.isFavorite) {
+                db.workDao().delete(work)
+                Toast.makeText(context, "Work removed from favorites", Toast.LENGTH_SHORT).show()
+            } else {
+                work.isFavorite = true
+                db.workDao().insertAndRelate(work, user.userId!!)
+                Toast.makeText(context, "Work added to favorites", Toast.LENGTH_SHORT).show()
+            }
+            loadFavWorks()
         }
     }
 

@@ -9,6 +9,10 @@
         android:id="@+id/action_home_to_settingsFragment"
         app:destination="@id/settingsFragment" />
 
+    <action
+        android:id="@+id/action_workListFragment_to_workDetailFragment"
+        app:destination="@id/workDetailFragment" />
+
     <fragment
         android:id="@+id/authorsFragment"
         android:name="com.aseegpsproject.openbook.view.home.AuthorsFragment"
@@ -22,16 +26,16 @@
         android:id="@+id/discoverFragment"
         android:name="com.aseegpsproject.openbook.view.home.DiscoverFragment"
         android:label="@string/discover_option"
-        tools:layout="@layout/fragment_discover" >
-        <action
-            android:id="@+id/action_discoverFragment_to_workDetailFragment"
-            app:destination="@id/workDetailFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_discover" />
     <fragment
-        android:id="@+id/booksFragment"
+        android:id="@+id/worksFragment"
         android:name="com.aseegpsproject.openbook.view.home.WorksFragment"
         android:label="@string/books_option"
-        tools:layout="@layout/fragment_works" />
+        tools:layout="@layout/fragment_works" >
+        <action
+            android:id="@+id/action_worksFragment_to_workDetailFragment"
+            app:destination="@id/workDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.aseegpsproject.openbook.view.home.ProfileFragment"
