@@ -58,11 +58,12 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
     }
 
     override fun onWorkClick(work: Work) {
-        val action = DiscoverFragmentDirections.actionDiscoverFragmentToWorkDetailFragment(work.key)
+        val action = DiscoverFragmentDirections.actionDiscoverFragmentToWorkDetailFragment(work)
         navController.navigate(action)
     }
 
     override fun onAuthorClick(author: Author) {
-
+        val action = AuthorsFragmentDirections.actionAuthorsFragmentToAuthorDetailsFragment(author)
+        navController.navigate(action)
     }
 }

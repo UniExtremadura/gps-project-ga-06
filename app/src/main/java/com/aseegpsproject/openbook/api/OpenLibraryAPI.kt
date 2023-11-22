@@ -1,8 +1,13 @@
 package com.aseegpsproject.openbook.api
 
 import com.aseegpsproject.openbook.data.apimodel.APIAuthor
+import com.aseegpsproject.openbook.data.apimodel.APIAuthorDeserializer
+import com.aseegpsproject.openbook.data.apimodel.APIWork
+import com.aseegpsproject.openbook.data.apimodel.APIWorkDeserializer
+import com.aseegpsproject.openbook.data.apimodel.Rating
 import com.aseegpsproject.openbook.data.apimodel.SearchQuery
 import com.aseegpsproject.openbook.data.apimodel.TrendingQuery
+import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -21,7 +26,7 @@ private val service: OpenLibraryAPI by lazy {
     val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
+        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().registerTypeAdapter(APIAuthor::class.java, APIAuthorDeserializer()).registerTypeAdapter(APIWork::class.java, APIWorkDeserializer()).create()))
         .build()
 
     retrofit.create(OpenLibraryAPI::class.java)
@@ -30,7 +35,7 @@ private val service: OpenLibraryAPI by lazy {
 fun getNetworkService() = service
 
 interface OpenLibraryAPI {
-    @GET("trending/daily.json")
+    @GET("trending/now.json")
     suspend fun getDailyTrendingBooks() : TrendingQuery
 
     @GET("search.json")
@@ -49,6 +54,16 @@ interface OpenLibraryAPI {
         @Query("q") query: String,
         @Query("page") page: Int
     ) : SearchQuery
+
+    @GET("{key}.json")
+    suspend fun getWorkInfo(
+        @Path("key", encoded = true) key: String
+    ) : APIWork
+
+    @GET("{key}/ratings.json")
+    suspend fun getWorkRatings(
+        @Path("key", encoded = true) key: String
+    ) : Rating
 }
 
 class APIError(message: String, cause: Throwable? = null) : Throwable(message, cause)
