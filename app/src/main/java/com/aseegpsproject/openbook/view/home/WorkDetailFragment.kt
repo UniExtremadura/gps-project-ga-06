@@ -62,8 +62,8 @@ class WorkDetailFragment : Fragment() {
                 .load(work.coverPaths.get(0))
                 .into(workCover)
             lifecycleScope.launch {
-                workRating.text = getNetworkService().getWorkRatings(work.key).toStr()
-                workDescription.text = getNetworkService().getWorkInfo(work.key).description
+                workRating.text = getNetworkService().getWorkRatings(work.workKey).toStr()
+                workDescription.text = getNetworkService().getWorkInfo(work.workKey).description
             }
         }
     }

@@ -12,7 +12,7 @@ import kotlin.math.roundToInt
 
 fun APIWork.toWork() = this.key?.let {
     Work(
-        key = it,
+        workKey = it,
         title = this.title,
         authorNames = null,
         authorKeys = this.authors.map { it.toKeyStr() } as ArrayList<String>,
@@ -26,7 +26,7 @@ fun APIWork.toWork() = this.key?.let {
 fun Authors.toKeyStr() = this.workAuthor?.key ?: ""
 
 fun TrendingWork.toWork() = Work(
-    key = this.key,
+    workKey = this.key,
     title = this.title,
     authorNames = this.authorName,
     authorKeys = this.authorKey,
@@ -36,7 +36,7 @@ fun TrendingWork.toWork() = Work(
 )
 
 fun Doc.toWork() = Work(
-    key = this.key,
+    workKey = this.key,
     title = this.title,
     authorNames = this.authorName,
     authorKeys = this.authorKey,
