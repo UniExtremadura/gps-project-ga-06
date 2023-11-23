@@ -4,15 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.api.getNetworkService
+import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
+import com.aseegpsproject.openbook.data.model.Worklist
 import com.aseegpsproject.openbook.data.toStr
+import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentWorkDetailBinding
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
@@ -32,7 +39,11 @@ class WorkDetailFragment : Fragment() {
 
     private val args: WorkDetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentWorkDetailBinding
+    private lateinit var adapter: ProfileAdapter
+    private lateinit var listener: ProfileFragment.OnWorklistClickListener
     private lateinit var work: Work
+    private lateinit var db: OpenBookDatabase
+    private lateinit var user: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,12 +53,24 @@ class WorkDetailFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: android.content.Context) {
+        super.onAttach(context)
+        if (context is ProfileFragment.OnWorklistClickListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnWorkClickListener")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_work_detail, container, false)
+        binding = FragmentWorkDetailBinding.inflate(inflater, container, false)
+        db = OpenBookDatabase.getInstance(requireContext())!!
+        user = activity?.intent?.getSerializableExtra(HomeActivity.USER_INFO) as User
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +88,96 @@ class WorkDetailFragment : Fragment() {
                 workRating.text = getNetworkService().getWorkRatings(work.workKey).toStr()
                 workDescription.text = getNetworkService().getWorkInfo(work.workKey).description
             }
+
+            btnFavorite.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    // Eliminar el observador después de que la vista esté lista para evitar llamadas múltiples
+                    btnFavorite.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    if (work.isFavorite) {
+                        btnFavorite.compoundDrawables[0].setTint(resources.getColor(R.color.yellow))
+                    }
+                }
+            })
+
+            // Check if work in worklist
+            lifecycleScope.launch {
+                val worklists = db.worklistDao().getUserWithWorkLists(user.userId!!).worklists
+                if (worklists.isEmpty()) {
+                    btnAddToWorklist.visibility = View.GONE
+                } else {
+                    val workKeys = worklists.map { it.works.map { it.workKey } }.flatten().toSet()
+                    if (workKeys.contains(work.workKey)) {
+                        btnAddToWorklist.visibility = View.GONE
+                    }
+                }
+            }
         }
+
+        setUpListeners()
+    }
+
+    private fun setUpListeners() {
+        with(binding) {
+            btnFavorite.setOnClickListener {
+                work.isFavorite = !work.isFavorite
+                if (work.isFavorite) {
+                    btnFavorite.compoundDrawables[0].setTint(resources.getColor(R.color.yellow))
+                    lifecycleScope.launch {
+                        db.workDao().insertAndRelate(work, user.userId!!)
+                    }
+                    Toast.makeText(requireContext(), resources.getText(R.string.add_fav), Toast.LENGTH_SHORT).show()
+                } else {
+                    btnFavorite.compoundDrawables[0].setTint(resources.getColor(R.color.white))
+                    lifecycleScope.launch {
+                        db.workDao().delete(work)
+                    }
+                    Toast.makeText(requireContext(), resources.getText(R.string.remove_fav), Toast.LENGTH_SHORT).show()
+                }
+            }
+            btnAddToWorklist.setOnClickListener {
+                lifecycleScope.launch {
+                    val worklists = db.worklistDao().getUserWithWorkLists(user.userId!!).worklists
+                    if (worklists.isEmpty()) {
+                        Toast.makeText(requireContext(), resources.getText(R.string.no_worklists), Toast.LENGTH_SHORT).show()
+                    } else {
+                        rvWorklistList.visibility = View.VISIBLE
+                        setUpRecyclerView(worklists)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setUpRecyclerView(worklists: List<Worklist>) {
+        adapter = ProfileAdapter(
+            worklists,
+            { worklist -> addToWorklist(worklist) },
+            { worklist -> listener.onWorklistClick(worklist) },
+            context
+        )
+        with (binding) {
+            rvWorklistList.layoutManager = GridLayoutManager(context, 3)
+            rvWorklistList.adapter = adapter
+        }
+    }
+
+    private fun addToWorklist(worklist: Worklist) {
+        val workKeys = worklist.works.map { it.workKey }.toSet()
+        if (workKeys.contains(work.workKey)) {
+            Toast.makeText(requireContext(), resources.getText(R.string.already_in_worklist), Toast.LENGTH_SHORT).show()
+        } else {
+            lifecycleScope.launch(Dispatchers.IO) {
+                worklist.works = worklist.works + work
+                db.worklistDao().insertAndRelate(worklist, user.userId!!)
+            }
+            Toast.makeText(
+                requireContext(),
+                resources.getText(R.string.added_to_worklist),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        binding.rvWorklistList.visibility = View.GONE
     }
 
     companion object {
