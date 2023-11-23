@@ -10,13 +10,16 @@ import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.UserAuthorCrossRef
 import com.aseegpsproject.openbook.data.model.UserWorkCrossRef
+import com.aseegpsproject.openbook.data.model.UserWorklistCrossRef
 import com.aseegpsproject.openbook.data.model.Work
+import com.aseegpsproject.openbook.data.model.Worklist
 import com.aseegpsproject.openbook.database.dao.AuthorDao
 import com.aseegpsproject.openbook.database.dao.UserDao
 import com.aseegpsproject.openbook.database.dao.WorkDao
+import com.aseegpsproject.openbook.database.dao.WorklistDao
 
 @Database(
-    entities = [User::class, Author::class, UserAuthorCrossRef::class, Work::class, UserWorkCrossRef::class],
+    entities = [User::class, Author::class, UserAuthorCrossRef::class, Work::class, UserWorkCrossRef::class, Worklist::class, UserWorklistCrossRef::class],
     version = 1
 )
 @TypeConverters(Converters::class)
@@ -24,6 +27,7 @@ abstract class OpenBookDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun authorDao(): AuthorDao
     abstract fun workDao(): WorkDao
+    abstract fun worklistDao(): WorklistDao
 
     companion object {
         private var INSTANCE: OpenBookDatabase? = null

@@ -9,5 +9,9 @@
         <item name="android:backgroundTint">@color/light_gray</item>
     </style>
 
+    <style name="recyclerViewStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:background">@color/light_gray</item>
+    </style>
+
     <style name="Theme.OpenBook" parent="Base.Theme.OpenBook" />
 </resources>
