@@ -32,9 +32,6 @@
         android:name="com.aseegpsproject.openbook.view.home.WorksFragment"
         android:label="@string/books_option"
         tools:layout="@layout/fragment_works" >
-        <action
-            android:id="@+id/action_worksFragment_to_workDetailFragment"
-            app:destination="@id/workDetailFragment" />
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
@@ -44,6 +41,9 @@
         <action
             android:id="@+id/action_profileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_workListFragment"
+            app:destination="@id/workListFragment" />
     </fragment>
     <fragment
         android:id="@+id/workDetailFragment"
@@ -67,5 +67,14 @@
         <argument
             android:name="author"
             app:argType="com.aseegpsproject.openbook.data.model.Author" />
+    </fragment>
+    <fragment
+        android:id="@+id/workListFragment"
+        android:name="com.aseegpsproject.openbook.view.home.WorklistFragment"
+        android:label="fragment_work_list"
+        tools:layout="@layout/fragment_worklist">
+        <argument
+            android:name="worklist"
+            app:argType="com.aseegpsproject.openbook.data.model.Worklist" />
     </fragment>
 </navigation>
