@@ -17,4 +17,15 @@
     <string name="work_detail">Detalles de la obra</string>
     <string name="favText">Favorito</string>
     <string name="starText">estrella</string>
+    <string name="add_fav">Añadido a favoritos</string>
+    <string name="remove_fav">Eliminado de favoritos</string>
+    <string name="add">Añadir</string>
+    <string name="name">Nombre</string>
+    <string name="create_worklist">Crear lista de obras</string>
+    <string name="no_worklists">No hay listas de obras creadas</string>
+    <string name="added_to_worklist">Obra añadida a la lista</string>
+    <string name="already_in_worklist">La obra ya está en esta lista</string>
+    <string name="worklist_deleted">Lista borrada</string>
+    <string name="worklist_created">Lista creada</string>
+    <string name="removed_from_worklist">Obra borrada de la lista</string>
 </resources>

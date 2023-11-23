@@ -68,13 +68,13 @@ class WorksFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpRecyclerView()
-
         lifecycleScope.launch {
             if (_works.isEmpty()) {
                 loadFavWorks()
             }
         }
+
+        setUpRecyclerView()
     }
 
     private suspend fun loadFavWorks() {
