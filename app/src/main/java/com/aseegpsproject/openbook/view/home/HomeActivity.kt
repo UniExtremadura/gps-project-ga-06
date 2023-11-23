@@ -11,17 +11,11 @@ import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
-import com.aseegpsproject.openbook.database.OpenBookDatabase
+import com.aseegpsproject.openbook.data.model.Worklist
 import com.aseegpsproject.openbook.databinding.ActivityHomeBinding
 
-interface SearchHandler {
-    fun handleSearch(query: String)
-    fun clearSearch()
-}
-
-class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, AuthorsFragment.OnAuthorClickListener {
+class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, AuthorsFragment.OnAuthorClickListener, ProfileFragment.OnWorklistClickListener {
     private lateinit var binding: ActivityHomeBinding
-    private lateinit var db: OpenBookDatabase
     private val navController by lazy {
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
     }
@@ -48,10 +42,12 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
     private fun setupUI() {
         binding.bottomNavigation.setupWithNavController(navController)
 
-        // Hide toolbar and bottom navigation when in detail or settings fragment
+        // Hide bottom navigation when in details, settings or work list fragments
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if ((destination.id == R.id.workDetailFragment) ||
-                (destination.id == R.id.settingsFragment)) {
+                (destination.id == R.id.settingsFragment) ||
+                (destination.id == R.id.authorDetailsFragment) ||
+                (destination.id == R.id.workListFragment)) {
                 binding.bottomNavigation.visibility = View.GONE
             } else {
                 binding.bottomNavigation.visibility = View.VISIBLE
@@ -66,6 +62,11 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
 
     override fun onAuthorClick(author: Author) {
         val action = AuthorsFragmentDirections.actionAuthorsFragmentToAuthorDetailsFragment(author)
+        navController.navigate(action)
+    }
+
+    override fun onWorklistClick(worklist: Worklist) {
+        val action = ProfileFragmentDirections.actionProfileFragmentToWorkListFragment(worklist)
         navController.navigate(action)
     }
 }

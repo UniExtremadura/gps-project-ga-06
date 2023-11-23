@@ -1,11 +1,24 @@
 package com.aseegpsproject.openbook.view.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import com.aseegpsproject.openbook.R
+import com.aseegpsproject.openbook.data.model.User
+import com.aseegpsproject.openbook.data.model.Worklist
+import com.aseegpsproject.openbook.database.OpenBookDatabase
+import com.aseegpsproject.openbook.databinding.FragmentProfileBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -22,6 +35,19 @@ class ProfileFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: ProfileAdapter
+    private lateinit var listener: OnWorklistClickListener
+    private lateinit var db: OpenBookDatabase
+    private lateinit var user: User
+
+    private var _worklists = listOf<Worklist>()
+
+    interface OnWorklistClickListener {
+        fun onWorklistClick(workList: Worklist)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -30,12 +56,115 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnWorklistClickListener) {
+            listener = context
+        } else {
+            throw RuntimeException("$context must implement OnWorkClickListener")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        _binding =
+            FragmentProfileBinding.inflate(inflater, container, false)
+        db = OpenBookDatabase.getInstance(requireContext())!!
+        user = activity?.intent?.getSerializableExtra(HomeActivity.USER_INFO) as User
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpRecyclerView()
+
+        if (_worklists.isEmpty()) {
+            loadWorkLists()
+        }
+
+        with(binding) {
+            tvUsername.text = user.username
+            cvCreateWorklist.visibility = View.GONE
+        }
+
+        setUpListeners()
+    }
+
+    private fun setUpListeners() {
+        with(binding) {
+            btnAddWorklist.setOnClickListener {
+                cvCreateWorklist.visibility = View.VISIBLE
+                etWorklistName.requestFocus()
+                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.showSoftInput(binding.etWorklistName, InputMethodManager.SHOW_IMPLICIT)
+            }
+            btnCreateWorklist.setOnClickListener {
+                createWorklist()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    loadWorkLists()
+                }
+            }
+            etWorklistName.setOnEditorActionListener { _, _, _ ->
+                createWorklist()
+                lifecycleScope.launch(Dispatchers.IO) {
+                    loadWorkLists()
+                }
+                true
+            }
+        }
+    }
+
+    private fun createWorklist() {
+        with(binding) {
+            lifecycleScope.launch(Dispatchers.IO) {
+                val worklistName = etWorklistName.text.toString()
+                val worklist = Worklist(null, worklistName, listOf())
+
+                val worklistId = db.worklistDao().insert(worklist)
+                worklist.worklistId = worklistId
+
+                db.worklistDao().insertAndRelate(worklist, user.userId!!)
+            }
+            (requireContext().getSystemService(
+                Context.INPUT_METHOD_SERVICE
+            ) as InputMethodManager?)?.hideSoftInputFromWindow(requireView().windowToken, 0)
+            cvCreateWorklist.visibility = View.GONE
+            etWorklistName.text.clear()
+        }
+        Toast.makeText(context, R.string.worklist_created, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun loadWorkLists() {
+        lifecycleScope.launch {
+            _worklists = user.userId?.let { db.worklistDao().getUserWithWorkLists(it).worklists }!!
+            withContext(Dispatchers.Main) {
+                adapter.updateData(_worklists)
+            }
+        }
+    }
+
+    private fun setUpRecyclerView() {
+        adapter = ProfileAdapter(
+            _worklists,
+            { workList -> listener.onWorklistClick(workList) },
+            { workList -> deleteWorklist(workList)},
+            context
+        )
+        with (binding) {
+            rvWorklistList.layoutManager = GridLayoutManager(context, 3)
+            rvWorklistList.adapter = adapter
+        }
+    }
+
+    private fun deleteWorklist(workList: Worklist) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            db.worklistDao().delete(workList)
+            loadWorkLists()
+        }
+        Toast.makeText(context, R.string.worklist_deleted, Toast.LENGTH_SHORT).show()
     }
 
     companion object {
