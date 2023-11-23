@@ -24,4 +24,15 @@
     <string name="ratingText" translatable="false">4.5/5 (90%)</string>
     <string name="starText">star</string>
     <string name="datesText" translatable="false">September 20, 1948</string>
+    <string name="add_fav">Added to favorites</string>
+    <string name="remove_fav">Removed from favorites</string>
+    <string name="add">Add</string>
+    <string name="name">Name</string>
+    <string name="create_worklist">Create works list</string>
+    <string name="no_worklists">There is no worklists created</string>
+    <string name="added_to_worklist">Added to worklist</string>
+    <string name="already_in_worklist">Work already in worklist</string>
+    <string name="worklist_deleted">Worklist deleted</string>
+    <string name="worklist_created">Worklist created</string>
+    <string name="removed_from_worklist">Work removed from worklist</string>
 </resources>
