@@ -45,7 +45,8 @@ class ProfileFragment : Fragment() {
     private var _worklists = listOf<Worklist>()
 
     interface OnWorklistClickListener {
-        fun onWorklistClick(workList: Worklist)
+        fun onWorklistClick(worklist: Worklist)
+        fun onSettingsClick()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +114,9 @@ class ProfileFragment : Fragment() {
                     loadWorkLists()
                 }
                 true
+            }
+            btnSettings.setOnClickListener {
+                listener.onSettingsClick()
             }
         }
     }

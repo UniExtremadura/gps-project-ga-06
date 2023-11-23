@@ -35,4 +35,7 @@
     <string name="worklist_deleted">Worklist deleted</string>
     <string name="worklist_created">Worklist created</string>
     <string name="removed_from_worklist">Work removed from worklist</string>
+    <string name="autologin_title">Remember me?</string>
+    <string name="themeSectionText">Theme settings</string>
+    <string name="themeText">Theme</string>
 </resources>

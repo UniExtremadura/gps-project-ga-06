@@ -28,4 +28,7 @@
     <string name="worklist_deleted">Lista borrada</string>
     <string name="worklist_created">Lista creada</string>
     <string name="removed_from_worklist">Obra borrada de la lista</string>
+    <string name="autologin_title">¿Recordar contraeña?</string>
+    <string name="themeSectionText">Ajustes de tema</string>
+    <string name="themeText">Tema</string>
 </resources>
