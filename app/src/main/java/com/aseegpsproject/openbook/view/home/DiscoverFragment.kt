@@ -9,6 +9,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.api.getNetworkService
@@ -174,7 +175,11 @@ class DiscoverFragment : Fragment() {
     private suspend fun fetchTrendingBooks(): List<TrendingWork> {
         var trendingWorks: List<TrendingWork> = listOf()
         try {
-            trendingWorks = getNetworkService().getDailyTrendingBooks().trendingWorks
+            // Get preference of trending frequency
+            val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+            val trendingFreq = prefs.getString("trendings", "daily") ?: "daily"
+            Log.d("DiscoverFragment", "trendingFreq: $trendingFreq")
+            trendingWorks = getNetworkService().getDailyTrendingBooks(trendingFreq).trendingWorks
         } catch (cause: Throwable) {
             Log.e("DiscoverFragment", "Error fetching data", cause)
         }

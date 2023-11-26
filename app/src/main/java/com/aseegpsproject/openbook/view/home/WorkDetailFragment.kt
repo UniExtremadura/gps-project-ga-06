@@ -105,11 +105,6 @@ class WorkDetailFragment : Fragment() {
                 val worklists = db.worklistDao().getUserWithWorkLists(user.userId!!).worklists
                 if (worklists.isEmpty()) {
                     btnAddToWorklist.visibility = View.GONE
-                } else {
-                    val workKeys = worklists.map { it.works.map { it.workKey } }.flatten().toSet()
-                    if (workKeys.contains(work.workKey)) {
-                        btnAddToWorklist.visibility = View.GONE
-                    }
                 }
             }
         }

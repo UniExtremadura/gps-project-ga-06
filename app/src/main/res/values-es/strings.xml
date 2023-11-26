@@ -31,4 +31,12 @@
     <string name="autologin_title">¿Recordar contraeña?</string>
     <string name="themeSectionText">Ajustes de tema</string>
     <string name="themeText">Tema</string>
+    <string name="trendings">Tendencias</string>
+    <string name="trendings_title">Frecuencia de las tendencias</string>
+    <string name="now">Ahora</string>
+    <string name="daily">Hoy</string>
+    <string name="weekly">Esta semana</string>
+    <string name="monthly">Este mes</string>
+    <string name="yearly">Este año</string>
+    <string name="trendings_summary">Elige la frecuencia de los libros mostrados</string>
 </resources>
