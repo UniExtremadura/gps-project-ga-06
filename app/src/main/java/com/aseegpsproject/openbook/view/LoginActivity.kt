@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.ActivityLoginBinding
@@ -41,12 +42,19 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityLoginBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
         db = OpenBookDatabase.getInstance(this)!!
 
-        setUpListeners()
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this).all
+        if (preferences.containsKey("username") && preferences.containsKey("password")) {
+            val username = preferences["username"].toString()
+            val password = preferences["password"].toString()
+
+            login(Pair(username, password))
+        } else {
+            binding = ActivityLoginBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+            setUpListeners()
+        }
     }
 
     private fun setUpListeners() {
@@ -64,21 +72,25 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun login() {
+    private fun getCredentials(): Pair<String, String> {
         val username = binding.etUsername.text.toString()
         val password = binding.etPassword.text.toString()
 
-        val check = CredentialCheck.login(username, password)
+        return Pair(username, password)
+    }
+
+    private fun login(credentials: Pair<String, String> = getCredentials()) {
+        val check = CredentialCheck.login(credentials.first, credentials.second)
 
         if (check.fail) notifyInvalidCredentials(check.msg)
         else {
             lifecycleScope.launch {
-                val user = db.userDao().getByUsername(username)
+                val user = db.userDao().getByUsername(credentials.first)
 
                 if (user == null) {
                     notifyInvalidCredentials("User not found")
                 } else {
-                    val checkPassword = CredentialCheck.passwordOk(password, user.password)
+                    val checkPassword = CredentialCheck.passwordOk(credentials.second, user.password)
                     if (checkPassword.fail) notifyInvalidCredentials(checkPassword.msg)
                     else navigateToHomeActivity(user)
                 }

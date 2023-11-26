@@ -69,4 +69,9 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
         val action = ProfileFragmentDirections.actionProfileFragmentToWorkListFragment(worklist)
         navController.navigate(action)
     }
+
+    override fun onSettingsClick() {
+        val action = ProfileFragmentDirections.actionProfileFragmentToSettingsFragment()
+        navController.navigate(action)
+    }
 }

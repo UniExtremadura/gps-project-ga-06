@@ -35,8 +35,8 @@ private val service: OpenLibraryAPI by lazy {
 fun getNetworkService() = service
 
 interface OpenLibraryAPI {
-    @GET("trending/now.json")
-    suspend fun getDailyTrendingBooks() : TrendingQuery
+    @GET("trending/{freq}.json")
+    suspend fun getDailyTrendingBooks(@Path("freq", encoded = true) freq: String) : TrendingQuery
 
     @GET("search.json")
     suspend fun getSearchBooksByTitle(

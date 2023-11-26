@@ -35,4 +35,15 @@
     <string name="worklist_deleted">Worklist deleted</string>
     <string name="worklist_created">Worklist created</string>
     <string name="removed_from_worklist">Work removed from worklist</string>
+    <string name="autologin_title">Remember me?</string>
+    <string name="themeSectionText">Theme settings</string>
+    <string name="themeText">Theme</string>
+    <string name="trendings">Trendings</string>
+    <string name="trendings_title">Trending frequency</string>
+    <string name="now">Now</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="trendings_summary">Choose the frequency of the displayed books</string>
 </resources>
