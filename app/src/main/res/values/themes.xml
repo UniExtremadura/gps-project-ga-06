@@ -1,8 +1,21 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.OpenBook" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <!-- Tema claro -->
+    <style name="AppTheme.Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Atributos del tema claro -->
+    </style>
+
+    <style name="cardViewStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:backgroundTint">@color/light_gray</item>
+    </style>
+
+    <style name="recyclerViewStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:background">@color/light_gray</item>
     </style>
 
     <style name="Theme.OpenBook" parent="Base.Theme.OpenBook" />

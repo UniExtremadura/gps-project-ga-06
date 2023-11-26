@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="loginButtonText">Iniciar sesión</string>
+    <string name="passwordHintText">Contraseña</string>
+    <string name="registerButtonText">Registrarse</string>
+    <string name="userHintText">Usuario</string>
+    <string name="repeatPasswordText">Repetir contraseña</string>
+    <string name="logoDescription">Logo de la aplicación</string>
+    <string name="discover_option">Explorar</string>
+    <string name="books_option">Libros</string>
+    <string name="profile_option">Perfil</string>
+    <string name="coverText">portada</string>
+    <string name="authors_option">Autores</string>
+    <string name="authorPhotoText">Foto del autor</string>
+    <string name="action_search">Buscar</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="work_detail">Detalles de la obra</string>
+    <string name="favText">Favorito</string>
+    <string name="starText">estrella</string>
+    <string name="add_fav">Añadido a favoritos</string>
+    <string name="remove_fav">Eliminado de favoritos</string>
+    <string name="add">Añadir</string>
+    <string name="name">Nombre</string>
+    <string name="create_worklist">Crear lista de obras</string>
+    <string name="no_worklists">No hay listas de obras creadas</string>
+    <string name="added_to_worklist">Obra añadida a la lista</string>
+    <string name="already_in_worklist">La obra ya está en esta lista</string>
+    <string name="worklist_deleted">Lista borrada</string>
+    <string name="worklist_created">Lista creada</string>
+    <string name="removed_from_worklist">Obra borrada de la lista</string>
+    <string name="autologin_title">¿Recordar contraeña?</string>
+    <string name="themeSectionText">Ajustes de tema</string>
+    <string name="themeText">Tema</string>
+    <string name="trendings">Tendencias</string>
+    <string name="trendings_title">Frecuencia de las tendencias</string>
+    <string name="now">Ahora</string>
+    <string name="daily">Hoy</string>
+    <string name="weekly">Esta semana</string>
+    <string name="monthly">Este mes</string>
+    <string name="yearly">Este año</string>
+    <string name="trendings_summary">Elige la frecuencia de los libros mostrados</string>
+</resources>

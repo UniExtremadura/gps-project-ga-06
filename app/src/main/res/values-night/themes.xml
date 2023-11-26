@@ -1,7 +1,22 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
     <style name="Base.Theme.OpenBook" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
+
+    <!-- Tema oscuro -->
+    <style name="AppTheme.Dark" parent="Theme.AppCompat.NoActionBar">
+        <!-- Atributos del tema oscuro -->
+    </style>
+
+    <style name="cardViewStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:backgroundTint">@color/dark_gray</item>
+    </style>
+
+    <style name="recyclerViewStyle" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:background">@color/dark_gray</item>
+    </style>
+
+    <style name="Theme.OpenBook" parent="Base.Theme.OpenBook" />
 </resources>

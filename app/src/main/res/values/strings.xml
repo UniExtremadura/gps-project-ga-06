@@ -1,3 +1,49 @@
 <resources>
-    <string name="app_name">OpenBook</string>
+    <string name="app_name" translatable="false">OpenBook</string>
+    <string name="loginButtonText">Login</string>
+    <string name="passwordHintText">Password</string>
+    <string name="registerButtonText">Register</string>
+    <string name="userHintText">User</string>
+    <string name="repeatPasswordText">Repeat password</string>
+    <string name="logoDescription">Application logo</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="discover_option">Discover</string>
+    <string name="books_option">Books</string>
+    <string name="profile_option">Profile</string>
+    <string name="coverText">cover</string>
+    <string name="titleText" translatable="false">Lorem ipsum dolor sit amet</string>
+    <string name="authorText" translatable="false">Lorem ipsum dolor sit amet</string>
+    <string name="yearText" translatable="false">2001</string>
+    <string name="authors_option">Authors</string>
+    <string name="authorPhotoText">Author Photo</string>
+    <string name="action_search">Search</string>
+    <string name="action_settings">Settings</string>
+    <string name="work_detail">Work details</string>
+    <string name="descriptionText" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce luctus ac nunc ut auctor. Maecenas suscipit lorem in lobortis blandit. Mauris placerat, ligula commodo convallis accumsan, nibh libero interdum nunc, vitae iaculis est justo vitae odio. Etiam metus quam, tincidunt ut convallis ut, blandit eu elit. Nullam vitae metus consectetur erat maximus semper. Donec a mattis nisi, vel pharetra sapien. Phasellus vel efficitur eros, non placerat mauris. Nunc malesuada augue vel sollicitudin imperdiet.  Donec accumsan felis id est tincidunt mattis. In sagittis, libero ut tristique ultricies, quam metus hendrerit magna, venenatis ultrices leo tellus vitae orci. Phasellus vel lectus in est luctus gravida non eget ligula. Pellentesque tempor magna nisl, et tincidunt risus maximus id. Integer eleifend a massa quis elementum. Nullam sed vehicula erat. Pellentesque non auctor sapien. Morbi vitae congue elit, a congue orci. Sed nec magna sit amet ipsum lobortis viverra. Aliquam vel elementum urna. Phasellus mollis urna non arcu molestie ullamcorper.  Ut quis odio facilisis, sodales velit nec, blandit erat. Pellentesque laoreet sapien vel risus efficitur, sed finibus mauris vehicula. Duis nec fringilla lectus, vitae interdum nibh. Nam elementum dui sit amet imperdiet imperdiet. Mauris vitae leo ornare, consequat diam quis, posuere velit. Praesent eu quam ac neque viverra elementum et vel mi. Sed sit amet quam tempor, sodales turpis in, fringilla neque. Mauris ut suscipit risus, ac rutrum felis. Nulla id sapien eget eros gravida accumsan. Pellentesque massa lectus, interdum quis venenatis eu, interdum lobortis velit. Nam egestas neque eget enim pulvinar vehicula. Nunc sed libero in est iaculis tincidunt. Donec pellentesque ultrices tellus vel consectetur.  Nunc at libero vulputate, ultricies mauris a, dapibus elit. Duis egestas dapibus orci et blandit. Duis posuere eleifend ipsum ac fermentum. Ut aliquam nibh sit amet turpis consequat gravida. Vestibulum mauris dui, euismod vitae faucibus non, pellentesque sed metus. Proin interdum, lacus eu viverra sollicitudin, lorem quam iaculis magna, vel suscipit metus dolor scelerisque velit. Vestibulum sed turpis vel diam maximus venenatis eget non tortor. Maecenas venenatis ut tellus ac elementum. Vestibulum non purus nisi. Phasellus quam arcu, varius in consequat sit amet, viverra id nibh.  Nulla iaculis fringilla rhoncus. Ut eget dolor felis. Aliquam ut laoreet ex. Nulla erat nulla, elementum nec pulvinar id, dapibus eget ligula. Proin eget odio cursus, gravida ligula finibus, molestie massa. Quisque finibus ultrices leo, sit amet porta orci. Sed iaculis pellentesque viverra. Donec in iaculis felis. Aliquam erat volutpat. Nunc pretium ligula eget est porta vulputate. Proin ac bibendum enim, pharetra porttitor nunc.</string>
+    <string name="favText">Favourite</string>
+    <string name="ratingText" translatable="false">4.5/5 (90%)</string>
+    <string name="starText">star</string>
+    <string name="datesText" translatable="false">September 20, 1948</string>
+    <string name="add_fav">Added to favorites</string>
+    <string name="remove_fav">Removed from favorites</string>
+    <string name="add">Add</string>
+    <string name="name">Name</string>
+    <string name="create_worklist">Create works list</string>
+    <string name="no_worklists">There is no worklists created</string>
+    <string name="added_to_worklist">Added to worklist</string>
+    <string name="already_in_worklist">Work already in worklist</string>
+    <string name="worklist_deleted">Worklist deleted</string>
+    <string name="worklist_created">Worklist created</string>
+    <string name="removed_from_worklist">Work removed from worklist</string>
+    <string name="autologin_title">Remember me?</string>
+    <string name="themeSectionText">Theme settings</string>
+    <string name="themeText">Theme</string>
+    <string name="trendings">Trendings</string>
+    <string name="trendings_title">Trending frequency</string>
+    <string name="now">Now</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="trendings_summary">Choose the frequency of the displayed books</string>
 </resources>

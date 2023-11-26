@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_bar_nav_graph"
+    app:startDestination="@id/discoverFragment">
+
+    <action
+        android:id="@+id/action_home_to_settingsFragment"
+        app:destination="@id/settingsFragment" />
+
+    <action
+        android:id="@+id/action_workListFragment_to_workDetailFragment"
+        app:destination="@id/workDetailFragment" />
+
+    <fragment
+        android:id="@+id/authorsFragment"
+        android:name="com.aseegpsproject.openbook.view.home.AuthorsFragment"
+        android:label="@string/authors_option"
+        tools:layout="@layout/fragment_authors" >
+        <action
+            android:id="@+id/action_authorsFragment_to_authorDetailsFragment"
+            app:destination="@id/authorDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/discoverFragment"
+        android:name="com.aseegpsproject.openbook.view.home.DiscoverFragment"
+        android:label="@string/discover_option"
+        tools:layout="@layout/fragment_discover" />
+    <fragment
+        android:id="@+id/worksFragment"
+        android:name="com.aseegpsproject.openbook.view.home.WorksFragment"
+        android:label="@string/books_option"
+        tools:layout="@layout/fragment_works" >
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.aseegpsproject.openbook.view.home.ProfileFragment"
+        android:label="@string/profile_option"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_workListFragment"
+            app:destination="@id/workListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/workDetailFragment"
+        android:name="com.aseegpsproject.openbook.view.home.WorkDetailFragment"
+        android:label="@string/work_detail"
+        tools:layout="@layout/fragment_work_detail">
+        <argument
+            android:name="work"
+            app:argType="com.aseegpsproject.openbook.data.model.Work" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.aseegpsproject.openbook.view.home.SettingsFragment"
+        android:label="@string/action_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/authorDetailsFragment"
+        android:name="com.aseegpsproject.openbook.view.home.AuthorDetailsFragment"
+        android:label="fragment_author_details"
+        tools:layout="@layout/fragment_author_details">
+        <argument
+            android:name="author"
+            app:argType="com.aseegpsproject.openbook.data.model.Author" />
+    </fragment>
+    <fragment
+        android:id="@+id/workListFragment"
+        android:name="com.aseegpsproject.openbook.view.home.WorklistFragment"
+        android:label="fragment_work_list"
+        tools:layout="@layout/fragment_worklist">
+        <argument
+            android:name="worklist"
+            app:argType="com.aseegpsproject.openbook.data.model.Worklist" />
+    </fragment>
+</navigation>

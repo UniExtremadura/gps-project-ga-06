@@ -1,0 +1,23 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/loginButtonText">
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="remember_me"
+            android:title="@string/autologin_title" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/trendings">
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/trendings"
+            android:entryValues="@array/trendings_values"
+            android:key="trendings"
+            android:title="@string/trendings_title"
+            android:summary="@string/trendings_summary" />
+    </PreferenceCategory>
+</PreferenceScreen>
