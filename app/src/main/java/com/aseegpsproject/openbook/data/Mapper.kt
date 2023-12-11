@@ -18,7 +18,6 @@ fun APIWork.toWork() = this.key?.let {
         authorKeys = this.authors.map { it.toKeyStr() } as ArrayList<String>,
         firstPublishYear = null,
         coverPaths = this.covers.map { "https://covers.openlibrary.org/b/id/$it-M.jpg" } as ArrayList<String>,
-        subjects = this.subjects,
         description = this.description
     )
 }
@@ -32,7 +31,6 @@ fun TrendingWork.toWork() = Work(
     authorKeys = this.authorKey,
     firstPublishYear = this.firstPublishYear,
     coverPaths = this.coverI?.let { arrayListOf("https://covers.openlibrary.org/b/id/$it-M.jpg") } ?: arrayListOf("https://openlibrary.org/images/icons/avatar_book-sm.png"),
-    subjects = arrayListOf(),
 )
 
 fun Doc.toWork() = Work(
@@ -42,7 +40,6 @@ fun Doc.toWork() = Work(
     authorKeys = this.authorKey,
     firstPublishYear = this.firstPublishYear,
     coverPaths = this.coverI?.let { arrayListOf("https://covers.openlibrary.org/b/id/$it-M.jpg") } ?: arrayListOf("https://openlibrary.org/images/icons/avatar_book-sm.png"),
-    subjects = arrayListOf()
 )
 
 fun Doc.toAuthor() = Author(

@@ -9,9 +9,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.GridLayoutManager
 import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.api.getNetworkService
+import com.aseegpsproject.openbook.data.Repository
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.model.Worklist
@@ -44,6 +46,7 @@ class WorkDetailFragment : Fragment() {
     private lateinit var work: Work
     private lateinit var db: OpenBookDatabase
     private lateinit var user: User
+    private lateinit var repository: Repository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +58,15 @@ class WorkDetailFragment : Fragment() {
 
     override fun onAttach(context: android.content.Context) {
         super.onAttach(context)
+        db = OpenBookDatabase.getInstance(requireContext())!!
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val trendingFreq = prefs.getString("trendings", "daily") ?: "daily"
+        repository = Repository.getInstance(
+            trendingFreq,
+            db.userDao(),
+            db.workDao(),
+            getNetworkService()
+        )
         if (context is ProfileFragment.OnWorklistClickListener) {
             listener = context
         } else {
@@ -68,7 +80,6 @@ class WorkDetailFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentWorkDetailBinding.inflate(inflater, container, false)
-        db = OpenBookDatabase.getInstance(requireContext())!!
         user = activity?.intent?.getSerializableExtra(HomeActivity.USER_INFO) as User
         return binding.root
     }
@@ -78,57 +89,40 @@ class WorkDetailFragment : Fragment() {
         binding = FragmentWorkDetailBinding.bind(view)
         work = args.work
 
+        setUpUI()
+        setUpListeners()
+    }
+
+    private fun setUpUI() {
         with (binding) {
-            workTitle.text = work.title
-            workAuthor.text = work.authorNames?.get(0)
-            Glide.with(requireContext())
-                .load(work.coverPaths.get(0))
-                .into(workCover)
             lifecycleScope.launch {
-                workRating.text = getNetworkService().getWorkRatings(work.workKey).toStr()
-                workDescription.text = getNetworkService().getWorkInfo(work.workKey).description
-            }
+                val _work = repository.fetchWorkDetails(work)
+                workTitle.text = _work.title
+                workAuthor.text = _work.authorNames?.get(0)
+                Glide.with(requireContext())
+                    .load(_work.coverPaths.get(0))
+                    .into(workCover)
+                workDescription.text = _work.description
+                workRating.text = _work.rating
 
-            btnFavorite.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    // Eliminar el observador después de que la vista esté lista para evitar llamadas múltiples
-                    btnFavorite.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                btnFavorite.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        // Eliminar el observador después de que la vista esté lista para evitar llamadas múltiples
+                        btnFavorite.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                    if (work.isFavorite) {
-                        btnFavorite.compoundDrawables[0].setTint(resources.getColor(R.color.yellow))
+                        if (work.isFavorite) {
+                            btnFavorite.compoundDrawables[0].setTint(resources.getColor(R.color.yellow))
+                        }
                     }
-                }
-            })
-
-            // Check if work in worklist
-            lifecycleScope.launch {
-                val worklists = db.worklistDao().getUserWithWorkLists(user.userId!!).worklists
-                if (worklists.isEmpty()) {
-                    btnAddToWorklist.visibility = View.GONE
-                }
+                })
             }
         }
-
-        setUpListeners()
     }
 
     private fun setUpListeners() {
         with(binding) {
             btnFavorite.setOnClickListener {
-                work.isFavorite = !work.isFavorite
-                if (work.isFavorite) {
-                    btnFavorite.compoundDrawables[0].setTint(resources.getColor(R.color.yellow))
-                    lifecycleScope.launch {
-                        db.workDao().insertAndRelate(work, user.userId!!)
-                    }
-                    Toast.makeText(requireContext(), resources.getText(R.string.add_fav), Toast.LENGTH_SHORT).show()
-                } else {
-                    btnFavorite.compoundDrawables[0].setTint(resources.getColor(R.color.white))
-                    lifecycleScope.launch {
-                        db.workDao().delete(work)
-                    }
-                    Toast.makeText(requireContext(), resources.getText(R.string.remove_fav), Toast.LENGTH_SHORT).show()
-                }
+                changeFavoriteWork(work)
             }
             btnAddToWorklist.setOnClickListener {
                 lifecycleScope.launch {
@@ -140,6 +134,20 @@ class WorkDetailFragment : Fragment() {
                         setUpRecyclerView(worklists)
                     }
                 }
+            }
+        }
+    }
+
+    private fun changeFavoriteWork(work: Work) {
+        lifecycleScope.launch {
+            if (work.isFavorite) {
+                work.isFavorite = false
+                repository.deleteWorkFromLibrary(work, user.userId!!)
+                Toast.makeText(context, R.string.remove_fav, Toast.LENGTH_SHORT).show()
+            } else {
+                work.isFavorite = true
+                repository.workToLibrary(work, user.userId!!)
+                Toast.makeText(context, R.string.add_fav, Toast.LENGTH_SHORT).show()
             }
         }
     }

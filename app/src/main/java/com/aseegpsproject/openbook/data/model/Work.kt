@@ -14,7 +14,7 @@ data class Work(
     @ColumnInfo("author_keys") val authorKeys: ArrayList<String>? = arrayListOf(),
     @ColumnInfo("first_publish_year") val firstPublishYear: Int? = null,
     @ColumnInfo("cover_paths") val coverPaths: ArrayList<String> = arrayListOf(),
-    val subjects: ArrayList<String> = arrayListOf(),
+    @ColumnInfo("rating") var rating: String? = null,
     @ColumnInfo("num_editions") val numEditions: Int? = null,
     @ColumnInfo("is_favorite") var isFavorite: Boolean = false
 ) : Serializable

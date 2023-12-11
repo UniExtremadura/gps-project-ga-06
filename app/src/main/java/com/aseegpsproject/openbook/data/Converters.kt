@@ -9,8 +9,12 @@ import java.lang.reflect.Type
 class Converters {
     @TypeConverter
     fun fromString(value: String?): ArrayList<String> {
-        val listType: Type = object : TypeToken<ArrayList<String?>?>() {}.type
-        return Gson().fromJson(value, listType)
+        return try {
+            val listType: Type = object : TypeToken<ArrayList<String?>?>() {}.type
+            Gson().fromJson(value, listType)
+        } catch (e: Exception) {
+            arrayListOf()
+        }
     }
 
     @TypeConverter
@@ -21,11 +25,12 @@ class Converters {
 
     @TypeConverter
     fun fromWorksListString(value: String?): List<Work> {
-        val listType: Type = object : TypeToken<List<Work>>() {}.type
-        if (value == "[]") {
-            return listOf()
+        return try {
+            val listType: Type = object : TypeToken<List<Work>>() {}.type
+            Gson().fromJson(value, listType)
+        } catch (e: Exception) {
+            listOf()
         }
-        return Gson().fromJson(value, listType)
     }
 
     @TypeConverter

@@ -7,7 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aseegpsproject.openbook.R
+import com.aseegpsproject.openbook.api.getNetworkService
+import com.aseegpsproject.openbook.data.Repository
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.database.OpenBookDatabase
@@ -35,6 +39,7 @@ class WorksFragment : Fragment() {
     private lateinit var listener: DiscoverFragment.OnWorkClickListener
     private lateinit var db: OpenBookDatabase
     private lateinit var user: User
+    private lateinit var repository: Repository
 
     private var _works = listOf<Work>()
 
@@ -48,6 +53,15 @@ class WorksFragment : Fragment() {
 
     override fun onAttach(context: android.content.Context) {
         super.onAttach(context)
+        db = OpenBookDatabase.getInstance(requireContext())!!
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val trendingFreq = prefs.getString("trendings", "daily") ?: "daily"
+        repository = Repository.getInstance(
+            trendingFreq,
+            db.userDao(),
+            db.workDao(),
+            getNetworkService()
+        )
         if (context is DiscoverFragment.OnWorkClickListener) {
             listener = context
         } else {
@@ -61,25 +75,22 @@ class WorksFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentWorksBinding.inflate(inflater, container, false)
-        db = OpenBookDatabase.getInstance(requireContext())!!
         user = activity?.intent?.getSerializableExtra("USER_INFO") as User
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            if (_works.isEmpty()) {
-                loadFavWorks()
-            }
-        }
 
         setUpRecyclerView()
+        subscribeUi(adapter)
+        repository.setUserid(user.userId!!)
     }
 
-    private suspend fun loadFavWorks() {
-        _works = user.userId?.let { db.workDao().getUserWithWorks(it).works }!!
-        adapter.updateData(_works)
+    private fun subscribeUi(adapter: WorksAdapter) {
+        repository.worksInLibrary.observe(viewLifecycleOwner) { user ->
+            adapter.updateData(user.works)
+        }
     }
 
     private fun setUpRecyclerView() {
@@ -98,14 +109,14 @@ class WorksFragment : Fragment() {
     private fun changeFavoriteWork(work: Work) {
         lifecycleScope.launch {
             if (work.isFavorite) {
-                db.workDao().delete(work)
-                Toast.makeText(context, "Work removed from favorites", Toast.LENGTH_SHORT).show()
+                work.isFavorite = false
+                repository.deleteWorkFromLibrary(work, user.userId!!)
+                Toast.makeText(context, R.string.remove_fav, Toast.LENGTH_SHORT).show()
             } else {
                 work.isFavorite = true
-                db.workDao().insertAndRelate(work, user.userId!!)
-                Toast.makeText(context, "Work added to favorites", Toast.LENGTH_SHORT).show()
+                repository.workToLibrary(work, user.userId!!)
+                Toast.makeText(context, R.string.add_fav, Toast.LENGTH_SHORT).show()
             }
-            loadFavWorks()
         }
     }
 
