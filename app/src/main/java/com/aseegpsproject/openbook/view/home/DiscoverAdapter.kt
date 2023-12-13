@@ -27,7 +27,6 @@ class DiscoverAdapter(
                 workTitle.text = work.title
                 workAuthor.text = work.authorNames?.joinToString(", ") ?: "Unknown"
                 workYear.text = work.firstPublishYear.toString()
-                //workCover.setImageResource(/*work.coverPaths[0]*/ 0)
                 context?.let {
                     Glide.with(context)
                         .load(work.coverPaths[0])

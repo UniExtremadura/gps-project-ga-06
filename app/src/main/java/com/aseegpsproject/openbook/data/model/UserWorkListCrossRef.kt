@@ -14,7 +14,7 @@ import androidx.room.Entity
         )
     ]
 )
-data class UserWorklistCrossRef(
+data class UserWorkListCrossRef(
     @ColumnInfo("user_id") val userId: Long,
     @ColumnInfo("work_list_id") val workListId: Long
 )

@@ -1,11 +1,13 @@
 package com.aseegpsproject.openbook.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.UserAuthorCrossRef
 import com.aseegpsproject.openbook.data.model.UserWithAuthors
@@ -21,9 +23,15 @@ interface AuthorDao {
     @Delete
     suspend fun delete(author: Author)
 
+    @Update
+    suspend fun update(author: Author)
+
+    @Delete
+    suspend fun delete(userAuthor: UserAuthorCrossRef)
+
     @Transaction
     @Query("SELECT * FROM user WHERE user_id = :userId")
-    suspend fun getUserWithAuthors(userId: Long): UserWithAuthors
+    fun getUserWithAuthors(userId: Long): LiveData<UserWithAuthors>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUserWithAuthors(crossRef: UserAuthorCrossRef)

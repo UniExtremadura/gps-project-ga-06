@@ -12,9 +12,9 @@ data class Author(
     @ColumnInfo("full_name") val fullName: String? = null,
     @ColumnInfo("birth_date") val birthDate: String? = null,
     @ColumnInfo("death_date") val deathDate: String? = null,
-    @ColumnInfo("photo_path") val photoPath: String? = null,
+    @ColumnInfo("photo_path") var photoPath: String? = null,
     val wikipedia: String? = null,
-    val bio: String? = null,
+    var bio: String? = null,
     @ColumnInfo("num_works") val numWorks: Int? = null,
     @ColumnInfo("is_favorite") var isFavorite: Boolean = false
 ) : Serializable

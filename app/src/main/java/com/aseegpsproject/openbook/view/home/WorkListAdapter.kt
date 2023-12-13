@@ -9,12 +9,12 @@ import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.databinding.DiscoverItemListBinding
 import com.bumptech.glide.Glide
 
-class WorklistAdapter(
+class WorkListAdapter(
     private var works: List<Work>,
     private val onClick: (work: Work) -> Unit,
     private val onLongClick: (work: Work) -> Unit,
     private val context: Context?
-) : RecyclerView.Adapter<WorklistAdapter.WorklistViewHolder>() {
+) : RecyclerView.Adapter<WorkListAdapter.WorklistViewHolder>() {
 
     class WorklistViewHolder(
         private val binding: DiscoverItemListBinding,

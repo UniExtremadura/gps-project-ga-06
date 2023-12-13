@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -14,8 +15,9 @@ import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.databinding.ActivityHomeBinding
 
-class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, AuthorsFragment.OnAuthorClickListener, ProfileFragment.OnWorklistClickListener {
+class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
+    private val viewModel: HomeViewModel by viewModels()
     private val navController by lazy {
         (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
     }
@@ -36,6 +38,28 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel.userInSession = intent.getSerializableExtra(USER_INFO) as User
+        viewModel.navigateToWork.observe(this) { work ->
+            work?.let {
+                onWorkClick(work)
+            }
+        }
+        viewModel.navigateToAuthor.observe(this) { author ->
+            author?.let {
+                onAuthorClick(author)
+            }
+        }
+        viewModel.navigateToSettings.observe(this) { navigate ->
+            if (navigate) {
+                onSettingsClick()
+            }
+        }
+        viewModel.navigateToWorkList.observe(this) { worklist ->
+            worklist?.let {
+                onWorkListClick(worklist)
+            }
+        }
+
         setupUI()
     }
 
@@ -46,7 +70,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if ((destination.id == R.id.workDetailFragment) ||
                 (destination.id == R.id.settingsFragment) ||
-                (destination.id == R.id.authorDetailsFragment) ||
+                (destination.id == R.id.authorDetailFragment) ||
                 (destination.id == R.id.workListFragment)) {
                 binding.bottomNavigation.visibility = View.GONE
             } else {
@@ -55,22 +79,22 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
         }
     }
 
-    override fun onWorkClick(work: Work) {
+    private fun onWorkClick(work: Work) {
         val action = DiscoverFragmentDirections.actionWorkListFragmentToWorkDetailFragment(work)
         navController.navigate(action)
     }
 
-    override fun onAuthorClick(author: Author) {
+    private fun onAuthorClick(author: Author) {
         val action = AuthorsFragmentDirections.actionAuthorsFragmentToAuthorDetailsFragment(author)
         navController.navigate(action)
     }
 
-    override fun onWorklistClick(worklist: WorkList) {
-        val action = ProfileFragmentDirections.actionProfileFragmentToWorkListFragment(worklist)
+    private fun onWorkListClick(workList: WorkList) {
+        val action = ProfileFragmentDirections.actionProfileFragmentToWorkListFragment(workList)
         navController.navigate(action)
     }
 
-    override fun onSettingsClick() {
+    private fun onSettingsClick() {
         val action = ProfileFragmentDirections.actionProfileFragmentToSettingsFragment()
         navController.navigate(action)
     }

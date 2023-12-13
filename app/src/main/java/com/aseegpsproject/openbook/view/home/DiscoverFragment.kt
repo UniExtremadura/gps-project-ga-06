@@ -8,56 +8,26 @@ import android.view.ViewGroup
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.api.getNetworkService
-import com.aseegpsproject.openbook.data.Repository
 import com.aseegpsproject.openbook.data.apimodel.Doc
 import com.aseegpsproject.openbook.data.apimodel.TrendingWork
 import com.aseegpsproject.openbook.data.model.User
-import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.toWork
-import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentDiscoverBinding
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class DiscoverFragment : Fragment() {
-
-    private lateinit var listener: OnWorkClickListener
-    private var _works = listOf<Work>()
-    private lateinit var db: OpenBookDatabase
-    private lateinit var user: User
-    private lateinit var repository: Repository
+    private val viewModel: DiscoverViewModel by viewModels { DiscoverViewModel.Factory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var trendingFreq: String
-
-    interface OnWorkClickListener {
-        fun onWorkClick(work: Work)
-    }
-
     private var _binding: FragmentDiscoverBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: DiscoverAdapter
-
-    override fun onAttach(context: android.content.Context) {
-        super.onAttach(context)
-        db = OpenBookDatabase.getInstance(context)!!
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        trendingFreq = prefs.getString("trending", "daily") ?: "daily"
-        repository = Repository.getInstance(
-            db.workDao(),
-            getNetworkService()
-        )
-        repository.setTrendingFreq(trendingFreq)
-        if (context is OnWorkClickListener) {
-            listener = context
-        } else {
-            throw RuntimeException("$context must implement OnBookClickListener")
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +35,6 @@ class DiscoverFragment : Fragment() {
     ): View {
         // Inflate the layout for this fragment
         _binding = FragmentDiscoverBinding.inflate(inflater, container, false)
-        user = activity?.intent?.getSerializableExtra("USER_INFO") as User
         return binding.root
     }
 
@@ -74,25 +43,26 @@ class DiscoverFragment : Fragment() {
         setUpRecyclerView()
         setUpSearchView()
 
-        subscribeUi(adapter)
-        launchDataLoad { repository.tryUpdateRecentWorksCache() }
-    }
+        homeViewModel.user.observe(viewLifecycleOwner) { user ->
+            viewModel.user = user
+        }
 
-    private fun launchDataLoad(block: suspend () -> Unit): Job {
-        return lifecycleScope.launch {
-            try {
-                binding.spinner.visibility = View.VISIBLE
-                block()
-            } catch (error: APIError) {
-                Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
-            } finally {
-                binding.spinner.visibility = View.GONE
+        viewModel.spinner.observe(viewLifecycleOwner) { value ->
+            binding.spinner.visibility = if (value) View.VISIBLE else View.GONE
+        }
+
+        viewModel.toast.observe(viewLifecycleOwner) { text ->
+            text?.let {
+                Toast.makeText(activity, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
             }
         }
+
+        subscribeUI(adapter)
     }
 
-    private fun subscribeUi(adapter: DiscoverAdapter) {
-        repository.works.observe(viewLifecycleOwner) { works ->
+    private fun subscribeUI(adapter: DiscoverAdapter) {
+        viewModel.works.observe(viewLifecycleOwner) { works ->
             adapter.updateData(works.filter { it.isDiscover })
         }
     }
@@ -103,16 +73,13 @@ class DiscoverFragment : Fragment() {
         }
         binding.discoverSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                val searchQuery = query ?: ""
-                lifecycleScope.launch {
-                    handleSearch(searchQuery)
-                }
+                handleSearch(query ?: "")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText?.isEmpty() == true) {
-                    launchDataLoad { repository.tryUpdateRecentWorksCache() }
+                    viewModel.refreshWorks()
                 }
                 return true
             }
@@ -120,8 +87,8 @@ class DiscoverFragment : Fragment() {
     }
 
     fun handleSearch(query: String) {
-        showLoading()
         lifecycleScope.launch {
+            showLoading()
             runCatching {
                 if (query.isNotEmpty()) {
                     fetchSearchBooksByTitle(query).map { it.toWork() }
@@ -129,8 +96,7 @@ class DiscoverFragment : Fragment() {
                     fetchTrendingBooks().map { it.toWork() }
                 }
             }.onSuccess { works ->
-                _works = works
-                adapter.updateData(_works)
+                adapter.updateData(works)
             }.onFailure { cause ->
                 Log.e("DiscoverFragment", "Error fetching data", cause)
                 Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
@@ -172,12 +138,12 @@ class DiscoverFragment : Fragment() {
 
     private fun setUpRecyclerView() {
         adapter = DiscoverAdapter(
-            works = _works,
+            works = emptyList(),
             onClick = {
-                listener.onWorkClick(it)
+                homeViewModel.onWorkClick(it)
             },
             onLongClick = {
-                changeFavoriteWork(it)
+                viewModel.changeFavoriteWork(it)
             },
             context = context
         )
@@ -186,19 +152,5 @@ class DiscoverFragment : Fragment() {
             rvBookList.adapter = adapter
         }
         Log.d("DiscoverFragment", "setUpRecyclerView")
-    }
-
-    private fun changeFavoriteWork(work: Work) {
-        lifecycleScope.launch {
-            if (work.isFavorite) {
-                work.isFavorite = false
-                repository.deleteWorkFromLibrary(work, user.userId!!)
-                Toast.makeText(context, R.string.remove_fav, Toast.LENGTH_SHORT).show()
-            } else {
-                work.isFavorite = true
-                repository.workToLibrary(work, user.userId!!)
-                Toast.makeText(context, R.string.add_fav, Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }

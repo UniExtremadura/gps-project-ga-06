@@ -11,15 +11,13 @@ import com.aseegpsproject.openbook.databinding.WorklistItemListBinding
 class WorkDetailAdapter(
     private var workLists: List<WorkList>,
     private val onClick: (workList: WorkList) -> Unit,
-    private val onLongClick: (workList: WorkList) -> Unit,
-    private val context: Context?
+    private val onLongClick: (workList: WorkList) -> Unit
 ) : RecyclerView.Adapter<WorkDetailAdapter.WorkListViewHolder>() {
 
     class WorkListViewHolder(
         private val binding: WorklistItemListBinding,
         private val onClick: (workList: WorkList) -> Unit,
-        private val onLongClick: (workList: WorkList) -> Unit,
-        private val context: Context?
+        private val onLongClick: (workList: WorkList) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(workList: WorkList) {
             with(binding) {
@@ -39,7 +37,7 @@ class WorkDetailAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WorkListViewHolder {
         val binding =
             WorklistItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return WorkListViewHolder(binding, onClick, onLongClick, context)
+        return WorkListViewHolder(binding, onClick, onLongClick)
     }
 
     override fun getItemCount() = workLists.size

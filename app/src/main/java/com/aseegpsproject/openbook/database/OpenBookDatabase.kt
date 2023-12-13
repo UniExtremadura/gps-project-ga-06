@@ -10,7 +10,7 @@ import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.UserAuthorCrossRef
 import com.aseegpsproject.openbook.data.model.UserWorkCrossRef
-import com.aseegpsproject.openbook.data.model.UserWorklistCrossRef
+import com.aseegpsproject.openbook.data.model.UserWorkListCrossRef
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.database.dao.AuthorDao
@@ -19,7 +19,7 @@ import com.aseegpsproject.openbook.database.dao.WorkDao
 import com.aseegpsproject.openbook.database.dao.WorkListDao
 
 @Database(
-    entities = [User::class, Author::class, UserAuthorCrossRef::class, Work::class, UserWorkCrossRef::class, WorkList::class, UserWorklistCrossRef::class],
+    entities = [User::class, Author::class, UserAuthorCrossRef::class, Work::class, UserWorkCrossRef::class, WorkList::class, UserWorkListCrossRef::class],
     version = 1
 )
 @TypeConverters(Converters::class)
