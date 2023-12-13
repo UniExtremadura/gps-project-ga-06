@@ -11,7 +11,7 @@ import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
-import com.aseegpsproject.openbook.data.model.Worklist
+import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, AuthorsFragment.OnAuthorClickListener, ProfileFragment.OnWorklistClickListener {
@@ -65,7 +65,7 @@ class HomeActivity : AppCompatActivity(), DiscoverFragment.OnWorkClickListener, 
         navController.navigate(action)
     }
 
-    override fun onWorklistClick(worklist: Worklist) {
+    override fun onWorklistClick(worklist: WorkList) {
         val action = ProfileFragmentDirections.actionProfileFragmentToWorkListFragment(worklist)
         navController.navigate(action)
     }

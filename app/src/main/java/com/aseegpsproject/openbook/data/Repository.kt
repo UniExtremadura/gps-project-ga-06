@@ -13,20 +13,23 @@ import com.aseegpsproject.openbook.database.dao.UserDao
 import com.aseegpsproject.openbook.database.dao.WorkDao
 
 class Repository private constructor(
-    private val trendingFreq: String,
-    private val userDao: UserDao,
     private val workDao: WorkDao,
     private val networkService: OpenLibraryAPI
 ) {
     private var lastUpdateTimeMillis: Long = 0L
     val works = workDao.getWorks()
     private val userFilter = MutableLiveData<Long>()
+    private val trendingFreq: MutableLiveData<String> = MutableLiveData("daily")
 
     val worksInLibrary: LiveData<UserWithWorks> =
         userFilter.switchMap{ userid -> workDao.getUserWithWorks(userid) }
 
     fun setUserid(userid: Long) {
         userFilter.value = userid
+    }
+
+    fun setTrendingFreq(freq: String) {
+        trendingFreq.value = freq
     }
 
     suspend fun deleteWorkFromLibrary(work: Work, userId: Long) {
@@ -59,8 +62,16 @@ class Repository private constructor(
 
     private suspend fun fetchRecentWorks() {
         try {
-            val works = networkService.getDailyTrendingBooks(trendingFreq).trendingWorks.map { it.toWork()}
-            workDao.insertAll(works)
+            val previousWorks = workDao.getWorks().value ?: listOf()
+            for (work in previousWorks) {
+                work.isDiscover = false
+            }
+            workDao.updateAll(previousWorks)
+
+            val works = trendingFreq.value?.let { it -> networkService.getDailyTrendingBooks(it).trendingWorks.map { it.toWork()} }
+            if (works != null) {
+                workDao.insertAll(works)
+            }
             lastUpdateTimeMillis = System.currentTimeMillis()
         } catch (cause: Throwable) {
             throw APIError("Unable to fetch data from API", cause)
@@ -80,13 +91,11 @@ class Repository private constructor(
         private var INSTANCE: Repository? = null
 
         fun getInstance(
-            trendingFreq: String,
-            userDao: UserDao,
             workDao: WorkDao,
             libraryAPI: OpenLibraryAPI
         ): Repository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Repository(trendingFreq, userDao, workDao, libraryAPI).also { INSTANCE = it }
+                INSTANCE ?: Repository(workDao, libraryAPI).also { INSTANCE = it }
             }
         }
     }

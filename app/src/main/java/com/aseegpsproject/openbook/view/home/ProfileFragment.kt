@@ -12,7 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.User
-import com.aseegpsproject.openbook.data.model.Worklist
+import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentProfileBinding
 import kotlinx.coroutines.Dispatchers
@@ -42,10 +42,10 @@ class ProfileFragment : Fragment() {
     private lateinit var db: OpenBookDatabase
     private lateinit var user: User
 
-    private var _worklists = listOf<Worklist>()
+    private var _workLists = listOf<WorkList>()
 
     interface OnWorklistClickListener {
-        fun onWorklistClick(worklist: Worklist)
+        fun onWorklistClick(worklist: WorkList)
         fun onSettingsClick()
     }
 
@@ -82,7 +82,7 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpRecyclerView()
 
-        if (_worklists.isEmpty()) {
+        if (_workLists.isEmpty()) {
             loadWorkLists()
         }
 
@@ -125,12 +125,12 @@ class ProfileFragment : Fragment() {
         with(binding) {
             lifecycleScope.launch(Dispatchers.IO) {
                 val worklistName = etWorklistName.text.toString()
-                val worklist = Worklist(null, worklistName, listOf())
+                val worklist = WorkList(null, worklistName, listOf())
 
-                val worklistId = db.worklistDao().insert(worklist)
-                worklist.worklistId = worklistId
+                val worklistId = db.workListDao().insert(worklist)
+                worklist.workListId = worklistId
 
-                db.worklistDao().insertAndRelate(worklist, user.userId!!)
+                db.workListDao().insertAndRelate(worklist, user.userId!!)
             }
             (requireContext().getSystemService(
                 Context.INPUT_METHOD_SERVICE
@@ -143,16 +143,16 @@ class ProfileFragment : Fragment() {
 
     private fun loadWorkLists() {
         lifecycleScope.launch {
-            _worklists = user.userId?.let { db.worklistDao().getUserWithWorkLists(it).worklists }!!
+            _workLists = user.userId?.let { db.workListDao().getUserWithWorkLists(it).workLists }!!
             withContext(Dispatchers.Main) {
-                adapter.updateData(_worklists)
+                adapter.updateData(_workLists)
             }
         }
     }
 
     private fun setUpRecyclerView() {
         adapter = ProfileAdapter(
-            _worklists,
+            _workLists,
             { workList -> listener.onWorklistClick(workList) },
             { workList -> deleteWorklist(workList)},
             context
@@ -163,9 +163,9 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun deleteWorklist(workList: Worklist) {
+    private fun deleteWorklist(workList: WorkList) {
         lifecycleScope.launch(Dispatchers.IO) {
-            db.worklistDao().delete(workList)
+            db.workListDao().delete(workList)
             loadWorkLists()
         }
         Toast.makeText(context, R.string.worklist_deleted, Toast.LENGTH_SHORT).show()

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
-import com.aseegpsproject.openbook.data.model.Worklist
+import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentWorklistBinding
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +41,7 @@ class WorklistFragment : Fragment() {
     private lateinit var db: OpenBookDatabase
     private lateinit var user: User
 
-    private var _worklist: Worklist? = null
+    private var _workList: WorkList? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,12 +72,12 @@ class WorklistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _worklist = args.worklist
+        _workList = args.worklist
         setUpRecyclerView()
     }
 
     private fun setUpRecyclerView() {
-        adapter = _worklist?.let {
+        adapter = _workList?.let {
             WorklistAdapter(
                 it.works.ifEmpty { listOf() },
                 { work -> listener.onWorkClick(work) },
@@ -92,11 +92,11 @@ class WorklistFragment : Fragment() {
     }
 
     private fun removeWorkFromWorklist(work: Work) {
-        var works = _worklist!!.works
+        var works = _workList!!.works
         works = works.filter { it.workKey != work.workKey }
-        _worklist!!.works = works
+        _workList!!.works = works
         lifecycleScope.launch(Dispatchers.IO) {
-            db.worklistDao().updateAndRelate(_worklist!!, user.userId!!)
+            db.workListDao().updateAndRelate(_workList!!, user.userId!!)
         }
         adapter.updateData(works)
         Toast.makeText(requireContext(), R.string.removed_from_worklist, Toast.LENGTH_SHORT).show()

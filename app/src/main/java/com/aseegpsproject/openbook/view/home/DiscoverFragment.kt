@@ -25,20 +25,9 @@ import com.aseegpsproject.openbook.databinding.FragmentDiscoverBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [DiscoverFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class DiscoverFragment : Fragment() {
 
     private lateinit var listener: OnWorkClickListener
-
     private var _works = listOf<Work>()
     private lateinit var db: OpenBookDatabase
     private lateinit var user: User
@@ -53,29 +42,16 @@ class DiscoverFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: DiscoverAdapter
 
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
-
     override fun onAttach(context: android.content.Context) {
         super.onAttach(context)
         db = OpenBookDatabase.getInstance(context)!!
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        trendingFreq = prefs.getString("trendings", "daily") ?: "daily"
+        trendingFreq = prefs.getString("trending", "daily") ?: "daily"
         repository = Repository.getInstance(
-            trendingFreq,
-            db.userDao(),
             db.workDao(),
             getNetworkService()
         )
+        repository.setTrendingFreq(trendingFreq)
         if (context is OnWorkClickListener) {
             listener = context
         } else {
@@ -117,7 +93,7 @@ class DiscoverFragment : Fragment() {
 
     private fun subscribeUi(adapter: DiscoverAdapter) {
         repository.works.observe(viewLifecycleOwner) { works ->
-            adapter.updateData(works)
+            adapter.updateData(works.filter { it.isDiscover })
         }
     }
 
@@ -224,25 +200,5 @@ class DiscoverFragment : Fragment() {
                 Toast.makeText(context, R.string.add_fav, Toast.LENGTH_SHORT).show()
             }
         }
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment DiscoverFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            DiscoverFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

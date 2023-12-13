@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-
     private lateinit var db: OpenBookDatabase
 
     companion object {
@@ -43,6 +42,10 @@ class RegisterActivity : AppCompatActivity() {
         with(binding) {
             btnRegister.setOnClickListener {
                 register()
+            }
+            etRepeatPassword.setOnEditorActionListener { _, _, _ ->
+                register()
+                true
             }
         }
     }

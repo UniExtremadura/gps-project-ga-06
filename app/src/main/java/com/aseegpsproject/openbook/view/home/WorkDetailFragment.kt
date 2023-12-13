@@ -16,28 +16,14 @@ import com.aseegpsproject.openbook.api.getNetworkService
 import com.aseegpsproject.openbook.data.Repository
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
-import com.aseegpsproject.openbook.data.model.Worklist
-import com.aseegpsproject.openbook.data.toStr
+import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.FragmentWorkDetailBinding
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [WorkDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class WorkDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
     private val args: WorkDetailFragmentArgs by navArgs()
     private lateinit var binding: FragmentWorkDetailBinding
@@ -50,20 +36,12 @@ class WorkDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
     }
 
     override fun onAttach(context: android.content.Context) {
         super.onAttach(context)
         db = OpenBookDatabase.getInstance(requireContext())!!
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val trendingFreq = prefs.getString("trendings", "daily") ?: "daily"
         repository = Repository.getInstance(
-            trendingFreq,
-            db.userDao(),
             db.workDao(),
             getNetworkService()
         )
@@ -126,9 +104,9 @@ class WorkDetailFragment : Fragment() {
             }
             btnAddToWorklist.setOnClickListener {
                 lifecycleScope.launch {
-                    val worklists = db.worklistDao().getUserWithWorkLists(user.userId!!).worklists
+                    val worklists = db.workListDao().getUserWithWorkLists(user.userId!!).workLists
                     if (worklists.isEmpty()) {
-                        Toast.makeText(requireContext(), resources.getText(R.string.no_worklists), Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), resources.getText(R.string.no_workLists), Toast.LENGTH_SHORT).show()
                     } else {
                         rvWorklistList.visibility = View.VISIBLE
                         setUpRecyclerView(worklists)
@@ -152,9 +130,9 @@ class WorkDetailFragment : Fragment() {
         }
     }
 
-    private fun setUpRecyclerView(worklists: List<Worklist>) {
+    private fun setUpRecyclerView(workLists: List<WorkList>) {
         adapter = ProfileAdapter(
-            worklists,
+            workLists,
             { worklist -> addToWorklist(worklist) },
             { worklist -> listener.onWorklistClick(worklist) },
             context
@@ -165,14 +143,14 @@ class WorkDetailFragment : Fragment() {
         }
     }
 
-    private fun addToWorklist(worklist: Worklist) {
+    private fun addToWorklist(worklist: WorkList) {
         val workKeys = worklist.works.map { it.workKey }.toSet()
         if (workKeys.contains(work.workKey)) {
             Toast.makeText(requireContext(), resources.getText(R.string.already_in_worklist), Toast.LENGTH_SHORT).show()
         } else {
             lifecycleScope.launch(Dispatchers.IO) {
                 worklist.works = worklist.works + work
-                db.worklistDao().insertAndRelate(worklist, user.userId!!)
+                db.workListDao().insertAndRelate(worklist, user.userId!!)
             }
             Toast.makeText(
                 requireContext(),
@@ -181,25 +159,5 @@ class WorkDetailFragment : Fragment() {
             ).show()
         }
         binding.rvWorklistList.visibility = View.GONE
-    }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment WorkDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            WorkDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
     }
 }

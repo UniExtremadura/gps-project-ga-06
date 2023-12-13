@@ -23,8 +23,11 @@ interface WorkDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(works: List<Work>)
 
-    @Query("SELECT * FROM Work WHERE workKey = :workId LIMIT 1")
+    @Query("SELECT * FROM Work WHERE work_key = :workId LIMIT 1")
     suspend fun findById(workId: Long): Work
+
+    @Update
+    suspend fun updateAll(works: List<Work>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(work: Work)
@@ -39,7 +42,7 @@ interface WorkDao {
     suspend fun delete(userShow: UserWorkCrossRef)
 
     @Transaction
-    @Query("SELECT * FROM user WHERE userId = :userId")
+    @Query("SELECT * FROM user WHERE user_id = :userId")
     fun getUserWithWorks(userId: Long): LiveData<UserWithWorks>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

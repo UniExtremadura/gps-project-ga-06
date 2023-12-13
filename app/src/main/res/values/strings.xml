@@ -29,7 +29,7 @@
     <string name="add">Add</string>
     <string name="name">Name</string>
     <string name="create_worklist">Create works list</string>
-    <string name="no_worklists">There is no worklists created</string>
+    <string name="no_workLists">There is no work lists created</string>
     <string name="added_to_worklist">Added to worklist</string>
     <string name="already_in_worklist">Work already in worklist</string>
     <string name="worklist_deleted">Worklist deleted</string>
@@ -38,12 +38,13 @@
     <string name="autologin_title">Remember me?</string>
     <string name="themeSectionText">Theme settings</string>
     <string name="themeText">Theme</string>
-    <string name="trendings">Trendings</string>
-    <string name="trendings_title">Trending frequency</string>
+    <string name="trending">Trendings</string>
+    <string name="trending_title">Trending frequency</string>
     <string name="now">Now</string>
     <string name="daily">Daily</string>
     <string name="weekly">Weekly</string>
     <string name="monthly">Monthly</string>
     <string name="yearly">Yearly</string>
-    <string name="trendings_summary">Choose the frequency of the displayed books</string>
+    <string name="trending_summary">Choose the frequency of the displayed books</string>
+    <string name="register_success">New user registered</string>
 </resources>

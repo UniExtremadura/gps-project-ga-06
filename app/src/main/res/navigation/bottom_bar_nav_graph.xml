@@ -75,6 +75,6 @@
         tools:layout="@layout/fragment_worklist">
         <argument
             android:name="worklist"
-            app:argType="com.aseegpsproject.openbook.data.model.Worklist" />
+            app:argType="com.aseegpsproject.openbook.data.model.WorkList" />
     </fragment>
 </navigation>

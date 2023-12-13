@@ -12,7 +12,7 @@ import com.aseegpsproject.openbook.data.model.UserWithAuthors
 
 @Dao
 interface AuthorDao {
-    @Query("SELECT * FROM author WHERE authorKey = :authorId LIMIT 1")
+    @Query("SELECT * FROM author WHERE author_key = :authorId LIMIT 1")
     suspend fun findById(authorId: Long): Author
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -22,7 +22,7 @@ interface AuthorDao {
     suspend fun delete(author: Author)
 
     @Transaction
-    @Query("SELECT * FROM user WHERE userId = :userId")
+    @Query("SELECT * FROM user WHERE user_id = :userId")
     suspend fun getUserWithAuthors(userId: Long): UserWithAuthors
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

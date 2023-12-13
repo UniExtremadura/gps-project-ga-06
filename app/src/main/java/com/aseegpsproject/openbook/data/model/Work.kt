@@ -7,7 +7,7 @@ import java.io.Serializable
 
 @Entity
 data class Work(
-    @PrimaryKey(autoGenerate = false) val workKey: String,
+    @ColumnInfo("work_key") @PrimaryKey(autoGenerate = false) val workKey: String,
     val title: String? = null,
     var description: String? = null,
     @ColumnInfo("author_names") val authorNames: ArrayList<String>? = arrayListOf(),
@@ -16,5 +16,6 @@ data class Work(
     @ColumnInfo("cover_paths") val coverPaths: ArrayList<String> = arrayListOf(),
     @ColumnInfo("rating") var rating: String? = null,
     @ColumnInfo("num_editions") val numEditions: Int? = null,
-    @ColumnInfo("is_favorite") var isFavorite: Boolean = false
+    @ColumnInfo("is_favorite") var isFavorite: Boolean = false,
+    @ColumnInfo("is_discover") var isDiscover: Boolean = false
 ) : Serializable

@@ -5,23 +5,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.aseegpsproject.openbook.R
-import com.aseegpsproject.openbook.data.model.Worklist
+import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.databinding.WorklistItemListBinding
 
 class WorkDetailAdapter(
-    private var worklists: List<Worklist>,
-    private val onClick: (workList: Worklist) -> Unit,
-    private val onLongClick: (workList: Worklist) -> Unit,
+    private var workLists: List<WorkList>,
+    private val onClick: (workList: WorkList) -> Unit,
+    private val onLongClick: (workList: WorkList) -> Unit,
     private val context: Context?
 ) : RecyclerView.Adapter<WorkDetailAdapter.WorkListViewHolder>() {
 
     class WorkListViewHolder(
         private val binding: WorklistItemListBinding,
-        private val onClick: (workList: Worklist) -> Unit,
-        private val onLongClick: (workList: Worklist) -> Unit,
+        private val onClick: (workList: WorkList) -> Unit,
+        private val onLongClick: (workList: WorkList) -> Unit,
         private val context: Context?
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(workList: Worklist) {
+        fun bind(workList: WorkList) {
             with(binding) {
                 tvWorklistName.text = workList.name
                 ivWorklist.setImageResource(R.drawable.list_cover)
@@ -42,14 +42,14 @@ class WorkDetailAdapter(
         return WorkListViewHolder(binding, onClick, onLongClick, context)
     }
 
-    override fun getItemCount() = worklists.size
+    override fun getItemCount() = workLists.size
 
     override fun onBindViewHolder(holder: WorkListViewHolder, position: Int) {
-        holder.bind(worklists[position])
+        holder.bind(workLists[position])
     }
 
-    fun updateData(worklists: List<Worklist>) {
-        this.worklists = worklists
+    fun updateData(workLists: List<WorkList>) {
+        this.workLists = workLists
         notifyDataSetChanged()
     }
 }

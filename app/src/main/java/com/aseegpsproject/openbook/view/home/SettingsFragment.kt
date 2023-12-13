@@ -8,7 +8,6 @@ import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.User
 
 class SettingsFragment : PreferenceFragmentCompat() {
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 

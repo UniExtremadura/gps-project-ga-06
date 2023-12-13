@@ -22,7 +22,7 @@
     <string name="add">Añadir</string>
     <string name="name">Nombre</string>
     <string name="create_worklist">Crear lista de obras</string>
-    <string name="no_worklists">No hay listas de obras creadas</string>
+    <string name="no_workLists">No hay listas de obras creadas</string>
     <string name="added_to_worklist">Obra añadida a la lista</string>
     <string name="already_in_worklist">La obra ya está en esta lista</string>
     <string name="worklist_deleted">Lista borrada</string>
@@ -31,12 +31,13 @@
     <string name="autologin_title">¿Recordar contraeña?</string>
     <string name="themeSectionText">Ajustes de tema</string>
     <string name="themeText">Tema</string>
-    <string name="trendings">Tendencias</string>
-    <string name="trendings_title">Frecuencia de las tendencias</string>
+    <string name="trending">Tendencias</string>
+    <string name="trending_title">Frecuencia de las tendencias</string>
     <string name="now">Ahora</string>
     <string name="daily">Hoy</string>
     <string name="weekly">Esta semana</string>
     <string name="monthly">Este mes</string>
     <string name="yearly">Este año</string>
-    <string name="trendings_summary">Elige la frecuencia de los libros mostrados</string>
+    <string name="trending_summary">Elige la frecuencia de los libros mostrados</string>
+    <string name="register_success">Nuevo usuario registrado</string>
 </resources>

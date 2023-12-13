@@ -6,8 +6,8 @@ import androidx.room.Relation
 data class UserWithAuthors(
     @Embedded val user: User,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "authorKey",
+        parentColumn = "user_id",
+        entityColumn = "author_key",
         associateBy = androidx.room.Junction(UserAuthorCrossRef::class)
     )
     val authors: List<Author>

@@ -6,6 +6,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.PreferenceManager
+import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.ActivityLoginBinding
@@ -32,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
 
                     Toast.makeText(
                         this@LoginActivity,
-                        "New user ($name) created",
+                        resources.getText(R.string.register_success),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

@@ -6,9 +6,9 @@ import androidx.room.Relation
 data class UserWithWorklists(
     @Embedded val user: User,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "worklistId",
+        parentColumn = "user_id",
+        entityColumn = "work_list_id",
         associateBy = androidx.room.Junction(UserWorklistCrossRef::class)
     )
-    val worklists: List<Worklist>
+    val workLists: List<WorkList>
 )

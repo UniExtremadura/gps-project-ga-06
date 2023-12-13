@@ -7,7 +7,7 @@ import java.io.Serializable
 
 @Entity(tableName = "author")
 data class Author(
-    @PrimaryKey(autoGenerate = false) val authorKey: String,
+    @ColumnInfo("author_key") @PrimaryKey(autoGenerate = false) val authorKey: String,
     val name: String? = null,
     @ColumnInfo("full_name") val fullName: String? = null,
     @ColumnInfo("birth_date") val birthDate: String? = null,
