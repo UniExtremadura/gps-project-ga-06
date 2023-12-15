@@ -47,4 +47,6 @@
     <string name="yearly">Yearly</string>
     <string name="trending_summary">Choose the frequency of the displayed books</string>
     <string name="register_success">New user registered</string>
+    <string name="work_list">Works List</string>
+    <string name="author_detail">Author Details</string>
 </resources>

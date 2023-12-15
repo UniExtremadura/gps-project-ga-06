@@ -44,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
                 register()
             }
             etRepeatPassword.setOnEditorActionListener { _, _, _ ->
-                register()
+                btnRegister.performClick()
                 true
             }
         }

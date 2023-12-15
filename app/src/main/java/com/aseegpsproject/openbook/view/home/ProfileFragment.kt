@@ -70,7 +70,7 @@ class ProfileFragment : Fragment() {
                 etWorklistName.text.clear()
             }
             etWorklistName.setOnEditorActionListener { _, _, _ ->
-                viewModel.createWorklist(etWorklistName.text.toString())
+                btnCreateWorklist.performClick()
                 true
             }
             btnSettings.setOnClickListener {

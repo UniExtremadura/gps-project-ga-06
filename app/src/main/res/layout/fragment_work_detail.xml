@@ -26,11 +26,12 @@
                 style="@style/Widget.Material3.Button.IconButton.Filled"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:contentDescription="@string/add"
                 app:icon="@android:drawable/ic_input_add"
                 app:iconSize="33dp"
                 app:iconTint="#FFFFFF"
-                app:layout_constraintBottom_toTopOf="@+id/cardView5"
+                app:layout_constraintBottom_toBottomOf="@+id/cardView"
                 app:layout_constraintStart_toStartOf="@+id/workAuthor"
                 app:layout_constraintTop_toBottomOf="@+id/workAuthor" />
 
@@ -43,7 +44,7 @@
                 app:icon="@android:drawable/btn_star_big_on"
                 app:iconSize="33dp"
                 app:iconTint="#FFFFFF"
-                app:layout_constraintBottom_toTopOf="@+id/cardView5"
+                app:layout_constraintBottom_toBottomOf="@+id/cardView"
                 app:layout_constraintEnd_toEndOf="@+id/workAuthor"
                 app:layout_constraintTop_toBottomOf="@+id/workAuthor" />
 
@@ -92,8 +93,8 @@
 
             <ImageView
                 android:id="@+id/starImage"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="150dp"
                 android:contentDescription="@string/starText"
@@ -110,7 +111,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/ratingText"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/starImage"
                 app:layout_constraintTop_toTopOf="@+id/starImage" />

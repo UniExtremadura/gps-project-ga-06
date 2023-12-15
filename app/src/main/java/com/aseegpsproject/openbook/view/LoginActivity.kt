@@ -16,7 +16,6 @@ import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-
     private lateinit var db: OpenBookDatabase
 
     private val responseLauncher =
@@ -67,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
                 navigateToRegister()
             }
             etPassword.setOnEditorActionListener { _, _, _ ->
-                login()
+                btnLogin.performClick()
                 true
             }
         }

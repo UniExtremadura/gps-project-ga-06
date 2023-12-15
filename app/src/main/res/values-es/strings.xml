@@ -40,4 +40,6 @@
     <string name="yearly">Este año</string>
     <string name="trending_summary">Elige la frecuencia de los libros mostrados</string>
     <string name="register_success">Nuevo usuario registrado</string>
+    <string name="work_list">Lista de obras</string>
+    <string name="author_detail">Detalles del autor</string>
 </resources>
