@@ -26,16 +26,18 @@ class Repository (
     private val networkService: OpenLibraryAPI
 ) {
     val works = workDao.getWorks()
+    val authors = authorDao.getAuthors()
+
     private var lastUpdateTimeMillis: Long = 0L
     private val userFilter = MutableLiveData<Long>()
     private val workListFilter = MutableLiveData<Long>()
     private val trendingFreq: MutableLiveData<String> = MutableLiveData("daily")
 
-    val worksInLibrary: LiveData<UserWithWorks> =
-        userFilter.switchMap{ userid -> workDao.getUserWithWorks(userid) }
-
     val favAuthors: LiveData<UserWithAuthors> =
         userFilter.switchMap{ userid -> authorDao.getUserWithAuthors(userid) }
+
+    val worksInLibrary: LiveData<UserWithWorks> =
+        userFilter.switchMap{ userid -> workDao.getUserWithWorks(userid) }
 
     val workLists: LiveData<UserWithWorklists> =
         userFilter.switchMap{ userid -> workListDao.getUserWithWorkLists(userid) }
@@ -52,7 +54,10 @@ class Repository (
     }
 
     fun setTrendingFreq(freq: String) {
-        trendingFreq.value = freq
+        if (freq != trendingFreq.value) {
+            trendingFreq.value = freq
+            lastUpdateTimeMillis = 0L
+        }
     }
 
     suspend fun workToLibrary(work: Work, userId: Long) {
@@ -101,6 +106,30 @@ class Repository (
         }
     }
 
+    suspend fun searchWorks(title: String) {
+        try {
+            disableAllWorks()
+            val searchWorks = getNetworkService().getSearchBooksByTitle(title, 1).docs.map { it.toWork() }
+            workDao.insertAll(searchWorks)
+        } catch (cause: Throwable) {
+            throw APIError("Unable to fetch data from API", cause)
+        }
+    }
+
+    suspend fun searchAuthors(name: String) {
+        try {
+            disableAllAuthors()
+            val searchAuthors = getNetworkService().getSearchAuthorsByName(name, 1).docs
+                .map { it.toAuthor() }
+                .filter { it.birthDate != null }
+                .filter { it.numWorks != 0 }
+                .filter { it.checkPhotoPath() }
+            authorDao.insertAll(searchAuthors)
+        } catch (cause: Throwable) {
+            throw APIError("Unable to fetch data from API", cause)
+        }
+    }
+
     suspend fun fetchAuthorDetails(author: Author): Author {
         return if (author.bio != null) {
             author
@@ -116,20 +145,15 @@ class Repository (
         }
     }
 
-    suspend fun tryUpdateRecentWorksCache() {
-        if (shouldUpdateWorksCache()) {
+    suspend fun tryUpdateRecentWorksCache(forceUpdate: Boolean = false) {
+        if (shouldUpdateWorksCache() || forceUpdate) {
             fetchRecentWorks()
         }
     }
 
     private suspend fun fetchRecentWorks() {
         try {
-            val previousWorks = workDao.getWorks().value ?: listOf()
-            for (work in previousWorks) {
-                work.isDiscover = false
-            }
-            workDao.updateAll(previousWorks)
-
+            disableAllWorks()
             val works = trendingFreq.value?.let { it -> networkService.getDailyTrendingBooks(it).trendingWorks.map { it.toWork()} }
             if (works != null) {
                 workDao.insertAll(works)
@@ -144,6 +168,30 @@ class Repository (
         val lastFetchTimeMillis = lastUpdateTimeMillis
         val timeFromLastFetch = System.currentTimeMillis() - lastFetchTimeMillis
         return timeFromLastFetch > MIN_TIME_FROM_LAST_FETCH_MILLIS || workDao.getNumberOfWorks() == 0L
+    }
+
+    private suspend fun disableAllWorks() {
+        val previousWorks = works.value
+        if (previousWorks != null) {
+            for (work in previousWorks) {
+                work.enabled = false
+            }
+            workDao.updateAll(previousWorks)
+        }
+    }
+
+    suspend fun reloadAuthors() {
+        disableAllAuthors()
+    }
+
+    private suspend fun disableAllAuthors() {
+        val previousAuthors = authors.value
+        if (previousAuthors != null) {
+            for (author in previousAuthors) {
+                author.enabled = false
+            }
+            authorDao.updateAll(previousAuthors)
+        }
     }
 
     companion object {

@@ -14,6 +14,9 @@ import com.aseegpsproject.openbook.data.model.UserWithAuthors
 
 @Dao
 interface AuthorDao {
+    @Query("SELECT * FROM author")
+    fun getAuthors(): LiveData<List<Author>>
+
     @Query("SELECT * FROM author WHERE author_key = :authorId LIMIT 1")
     suspend fun findById(authorId: Long): Author
 
@@ -28,6 +31,12 @@ interface AuthorDao {
 
     @Delete
     suspend fun delete(userAuthor: UserAuthorCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(authors: List<Author>)
+
+    @Update
+    suspend fun updateAll(authors: List<Author>)
 
     @Transaction
     @Query("SELECT * FROM user WHERE user_id = :userId")

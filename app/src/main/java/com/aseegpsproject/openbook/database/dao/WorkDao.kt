@@ -20,7 +20,7 @@ interface WorkDao {
     @Query("SELECT count(*) FROM Work")
     suspend fun getNumberOfWorks(): Long
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(works: List<Work>)
 
     @Update

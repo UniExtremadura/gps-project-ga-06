@@ -1,24 +1,18 @@
 package com.aseegpsproject.openbook.view.home
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aseegpsproject.openbook.api.APIError
-import com.aseegpsproject.openbook.api.getNetworkService
-import com.aseegpsproject.openbook.data.checkPhotoPath
-import com.aseegpsproject.openbook.data.model.Author
-import com.aseegpsproject.openbook.data.toAuthor
 import com.aseegpsproject.openbook.databinding.FragmentAuthorsBinding
-import kotlinx.coroutines.launch
 
 class AuthorsFragment : Fragment() {
     private var _binding: FragmentAuthorsBinding? = null
@@ -37,72 +31,69 @@ class AuthorsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setUpRecyclerView()
         setUpSearchView()
-
-        homeViewModel.user.observe(viewLifecycleOwner) {
-            viewModel.user = it
-        }
-
         subscribeUI()
     }
 
     private fun subscribeUI() {
+        homeViewModel.user.observe(viewLifecycleOwner) {
+            viewModel.user = it
+        }
+        viewModel.toast.observe(viewLifecycleOwner) { message ->
+            message?.let {
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
+        viewModel.spinner.observe(viewLifecycleOwner) { value ->
+            value.let { show ->
+                binding.rvAuthorList.visibility = if (!show) View.VISIBLE else View.GONE
+                binding.authorSpinner.visibility = if (show) View.VISIBLE else View.GONE
+            }
+        }
         viewModel.authors.observe(viewLifecycleOwner) { authors ->
-            adapter.updateData(authors.authors)
+            if (viewModel.isSearch) adapter.updateData(authors.filter { it.enabled })
+        }
+        viewModel.favAuthors.observe(viewLifecycleOwner) { favAuthors ->
+            if (!viewModel.isSearch) adapter.updateData(favAuthors.authors)
         }
     }
 
     private fun setUpSearchView() {
-        binding.authorsSearchView.setOnClickListener {
-            binding.authorsSearchView.isIconified = false
-        }
-        binding.authorsSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                handleSearch(query ?: "")
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText?.isEmpty() == true) {
-                    viewModel.loadFavoriteAuthors()
+        with(binding) {
+            authorsSearchView.isIconified = false
+            authorsSearchView.clearFocus()
+            authorsSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    handleSearch(query ?: "")
+                    viewModel.isSearch = true
+                    return true
                 }
-                return true
-            }
-        })
-    }
 
-    private fun handleSearch(query: String) {
-        lifecycleScope.launch {
-            binding.rvAuthorList.visibility = View.GONE
-            binding.authorSpinner.visibility = View.VISIBLE
-            runCatching {
-                if (query.isNotEmpty()) {
-                    val authors = fetchSearchAuthorsByName(query)
-                    adapter.updateData(authors)
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return true
                 }
-            }.onFailure { cause ->
-                Log.e("AuthorsFragment", "Error fetching data", cause)
-                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
-            }
-            binding.rvAuthorList.visibility = View.VISIBLE
-            binding.authorSpinner.visibility = View.GONE
-        }
-    }
 
-    private suspend fun fetchSearchAuthorsByName(name: String): List<Author> {
-        val searchAuthors: List<Author>
-        try {
-            searchAuthors =
-                getNetworkService().getSearchAuthorsByName(name, 1).docs
-                    .map { it.toAuthor() }
-                    .filter { it.birthDate != null }
-                    .filter { it.numWorks != 0 }
-                    .filter { it.checkPhotoPath() }
-        } catch (cause: Throwable) {
-            throw APIError("Unable to fetch data from API", cause)
+                fun handleSearch(query: String) {
+                    if (query.isNotEmpty()) {
+                        viewModel.searchAuthors(query)
+                    }
+                }
+            })
+            authorsSearchView.setOnCloseListener {
+                viewModel.isSearch = false
+                viewModel.reloadAuthors()
+                viewModel.favAuthors.value?.let { adapter.updateData(it.authors) }
+                (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(
+                    requireView().windowToken,
+                    0
+                )
+                authorsSearchView.clearFocus()
+                true
+            }
         }
-        return searchAuthors
     }
 
     private fun setUpRecyclerView() {

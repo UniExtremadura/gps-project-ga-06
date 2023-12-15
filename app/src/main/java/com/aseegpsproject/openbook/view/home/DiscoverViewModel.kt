@@ -1,14 +1,11 @@
 package com.aseegpsproject.openbook.view.home
 
-import android.text.Spannable.Factory
-import android.view.View
-import android.widget.Toast
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.aseegpsproject.openbook.OpenBookApplication
@@ -25,9 +22,9 @@ class DiscoverViewModel(
     private val application: OpenBookApplication
 ): ViewModel() {
     var user: User? = null
-    val works = repository.works
+    var works = repository.works
 
-    private val _spinner = MutableLiveData<Boolean>(false)
+    private val _spinner = MutableLiveData(false)
     val spinner: LiveData<Boolean>
         get() = _spinner
 
@@ -35,16 +32,16 @@ class DiscoverViewModel(
     val toast: LiveData<String?>
         get() = _toast
 
+    fun onToastShown() {
+        _toast.value = null
+    }
+
     init {
         refreshWorks()
     }
 
-    fun refreshWorks() {
-        launchDataLoad { repository.tryUpdateRecentWorksCache() }
-    }
-
-    fun onToastShown() {
-        _toast.value = null
+    fun refreshWorks(force: Boolean = false) {
+        launchDataLoad { repository.tryUpdateRecentWorksCache(force) }
     }
 
     private fun launchDataLoad(block: suspend () -> Unit): Job {
@@ -60,6 +57,10 @@ class DiscoverViewModel(
         }
     }
 
+    fun searchWorks(query: String) {
+        launchDataLoad { repository.searchWorks(query) }
+    }
+
     fun changeFavoriteWork(work: Work) {
         viewModelScope.launch {
             if (work.isFavorite) {
@@ -71,6 +72,12 @@ class DiscoverViewModel(
                 repository.workToLibrary(work, user?.userId!!)
                 _toast.value = application.getString(R.string.add_fav)
             }
+        }
+    }
+
+    fun setTrendingFreq(trendingFreq: String) {
+        viewModelScope.launch {
+            repository.setTrendingFreq(trendingFreq)
         }
     }
 

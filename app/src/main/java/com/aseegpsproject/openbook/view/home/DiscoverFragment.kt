@@ -1,30 +1,26 @@
 package com.aseegpsproject.openbook.view.home
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aseegpsproject.openbook.api.APIError
-import com.aseegpsproject.openbook.api.getNetworkService
-import com.aseegpsproject.openbook.data.apimodel.Doc
-import com.aseegpsproject.openbook.data.apimodel.TrendingWork
-import com.aseegpsproject.openbook.data.model.User
-import com.aseegpsproject.openbook.data.toWork
 import com.aseegpsproject.openbook.databinding.FragmentDiscoverBinding
-import kotlinx.coroutines.launch
 
 class DiscoverFragment : Fragment() {
+    private lateinit var preferences: SharedPreferences
     private val viewModel: DiscoverViewModel by viewModels { DiscoverViewModel.Factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
-    private lateinit var trendingFreq: String
     private var _binding: FragmentDiscoverBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: DiscoverAdapter
@@ -38,16 +34,29 @@ class DiscoverFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val trendingFreq = preferences.getString("trending", "daily") ?: "daily"
+        viewModel.setTrendingFreq(trendingFreq)
+        viewModel.refreshWorks()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         setUpRecyclerView()
         setUpSearchView()
+        subscribeUI(adapter)
+    }
 
+    private fun subscribeUI(adapter: DiscoverAdapter) {
         homeViewModel.user.observe(viewLifecycleOwner) { user ->
             viewModel.user = user
         }
 
         viewModel.spinner.observe(viewLifecycleOwner) { value ->
+            binding.rvBookList.visibility = if (value) View.GONE else View.VISIBLE
             binding.spinner.visibility = if (value) View.VISIBLE else View.GONE
         }
 
@@ -58,82 +67,41 @@ class DiscoverFragment : Fragment() {
             }
         }
 
-        subscribeUI(adapter)
-    }
-
-    private fun subscribeUI(adapter: DiscoverAdapter) {
         viewModel.works.observe(viewLifecycleOwner) { works ->
-            adapter.updateData(works.filter { it.isDiscover })
+            adapter.updateData(works.filter { it.enabled })
         }
     }
 
     private fun setUpSearchView() {
-        binding.discoverSearchView.setOnClickListener {
-            binding.discoverSearchView.isIconified = false
-        }
-        binding.discoverSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                handleSearch(query ?: "")
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText?.isEmpty() == true) {
-                    viewModel.refreshWorks()
+        with(binding) {
+            discoverSearchView.isIconified = false
+            discoverSearchView.clearFocus()
+            discoverSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    handleSearch(query ?: "")
+                    return true
                 }
-                return true
-            }
-        })
-    }
 
-    fun handleSearch(query: String) {
-        lifecycleScope.launch {
-            showLoading()
-            runCatching {
-                if (query.isNotEmpty()) {
-                    fetchSearchBooksByTitle(query).map { it.toWork() }
-                } else {
-                    fetchTrendingBooks().map { it.toWork() }
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    return true
                 }
-            }.onSuccess { works ->
-                adapter.updateData(works)
-            }.onFailure { cause ->
-                Log.e("DiscoverFragment", "Error fetching data", cause)
-                Toast.makeText(context, "Error fetching data", Toast.LENGTH_SHORT).show()
+
+                fun handleSearch(query: String) {
+                    if (query.isNotEmpty()) {
+                        viewModel.searchWorks(query)
+                    }
+                }
+            })
+            discoverSearchView.setOnCloseListener {
+                viewModel.refreshWorks(true)
+                (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(
+                    requireView().windowToken,
+                    0
+                )
+                discoverSearchView.clearFocus()
+                true
             }
-            hideLoading()
         }
-    }
-
-    private fun showLoading() {
-        binding.rvBookList.visibility = View.GONE
-        binding.spinner.visibility = View.VISIBLE
-    }
-
-    private fun hideLoading() {
-        binding.rvBookList.scrollToPosition(0)
-        binding.spinner.visibility = View.GONE
-        binding.rvBookList.visibility = View.VISIBLE
-    }
-
-    private suspend fun fetchSearchBooksByTitle(title: String): List<Doc> {
-        val searchWorks: List<Doc>
-        try {
-            searchWorks = getNetworkService().getSearchBooksByTitle(title, 1).docs
-        } catch (cause: Throwable) {
-            throw APIError("Unable to fetch data from API", cause)
-        }
-        return searchWorks
-    }
-
-    private suspend fun fetchTrendingBooks(): List<TrendingWork> {
-        var trendingWorks: List<TrendingWork> = listOf()
-        try {
-            trendingWorks = getNetworkService().getDailyTrendingBooks(trendingFreq).trendingWorks
-        } catch (cause: Throwable) {
-            Log.e("DiscoverFragment", "Error fetching data", cause)
-        }
-        return trendingWorks
     }
 
     private fun setUpRecyclerView() {

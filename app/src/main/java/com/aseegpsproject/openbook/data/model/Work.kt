@@ -17,5 +17,5 @@ data class Work(
     @ColumnInfo("rating") var rating: String? = null,
     @ColumnInfo("num_editions") val numEditions: Int? = null,
     @ColumnInfo("is_favorite") var isFavorite: Boolean = false,
-    @ColumnInfo("is_discover") var isDiscover: Boolean = false
+    var enabled: Boolean = true
 ) : Serializable

@@ -16,5 +16,6 @@ data class Author(
     val wikipedia: String? = null,
     var bio: String? = null,
     @ColumnInfo("num_works") val numWorks: Int? = null,
-    @ColumnInfo("is_favorite") var isFavorite: Boolean = false
+    @ColumnInfo("is_favorite") var isFavorite: Boolean = false,
+    var enabled: Boolean = true
 ) : Serializable

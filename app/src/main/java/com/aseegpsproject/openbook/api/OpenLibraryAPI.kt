@@ -36,12 +36,15 @@ fun getNetworkService() = service
 
 interface OpenLibraryAPI {
     @GET("trending/{freq}.json")
-    suspend fun getDailyTrendingBooks(@Path("freq", encoded = true) freq: String) : TrendingQuery
+    suspend fun getDailyTrendingBooks(
+        @Path("freq", encoded = true) freq: String,
+        @Query("limit") limit: Int = 25) : TrendingQuery
 
     @GET("search.json")
     suspend fun getSearchBooksByTitle(
         @Query("title") query: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 25
     ) : SearchQuery
 
     @GET("authors/{key}.json")
@@ -52,7 +55,8 @@ interface OpenLibraryAPI {
     @GET("search/authors.json")
     suspend fun getSearchAuthorsByName(
         @Query("q") query: String,
-        @Query("page") page: Int
+        @Query("page") page: Int,
+        @Query("limit") limit: Int = 10
     ) : SearchQuery
 
     @GET("{key}.json")
