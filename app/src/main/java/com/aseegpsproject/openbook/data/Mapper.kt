@@ -40,6 +40,7 @@ fun Doc.toAuthor() = Author(
 )
 
 suspend fun Author.checkPhotoPath(): Boolean = withContext(Dispatchers.IO) {
+    return@withContext true
     if (this@checkPhotoPath.photoPath != null) {
         val url = java.net.URL(this@checkPhotoPath.photoPath)
         val connection = url.openConnection() as java.net.HttpURLConnection
