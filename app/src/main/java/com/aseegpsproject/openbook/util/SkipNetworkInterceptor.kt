@@ -33,7 +33,7 @@ class SkipNetworkInterceptor: Interceptor {
             makeDetailOkResult(chain.request())
         else if (chain.request().url.toString().contains("search/authors.json"))
             makeSearchAuthorsResponse(chain.request())
-        else if (chain.request().url.toString().contains("search/works"))
+        else if (chain.request().url.toString().contains("search.json"))
             makeSearchWorksResponse(chain.request())
         else if (chain.request().url.toString().contains("authors"))
             makeAuthorDetailOkResult(chain.request())
