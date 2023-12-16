@@ -67,7 +67,7 @@ class WorkDetailFragment : Fragment() {
     }
 
     private fun setUpBinding(work: Work) {
-        with (binding) {
+        with(binding) {
             workTitle.text = work.title
             workAuthor.text = work.authorNames?.get(0)
             Glide.with(requireContext())
@@ -76,10 +76,10 @@ class WorkDetailFragment : Fragment() {
             workDescription.text = work.description
             workRating.text = work.rating
 
-            binding.workDetailSpinner.visibility = View.GONE
-            binding.workDetails.visibility = View.VISIBLE
-            binding.btnAddToWorklist.visibility = View.VISIBLE
-            binding.btnFavorite.visibility = View.VISIBLE
+            workDetailSpinner.visibility = View.GONE
+            workDetails.visibility = View.VISIBLE
+            btnAddToWorklist.visibility = View.VISIBLE
+            btnFavorite.visibility = View.VISIBLE
         }
     }
 
@@ -101,7 +101,7 @@ class WorkDetailFragment : Fragment() {
             { worklist -> homeViewModel.onWorkListClick(worklist) },
             context
         )
-        with (binding) {
+        with(binding) {
             rvWorklistList.layoutManager = GridLayoutManager(context, 3)
             rvWorklistList.adapter = adapter
         }

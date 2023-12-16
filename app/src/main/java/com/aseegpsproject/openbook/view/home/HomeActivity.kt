@@ -91,7 +91,8 @@ class HomeActivity : AppCompatActivity() {
             if ((destination.id == R.id.workDetailFragment) ||
                 (destination.id == R.id.settingsFragment) ||
                 (destination.id == R.id.authorDetailFragment) ||
-                (destination.id == R.id.workListFragment)) {
+                (destination.id == R.id.workListFragment)
+            ) {
                 binding.bottomNavigation.visibility = View.GONE
             } else {
                 binding.bottomNavigation.visibility = View.VISIBLE
@@ -118,7 +119,6 @@ class HomeActivity : AppCompatActivity() {
             super.onOptionsItemSelected(item)
         }
     }
-
 
 
     override fun onSupportNavigateUp(): Boolean {

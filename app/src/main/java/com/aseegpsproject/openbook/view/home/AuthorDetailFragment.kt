@@ -8,13 +8,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
-import com.aseegpsproject.openbook.api.getNetworkService
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.databinding.FragmentAuthorDetailBinding
 import com.bumptech.glide.Glide
-import kotlinx.coroutines.launch
 
 class AuthorDetailFragment : Fragment() {
     private val args: AuthorDetailFragmentArgs by navArgs()
@@ -50,7 +47,7 @@ class AuthorDetailFragment : Fragment() {
     }
 
     private fun setUpUI() {
-        with (binding) {
+        with(binding) {
             spinnerAuthorDetail.visibility = View.VISIBLE
             svAuthorDetail.visibility = View.GONE
         }
@@ -72,7 +69,7 @@ class AuthorDetailFragment : Fragment() {
     }
 
     private fun setUpBinding(author: Author) {
-        with (binding) {
+        with(binding) {
             tvAuthorName.text = author.name
             tvAuthorDates.text = author.birthDate
             tvAuthorDates2.text = author.deathDate

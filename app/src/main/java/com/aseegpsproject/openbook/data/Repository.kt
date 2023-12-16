@@ -7,6 +7,7 @@ import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.api.OpenLibraryAPI
 import com.aseegpsproject.openbook.api.getNetworkService
 import com.aseegpsproject.openbook.data.model.Author
+import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.UserAuthorCrossRef
 import com.aseegpsproject.openbook.data.model.UserWithAuthors
 import com.aseegpsproject.openbook.data.model.UserWithWorklists
@@ -16,10 +17,12 @@ import com.aseegpsproject.openbook.data.model.UserWorkListCrossRef
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.model.WorkList
 import com.aseegpsproject.openbook.database.dao.AuthorDao
+import com.aseegpsproject.openbook.database.dao.UserDao
 import com.aseegpsproject.openbook.database.dao.WorkDao
 import com.aseegpsproject.openbook.database.dao.WorkListDao
 
-class Repository (
+class Repository(
+    private val userDao: UserDao,
     private val workDao: WorkDao,
     private val authorDao: AuthorDao,
     private val workListDao: WorkListDao,
@@ -34,16 +37,16 @@ class Repository (
     private val trendingFreq: MutableLiveData<String> = MutableLiveData("daily")
 
     val favAuthors: LiveData<UserWithAuthors> =
-        userFilter.switchMap{ userid -> authorDao.getUserWithAuthors(userid) }
+        userFilter.switchMap { userid -> authorDao.getUserWithAuthors(userid) }
 
     val worksInLibrary: LiveData<UserWithWorks> =
-        userFilter.switchMap{ userid -> workDao.getUserWithWorks(userid) }
+        userFilter.switchMap { userid -> workDao.getUserWithWorks(userid) }
 
     val workLists: LiveData<UserWithWorklists> =
-        userFilter.switchMap{ userid -> workListDao.getUserWithWorkLists(userid) }
+        userFilter.switchMap { userid -> workListDao.getUserWithWorkLists(userid) }
 
     val workList: LiveData<WorkList> =
-        workListFilter.switchMap{ worklistId -> workListDao.getById(worklistId) }
+        workListFilter.switchMap { worklistId -> workListDao.getById(worklistId) }
 
     fun setUserid(userid: Long) {
         userFilter.value = userid
@@ -63,6 +66,7 @@ class Repository (
     suspend fun workToLibrary(work: Work, userId: Long) {
         workDao.insertAndRelate(work, userId)
     }
+
     suspend fun deleteWorkFromLibrary(work: Work, userId: Long) {
         workDao.delete(UserWorkCrossRef(userId, work.workKey))
         workDao.update(work)
@@ -71,6 +75,7 @@ class Repository (
     suspend fun workListToLibrary(workList: WorkList, userId: Long) {
         workListDao.insertAndRelate(workList, userId)
     }
+
     suspend fun deleteWorkListFromLibrary(workList: WorkList, userId: Long) {
         workListDao.delete(UserWorkListCrossRef(userId, workList.workListId))
         workListDao.delete(workList)
@@ -80,6 +85,7 @@ class Repository (
         workList.works = workList.works + work
         workListDao.update(workList)
     }
+
     suspend fun deleteWorkFromWorkList(work: Work, workList: WorkList) {
         workList.works = workList.works - work
         workListDao.update(workList)
@@ -88,6 +94,7 @@ class Repository (
     suspend fun authorToLibrary(author: Author, userId: Long) {
         authorDao.insertAndRelate(author, userId)
     }
+
     suspend fun deleteAuthorFromLibrary(author: Author, userId: Long) {
         authorDao.delete(UserAuthorCrossRef(userId, author.authorKey))
         authorDao.update(author)
@@ -109,7 +116,8 @@ class Repository (
     suspend fun searchWorks(title: String) {
         try {
             disableAllWorks()
-            val searchWorks = getNetworkService().getSearchBooksByTitle(title, 1).docs.map { it.toWork() }
+            val searchWorks =
+                getNetworkService().getSearchBooksByTitle(title, 1).docs.map { it.toWork() }
             workDao.insertAll(searchWorks)
         } catch (cause: Throwable) {
             throw APIError("Unable to fetch data from API", cause)
@@ -154,7 +162,8 @@ class Repository (
     private suspend fun fetchRecentWorks() {
         try {
             disableAllWorks()
-            val works = trendingFreq.value?.let { it -> networkService.getDailyTrendingBooks(it).trendingWorks.map { it.toWork()} }
+            val works =
+                trendingFreq.value?.let { it -> networkService.getDailyTrendingBooks(it).trendingWorks.map { it.toWork() } }
             if (works != null) {
                 workDao.insertAll(works)
             }
@@ -192,6 +201,14 @@ class Repository (
             }
             authorDao.updateAll(previousAuthors)
         }
+    }
+
+    suspend fun getUser(username: String): User? {
+        return userDao.getByUsername(username)
+    }
+
+    suspend fun insertUser(user: User): Long {
+        return userDao.insert(user)
     }
 
     companion object {

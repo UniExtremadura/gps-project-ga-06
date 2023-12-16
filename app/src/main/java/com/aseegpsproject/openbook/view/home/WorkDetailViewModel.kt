@@ -16,10 +16,10 @@ import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.model.WorkList
 import kotlinx.coroutines.launch
 
-class WorkDetailViewModel (
+class WorkDetailViewModel(
     private val repository: Repository,
     private val application: OpenBookApplication
-): ViewModel() {
+) : ViewModel() {
     var workListsInLibrary = repository.workLists
     private val _workDetail = MutableLiveData<Work>(null)
     val workDetail: LiveData<Work>
@@ -45,9 +45,9 @@ class WorkDetailViewModel (
     }
 
     private fun getWork() {
-        if (work!=null)
+        if (work != null)
             viewModelScope.launch {
-                try{
+                try {
                     _workDetail.value = repository.fetchWorkDetails(work!!)
                 } catch (error: APIError) {
                     _toast.value = error.message

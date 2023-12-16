@@ -1,14 +1,9 @@
 package com.aseegpsproject.openbook.view.home
 
-import android.content.Context
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.CreationExtras
 import com.aseegpsproject.openbook.OpenBookApplication
@@ -22,13 +17,13 @@ import kotlinx.coroutines.launch
 class ProfileViewModel(
     private val repository: Repository,
     private val application: OpenBookApplication
-): ViewModel() {
+) : ViewModel() {
     val workLists = repository.workLists
 
     var user: User? = null
         set(value) {
             field = value
-            repository.setUserid(value!!.userId!!)
+            repository.setUserid(value!!.userId)
         }
 
     private val _toast = MutableLiveData<String?>()
@@ -64,7 +59,8 @@ class ProfileViewModel(
                 extras: CreationExtras
             ): T {
                 // Get the Application object from extras
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return (application as OpenBookApplication).appContainer.repository?.let {
                     ProfileViewModel(it, application)

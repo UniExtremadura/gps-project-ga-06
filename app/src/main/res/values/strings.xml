@@ -49,4 +49,6 @@
     <string name="register_success">New user registered</string>
     <string name="work_list">Works List</string>
     <string name="author_detail">Author Details</string>
+    <string name="user_not_found">User not found</string>
+    <string name="register_fail">Failed to register</string>
 </resources>

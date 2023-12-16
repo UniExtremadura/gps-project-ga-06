@@ -60,12 +60,19 @@ class ProfileFragment : Fragment() {
             btnAddWorklist.setOnClickListener {
                 cvCreateWorklist.visibility = View.VISIBLE
                 etWorklistName.requestFocus()
-                val inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                inputMethodManager.showSoftInput(binding.etWorklistName, InputMethodManager.SHOW_IMPLICIT)
+                val inputMethodManager =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.showSoftInput(
+                    binding.etWorklistName,
+                    InputMethodManager.SHOW_IMPLICIT
+                )
             }
             btnCreateWorklist.setOnClickListener {
                 viewModel.createWorklist(etWorklistName.text.toString())
-                (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(requireView().windowToken, 0)
+                (requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?)?.hideSoftInputFromWindow(
+                    requireView().windowToken,
+                    0
+                )
                 cvCreateWorklist.visibility = View.GONE
                 etWorklistName.text.clear()
             }
@@ -83,10 +90,10 @@ class ProfileFragment : Fragment() {
         adapter = ProfileAdapter(
             emptyList(),
             { workList -> homeViewModel.onWorkListClick(workList) },
-            { workList -> viewModel.deleteWorklist(workList)},
+            { workList -> viewModel.deleteWorklist(workList) },
             context
         )
-        with (binding) {
+        with(binding) {
             rvWorklistList.layoutManager = GridLayoutManager(context, 3)
             rvWorklistList.adapter = adapter
         }

@@ -3,7 +3,8 @@ package com.aseegpsproject.openbook.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["user_id", "work_list_id"],
+@Entity(
+    primaryKeys = ["user_id", "work_list_id"],
     tableName = "user_worklist_cross_ref",
     foreignKeys = [
         androidx.room.ForeignKey(

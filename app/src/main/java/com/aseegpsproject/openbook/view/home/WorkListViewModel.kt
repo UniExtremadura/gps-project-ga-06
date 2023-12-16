@@ -1,6 +1,5 @@
 package com.aseegpsproject.openbook.view.home
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,7 +16,7 @@ import kotlinx.coroutines.launch
 class WorkListViewModel(
     private val repository: Repository,
     private val application: OpenBookApplication
-): ViewModel() {
+) : ViewModel() {
     val works = repository.workList
 
     var workList: WorkList? = null
@@ -49,7 +48,8 @@ class WorkListViewModel(
                 extras: CreationExtras
             ): T {
                 // Get the Application object from extras
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return (application as OpenBookApplication).appContainer.repository?.let {
                     WorkListViewModel(it, application)

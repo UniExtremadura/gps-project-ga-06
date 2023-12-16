@@ -17,7 +17,7 @@
             android:entries="@array/trending"
             android:entryValues="@array/trending_values"
             android:key="trending"
-            android:title="@string/trending_title"
-            android:summary="@string/trending_summary" />
+            android:summary="@string/trending_summary"
+            android:title="@string/trending_title" />
     </PreferenceCategory>
 </PreferenceScreen>

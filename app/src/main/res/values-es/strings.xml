@@ -42,4 +42,6 @@
     <string name="register_success">Nuevo usuario registrado</string>
     <string name="work_list">Lista de obras</string>
     <string name="author_detail">Detalles del autor</string>
+    <string name="user_not_found">El usuario no existe</string>
+    <string name="register_fail">Ocurrío un error en el registro</string>
 </resources>

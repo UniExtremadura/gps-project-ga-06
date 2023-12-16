@@ -12,13 +12,12 @@ import com.aseegpsproject.openbook.api.APIError
 import com.aseegpsproject.openbook.data.Repository
 import com.aseegpsproject.openbook.data.model.Author
 import com.aseegpsproject.openbook.data.model.User
-import com.aseegpsproject.openbook.data.model.Work
 import kotlinx.coroutines.launch
 
 class AuthorDetailViewModel(
     private val repository: Repository,
     private val application: OpenBookApplication
-): ViewModel() {
+) : ViewModel() {
     var author: Author? = null
         set(value) {
             field = value
@@ -40,9 +39,9 @@ class AuthorDetailViewModel(
     }
 
     private fun getAuthor() {
-        if (author!=null)
+        if (author != null)
             viewModelScope.launch {
-                try{
+                try {
                     _authorDetail.value = repository.fetchAuthorDetails(author!!)
                 } catch (error: APIError) {
                     _toast.value = error.message
@@ -56,8 +55,7 @@ class AuthorDetailViewModel(
                 author!!.isFavorite = false
                 repository.deleteAuthorFromLibrary(author!!, user?.userId!!)
                 _toast.value = application.getString(R.string.remove_fav)
-            }
-            else {
+            } else {
                 author?.isFavorite = true
                 repository.authorToLibrary(author!!, user?.userId!!)
                 _toast.value = application.getString(R.string.add_fav)
@@ -73,7 +71,8 @@ class AuthorDetailViewModel(
                 extras: CreationExtras
             ): T {
                 // Get the Application object from extras
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return (application as OpenBookApplication).appContainer.repository?.let {
                     AuthorDetailViewModel(it, application)

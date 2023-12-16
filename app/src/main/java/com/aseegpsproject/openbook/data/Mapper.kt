@@ -15,7 +15,8 @@ fun TrendingWork.toWork() = Work(
     authorNames = this.authorName,
     authorKeys = this.authorKey,
     firstPublishYear = this.firstPublishYear,
-    coverPaths = this.coverI?.let { arrayListOf("https://covers.openlibrary.org/b/id/$it-M.jpg") } ?: arrayListOf("https://openlibrary.org/images/icons/avatar_book-sm.png")
+    coverPaths = this.coverI?.let { arrayListOf("https://covers.openlibrary.org/b/id/$it-M.jpg") }
+        ?: arrayListOf("https://openlibrary.org/images/icons/avatar_book-sm.png")
 )
 
 fun Doc.toWork() = Work(
@@ -24,7 +25,8 @@ fun Doc.toWork() = Work(
     authorNames = this.authorName,
     authorKeys = this.authorKey,
     firstPublishYear = this.firstPublishYear,
-    coverPaths = this.coverI?.let { arrayListOf("https://covers.openlibrary.org/b/id/$it-M.jpg") } ?: arrayListOf("https://openlibrary.org/images/icons/avatar_book-sm.png")
+    coverPaths = this.coverI?.let { arrayListOf("https://covers.openlibrary.org/b/id/$it-M.jpg") }
+        ?: arrayListOf("https://openlibrary.org/images/icons/avatar_book-sm.png")
 )
 
 fun Doc.toAuthor() = Author(

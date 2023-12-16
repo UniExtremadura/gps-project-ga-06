@@ -26,7 +26,14 @@ private val service: OpenLibraryAPI by lazy {
     val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create(GsonBuilder().registerTypeAdapter(APIAuthor::class.java, APIAuthorDeserializer()).registerTypeAdapter(APIWork::class.java, APIWorkDeserializer()).create()))
+        .addConverterFactory(
+            GsonConverterFactory.create(
+                GsonBuilder().registerTypeAdapter(
+                    APIAuthor::class.java,
+                    APIAuthorDeserializer()
+                ).registerTypeAdapter(APIWork::class.java, APIWorkDeserializer()).create()
+            )
+        )
         .build()
 
     retrofit.create(OpenLibraryAPI::class.java)
@@ -38,36 +45,37 @@ interface OpenLibraryAPI {
     @GET("trending/{freq}.json")
     suspend fun getDailyTrendingBooks(
         @Path("freq", encoded = true) freq: String,
-        @Query("limit") limit: Int = 25) : TrendingQuery
+        @Query("limit") limit: Int = 25
+    ): TrendingQuery
 
     @GET("search.json")
     suspend fun getSearchBooksByTitle(
         @Query("title") query: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int = 25
-    ) : SearchQuery
+    ): SearchQuery
 
     @GET("authors/{key}.json")
     suspend fun getAuthorInfo(
         @Path("key", encoded = true) key: String
-    ) : APIAuthor
+    ): APIAuthor
 
     @GET("search/authors.json")
     suspend fun getSearchAuthorsByName(
         @Query("q") query: String,
         @Query("page") page: Int,
         @Query("limit") limit: Int = 10
-    ) : SearchQuery
+    ): SearchQuery
 
     @GET("{key}.json")
     suspend fun getWorkInfo(
         @Path("key", encoded = true) key: String
-    ) : APIWork
+    ): APIWork
 
     @GET("{key}/ratings.json")
     suspend fun getWorkRatings(
         @Path("key", encoded = true) key: String
-    ) : Rating
+    ): Rating
 }
 
 class APIError(message: String, cause: Throwable? = null) : Throwable(message, cause)

@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
 class DiscoverViewModel(
     private val repository: Repository,
     private val application: OpenBookApplication
-): ViewModel() {
+) : ViewModel() {
     var user: User? = null
     var works = repository.works
 

@@ -9,7 +9,15 @@ import com.aseegpsproject.openbook.database.OpenBookDatabase
 class AppContainer(context: Context) {
     private val networkService = getNetworkService()
     private val db = OpenBookDatabase.getInstance(context)
-    var repository = db?.let { Repository(it.workDao(), it.authorDao(), it.workListDao(), networkService) }
+    var repository = db?.let {
+        Repository(
+            it.userDao(),
+            it.workDao(),
+            it.authorDao(),
+            it.workListDao(),
+            networkService
+        )
+    }
 
     init {
         val prefs = context.let { PreferenceManager.getDefaultSharedPreferences(it) }

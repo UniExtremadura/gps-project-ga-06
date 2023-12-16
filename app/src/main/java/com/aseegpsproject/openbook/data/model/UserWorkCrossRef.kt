@@ -4,7 +4,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
-@Entity(primaryKeys = ["user_id", "work_key"],
+@Entity(
+    primaryKeys = ["user_id", "work_key"],
     tableName = "user_work_cross_ref",
     foreignKeys = [
         ForeignKey(

@@ -8,7 +8,7 @@ import com.aseegpsproject.openbook.data.model.User
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.data.model.WorkList
 
-class HomeViewModel: ViewModel() {
+class HomeViewModel : ViewModel() {
     private val _user = MutableLiveData<User>(null)
     val user: LiveData<User>
         get() = _user
@@ -21,7 +21,7 @@ class HomeViewModel: ViewModel() {
     val navigateToAuthor: LiveData<Author>
         get() = _navigateToAuthor
 
-    private val _navigateToSettings = MutableLiveData<Boolean>(false)
+    private val _navigateToSettings = MutableLiveData(false)
     val navigateToSettings: LiveData<Boolean>
         get() = _navigateToSettings
 

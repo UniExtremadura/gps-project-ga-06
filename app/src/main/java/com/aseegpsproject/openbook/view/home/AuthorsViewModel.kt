@@ -18,13 +18,13 @@ import kotlinx.coroutines.launch
 class AuthorsViewModel(
     private val repository: Repository,
     private val application: OpenBookApplication
-): ViewModel() {
+) : ViewModel() {
     val favAuthors = repository.favAuthors
     var authors = repository.authors
     var user: User? = null
         set(value) {
             field = value
-            repository.setUserid(value!!.userId!!)
+            repository.setUserid(value!!.userId)
         }
 
     var isSearch: Boolean = false
@@ -64,8 +64,7 @@ class AuthorsViewModel(
                 author.isFavorite = false
                 repository.deleteAuthorFromLibrary(author, user?.userId!!)
                 _toast.value = application.getString(R.string.remove_fav)
-            }
-            else {
+            } else {
                 author.isFavorite = true
                 repository.authorToLibrary(author, user?.userId!!)
                 _toast.value = application.getString(R.string.add_fav)
@@ -85,7 +84,8 @@ class AuthorsViewModel(
                 extras: CreationExtras
             ): T {
                 // Get the Application object from extras
-                val application = checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
+                val application =
+                    checkNotNull(extras[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY])
 
                 return (application as OpenBookApplication).appContainer.repository?.let {
                     AuthorsViewModel(it, application)
