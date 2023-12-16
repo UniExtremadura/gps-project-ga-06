@@ -6,8 +6,8 @@ import androidx.room.Relation
 data class UserWithWorks(
     @Embedded val user: User,
     @Relation(
-        parentColumn = "userId",
-        entityColumn = "workKey",
+        parentColumn = "user_id",
+        entityColumn = "work_key",
         associateBy = androidx.room.Junction(UserWorkCrossRef::class)
     )
     val works: List<Work>

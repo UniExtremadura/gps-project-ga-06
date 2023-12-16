@@ -8,7 +8,6 @@ import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.User
 
 class SettingsFragment : PreferenceFragmentCompat() {
-
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
@@ -18,9 +17,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             )
             val editor = sharedPref.edit()
             if (newValue as Boolean) {
-                val user = activity?.intent?.getSerializableExtra("USER_INFO") as User
-                editor.putString("username", user.username)
-                editor.putString("password", user.password)
+                val user = activity?.intent?.extras?.getSerializable("USER_INFO", User::class.java)
+                if (user != null) {
+                    editor.putString("username", user.username)
+                    editor.putString("password", user.password)
+                }
             } else {
                 editor.remove("username")
                 editor.remove("password")

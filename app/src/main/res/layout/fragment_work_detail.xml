@@ -2,15 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.home.WorkDetailFragment">
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/work_details"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -19,6 +20,33 @@
             android:id="@+id/headConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btn_add_to_worklist"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:contentDescription="@string/add"
+                app:icon="@android:drawable/ic_input_add"
+                app:iconSize="33dp"
+                app:iconTint="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/cardView"
+                app:layout_constraintStart_toStartOf="@+id/workAuthor"
+                app:layout_constraintTop_toBottomOf="@+id/workAuthor" />
+
+            <Button
+                android:id="@+id/btn_favorite"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/favText"
+                app:icon="@android:drawable/btn_star_big_on"
+                app:iconSize="33dp"
+                app:iconTint="#FFFFFF"
+                app:layout_constraintBottom_toBottomOf="@+id/cardView"
+                app:layout_constraintEnd_toEndOf="@+id/workAuthor"
+                app:layout_constraintTop_toBottomOf="@+id/workAuthor" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"
@@ -65,8 +93,8 @@
 
             <ImageView
                 android:id="@+id/starImage"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="150dp"
                 android:contentDescription="@string/starText"
@@ -83,12 +111,13 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/ratingText"
                 android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/starImage"
                 app:layout_constraintTop_toTopOf="@+id/starImage" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/cardView5"
                 style="@style/Base.Theme.OpenBook"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,32 +140,15 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/btn_favorite"
-        style="@style/Widget.Material3.Button.IconButton.Filled"
+    <ProgressBar
+        android:id="@+id/work_detail_spinner"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:contentDescription="@string/favText"
-        app:icon="@android:drawable/btn_star_big_on"
-        app:iconSize="33dp"
-        app:iconTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/btn_add_to_worklist"
-        style="@style/Widget.Material3.Button.IconButton.Filled"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="@string/add"
-        app:icon="@android:drawable/ic_input_add"
-        app:iconSize="33dp"
-        app:iconTint="#FFFFFF"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_favorite"
-        app:layout_constraintEnd_toStartOf="@+id/btn_favorite" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_worklist_list"

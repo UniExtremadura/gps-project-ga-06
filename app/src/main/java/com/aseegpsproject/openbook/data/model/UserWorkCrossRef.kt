@@ -1,20 +1,22 @@
 package com.aseegpsproject.openbook.data.model
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
-@Entity(primaryKeys = ["userId", "workKey"],
+@Entity(
+    primaryKeys = ["user_id", "work_key"],
     tableName = "user_work_cross_ref",
     foreignKeys = [
         ForeignKey(
             entity = Work::class,
-            parentColumns = ["workKey"],
-            childColumns = ["workKey"],
+            parentColumns = ["work_key"],
+            childColumns = ["work_key"],
             onDelete = ForeignKey.CASCADE
         )
     ]
 )
 data class UserWorkCrossRef(
-    val userId: Long,
-    val workKey: String
+    @ColumnInfo("user_id") val userId: Long,
+    @ColumnInfo("work_key") val workKey: String
 )

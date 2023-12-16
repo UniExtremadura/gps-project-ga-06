@@ -5,18 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.aseegpsproject.openbook.data.model.User
-import com.aseegpsproject.openbook.database.OpenBookDatabase
 import com.aseegpsproject.openbook.databinding.ActivityRegisterBinding
-import com.aseegpsproject.openbook.util.CredentialCheck
-import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
+    private val viewModel: RegisterViewModel by viewModels { RegisterViewModel.Factory }
     private lateinit var binding: ActivityRegisterBinding
-
-    private lateinit var db: OpenBookDatabase
 
     companion object {
         const val USERNAME = "username"
@@ -34,35 +30,35 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        db = OpenBookDatabase.getInstance(this)!!
-
         setUpListeners()
+        subscribeUI()
+    }
+
+    private fun subscribeUI() {
+        viewModel.user.observe(this) { user ->
+            user?.let {
+                navigateBackWithResult(it)
+            }
+        }
+        viewModel.toast.observe(this) { text ->
+            text?.let {
+                Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+                viewModel.onToastShown()
+            }
+        }
     }
 
     private fun setUpListeners() {
         with(binding) {
             btnRegister.setOnClickListener {
-                register()
+                val username = etUsername.text.toString()
+                val password = etPassword.text.toString()
+                val confirmPassword = etRepeatPassword.text.toString()
+                viewModel.register(username, password, confirmPassword)
             }
-        }
-    }
-
-    private fun register() {
-        with(binding) {
-            val username = etUsername.text.toString()
-            val password = etPassword.text.toString()
-            val confirmPassword = etRepeatPassword.text.toString()
-
-            val check = CredentialCheck.join(username, password, confirmPassword)
-
-            if (check.fail) notifyInvalidCredentials(check.msg)
-            else {
-                lifecycleScope.launch {
-                    val user = User(null, username, password)
-                    val id = db.userDao().insert(user)
-
-                    navigateBackWithResult(User(id, username, password))
-                }
+            etRepeatPassword.setOnEditorActionListener { _, _, _ ->
+                btnRegister.performClick()
+                true
             }
         }
     }
@@ -74,9 +70,5 @@ class RegisterActivity : AppCompatActivity() {
         }
         setResult(RESULT_OK, intent)
         finish()
-    }
-
-    private fun notifyInvalidCredentials(msg: String) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 }

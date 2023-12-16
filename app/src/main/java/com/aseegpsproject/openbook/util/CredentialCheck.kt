@@ -7,8 +7,6 @@ class CredentialCheck private constructor() {
     var error: CredentialError = CredentialError.PasswordError
 
     companion object {
-
-        private val TAG = CredentialCheck::class.java.canonicalName
         private const val MINCHARS = 4
 
         private val checks = arrayOf(
