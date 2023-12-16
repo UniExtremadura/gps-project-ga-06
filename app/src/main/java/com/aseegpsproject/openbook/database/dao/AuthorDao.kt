@@ -50,4 +50,12 @@ interface AuthorDao {
         insert(author)
         insertUserWithAuthors(UserAuthorCrossRef(userId, author.authorKey))
     }
+
+    @Transaction
+    suspend fun insertAllAndRelate(authors: List<Author>, userId: Long) {
+        insertAll(authors)
+        authors.forEach { author ->
+            insertUserWithAuthors(UserAuthorCrossRef(userId, author.authorKey))
+        }
+    }
 }

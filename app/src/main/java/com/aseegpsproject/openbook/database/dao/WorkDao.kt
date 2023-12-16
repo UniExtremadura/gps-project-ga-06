@@ -50,4 +50,12 @@ interface WorkDao {
         insert(work)
         insertUserWork(UserWorkCrossRef(userId, work.workKey))
     }
+
+    @Transaction
+    suspend fun insertAllAndRelate(works: List<Work>, userId: Long) {
+        insertAll(works)
+        works.forEach { work ->
+            insertUserWork(UserWorkCrossRef(userId, work.workKey))
+        }
+    }
 }

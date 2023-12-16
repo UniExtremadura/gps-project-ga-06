@@ -118,7 +118,11 @@ class Repository(
             disableAllWorks()
             val searchWorks =
                 getNetworkService().getSearchBooksByTitle(title, 1).docs.map { it.toWork() }
+            val worksInLibrary = worksInLibrary.value?.works
             workDao.insertAll(searchWorks)
+            if (worksInLibrary != null) {
+                workDao.insertAllAndRelate(worksInLibrary, userFilter.value!!)
+            }
         } catch (cause: Throwable) {
             throw APIError("Unable to fetch data from API", cause)
         }
@@ -132,7 +136,11 @@ class Repository(
                 .filter { it.birthDate != null }
                 .filter { it.numWorks != 0 }
                 .filter { it.checkPhotoPath() }
+            val authorsInLibrary = favAuthors.value?.authors
             authorDao.insertAll(searchAuthors)
+            if (authorsInLibrary != null) {
+                authorDao.insertAllAndRelate(authorsInLibrary, userFilter.value!!)
+            }
         } catch (cause: Throwable) {
             throw APIError("Unable to fetch data from API", cause)
         }
@@ -165,7 +173,11 @@ class Repository(
             val works =
                 trendingFreq.value?.let { it -> networkService.getDailyTrendingBooks(it).trendingWorks.map { it.toWork() } }
             if (works != null) {
+                val worksInLibrary = worksInLibrary.value?.works
                 workDao.insertAll(works)
+                if (worksInLibrary != null) {
+                    workDao.insertAllAndRelate(worksInLibrary, userFilter.value!!)
+                }
             }
             lastUpdateTimeMillis = System.currentTimeMillis()
         } catch (cause: Throwable) {

@@ -32,8 +32,8 @@ class AuthorsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setUpRecyclerView()
         setUpSearchView()
+        setUpRecyclerView()
         subscribeUI()
     }
 
