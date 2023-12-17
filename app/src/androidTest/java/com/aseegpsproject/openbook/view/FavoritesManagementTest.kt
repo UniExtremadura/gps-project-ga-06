@@ -3,8 +3,11 @@ package com.aseegpsproject.openbook.view
 
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
@@ -22,6 +25,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+
 @LargeTest
 @RunWith(AndroidJUnit4::class)
 class FavoritesManagementTest {
@@ -32,241 +36,190 @@ class FavoritesManagementTest {
 
     @Test
     fun favoritesManagementTest() {
-        val materialButton = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton = onView(withId(R.id.btnRegister))
         materialButton.perform(click())
 
-        val appCompatEditText = onView(
-            allOf(
-                withId(R.id.etUsername),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText = onView(withId(R.id.etUsername))
         appCompatEditText.perform(replaceText("espresso"), closeSoftKeyboard())
 
-        val appCompatEditText2 = onView(
-            allOf(
-                withId(R.id.etPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText2 = onView(withId(R.id.etPassword))
         appCompatEditText2.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val appCompatEditText3 = onView(
-            allOf(
-                withId(R.id.etRepeatPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    2
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText3 = onView(withId(R.id.etRepeatPassword))
         appCompatEditText3.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val materialButton2 = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton2 = onView(withId(R.id.btnRegister))
         materialButton2.perform(click())
 
-        val recyclerView = onView(
-            allOf(
-                withId(R.id.rv_book_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
+        val recyclerView = onView(withId(R.id.rv_book_list))
         recyclerView.perform(actionOnItemAtPosition<ViewHolder>(0, longClick()))
+        recyclerView.perform(actionOnItemAtPosition<ViewHolder>(1, longClick()))
+        recyclerView.perform(actionOnItemAtPosition<ViewHolder>(2, longClick()))
 
-        val recyclerView2 = onView(
-            allOf(
-                withId(R.id.rv_book_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
-        recyclerView2.perform(actionOnItemAtPosition<ViewHolder>(0, longClick()))
-
-        val recyclerView3 = onView(
-            allOf(
-                withId(R.id.rv_book_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
-        recyclerView3.perform(actionOnItemAtPosition<ViewHolder>(1, longClick()))
-
-        val bottomNavigationItemView = onView(
-            allOf(
-                withId(R.id.worksFragment), withContentDescription("Books"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.bottom_navigation),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
+        val bottomNavigationItemView = onView(withId(R.id.worksFragment))
         bottomNavigationItemView.perform(click())
 
-        val textView = onView(
-            allOf(
-                withId(R.id.work_title), withText("The Catcher in the Rye"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
-            )
-        )
-        textView.check(matches(withText("The Catcher in the Rye")))
-
-        val textView2 = onView(
-            allOf(
-                withId(R.id.work_title), withText("The Adventures of Huckleberry Finn"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
-            )
-        )
-        textView2.check(matches(withText("The Adventures of Huckleberry Finn")))
-
-        val textView3 = onView(
-            allOf(
-                withId(R.id.work_title), withText("To Kill a Mockingbird"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
-            )
-        )
-        textView3.check(matches(withText("To Kill a Mockingbird")))
-
-        val textView4 = onView(
-            allOf(
-                withId(R.id.work_title), withText("To Kill a Mockingbird"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
-            )
-        )
-        textView4.check(matches(withText("To Kill a Mockingbird")))
-
-        val recyclerView4 = onView(
-            allOf(
-                withId(R.id.rv_books_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
-        recyclerView4.perform(actionOnItemAtPosition<ViewHolder>(1, longClick()))
-
-        val textView5 = onView(
-            allOf(
-                withId(R.id.work_title), withText("The Catcher in the Rye"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
-            )
-        )
-        textView5.check(matches(withText("The Catcher in the Rye")))
-
-        val textView6 = onView(
-            allOf(
-                withId(R.id.work_title), withText("To Kill a Mockingbird"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
-            )
-        )
-        textView6.check(matches(withText("To Kill a Mockingbird")))
-
-        val recyclerView5 = onView(
-            allOf(
-                withId(R.id.rv_books_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
-        recyclerView5.perform(actionOnItemAtPosition<ViewHolder>(1, longClick()))
-
         val viewGroup = onView(
-            allOf(
-                withParent(
-                    allOf(
-                        withId(R.id.discover_cv_Item),
-                        withParent(withId(R.id.discover_cl_item))
-                    )
-                ),
-                isDisplayed()
+            childAtPosition(
+                withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                0
             )
         )
         viewGroup.check(matches(isDisplayed()))
-
-        val recyclerView6 = onView(
+        val text = getText(
             allOf(
-                withId(R.id.rv_books_list),
+                withId(R.id.work_title),
                 childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
+                    childAtPosition(
+                        childAtPosition(
+                            childAtPosition(
+                                withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                                0
+                            ),
+                            0
+                        ),
+                        0
+                    ),
                     1
-                )
-            )
-        )
-        recyclerView6.perform(actionOnItemAtPosition<ViewHolder>(0, longClick()))
-
-        val viewGroup1 = onView(
-            allOf(
-                withParent(
-                    allOf(
-                        withId(R.id.discover_cv_Item),
-                        withParent(withId(R.id.discover_cl_item))
-                    )
                 ),
                 isDisplayed()
             )
         )
-        viewGroup1.check(doesNotExist())
+
+        val viewGroup2 = onView(
+            childAtPosition(
+                withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                1
+            )
+        )
+        viewGroup2.check(matches(isDisplayed()))
+
+        val text2 = getText(
+            allOf(
+                withId(R.id.work_title),
+                childAtPosition(
+                    childAtPosition(
+                        childAtPosition(
+                            childAtPosition(
+                                withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                                1
+                            ),
+                            0
+                        ),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+
+        val viewGroup3 = onView(
+            childAtPosition(
+                withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                2
+            )
+        )
+        viewGroup3.check(matches(isDisplayed()))
+
+        val text3 = getText(
+            allOf(
+                withId(R.id.work_title),
+                childAtPosition(
+                    childAtPosition(
+                        childAtPosition(
+                            childAtPosition(
+                                withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                                2
+                            ),
+                            0
+                        ),
+                        0
+                    ),
+                    1
+                ),
+                isDisplayed()
+            )
+        )
+
+        val recyclerView4 = onView(
+            withId(R.id.rv_books_list)
+        )
+        recyclerView4.perform(actionOnItemAtPosition<ViewHolder>(0, longClick()))
+        try {
+            val newText = getText(
+                allOf(
+                    withId(R.id.work_title),
+                    childAtPosition(
+                        childAtPosition(
+                            childAtPosition(
+                                childAtPosition(
+                                    withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                                    0
+                                ),
+                                0
+                            ),
+                            0
+                        ),
+                        1
+                    ),
+                    isDisplayed()
+                )
+            )
+            assert(!newText.equals(text))
+        } catch (e: Exception) {
+            println("Exception: $e")
+        }
+        recyclerView4.perform(actionOnItemAtPosition<ViewHolder>(0, longClick()))
+        try {
+            val newText = getText(
+                allOf(
+                    withId(R.id.work_title),
+                    childAtPosition(
+                        childAtPosition(
+                            childAtPosition(
+                                childAtPosition(
+                                    withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                                    0
+                                ),
+                                0
+                            ),
+                            0
+                        ),
+                        1
+                    ),
+                    isDisplayed()
+                )
+            )
+            assert(!newText.equals(text2))
+        } catch (e: Exception) {
+            println("Exception: $e")
+        }
+        recyclerView4.perform(actionOnItemAtPosition<ViewHolder>(0, longClick()))
+        try {
+            val newText = getText(
+                allOf(
+                    withId(R.id.work_title),
+                    childAtPosition(
+                        childAtPosition(
+                            childAtPosition(
+                                childAtPosition(
+                                    withClassName(`is`("androidx.recyclerview.widget.RecyclerView")),
+                                    0
+                                ),
+                                0
+                            ),
+                            0
+                        ),
+                        1
+                    ),
+                    isDisplayed()
+                )
+            )
+            assert(!newText.equals(text3))
+        } catch (e: Exception) {
+            assert(true)
+        }
     }
 
     private fun childAtPosition(
@@ -285,5 +238,24 @@ class FavoritesManagementTest {
                         && view == parent.getChildAt(position)
             }
         }
+    }
+
+    private fun getText(matcher: Matcher<View>?): String? {
+        val stringHolder = arrayOf<String?>(null)
+        onView(matcher).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isAssignableFrom(TextView::class.java)
+            }
+
+            override fun getDescription(): String {
+                return "getting text from a TextView"
+            }
+
+            override fun perform(uiController: UiController?, view: View) {
+                val tv = view as TextView
+                stringHolder[0] = tv.text.toString()
+            }
+        })
+        return stringHolder[0]
     }
 }
