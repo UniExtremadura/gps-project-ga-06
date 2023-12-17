@@ -29,79 +29,19 @@ class LoginTest {
 
     @Test
     fun loginTest() {
-        val materialButton = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton = onView(withId(R.id.btnRegister))
         materialButton.perform(click())
 
-        val appCompatEditText = onView(
-            allOf(
-                withId(R.id.etUsername),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText = onView(withId(R.id.etUsername))
         appCompatEditText.perform(replaceText("espresso"), closeSoftKeyboard())
 
-        val appCompatEditText2 = onView(
-            allOf(
-                withId(R.id.etPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText2 = onView(withId(R.id.etPassword))
         appCompatEditText2.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val appCompatEditText3 = onView(
-            allOf(
-                withId(R.id.etRepeatPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    2
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText3 = onView(withId(R.id.etRepeatPassword))
         appCompatEditText3.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val materialButton2 = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton2 = onView(withId(R.id.btnRegister))
         materialButton2.perform(click())
 
         val frameLayout = onView(

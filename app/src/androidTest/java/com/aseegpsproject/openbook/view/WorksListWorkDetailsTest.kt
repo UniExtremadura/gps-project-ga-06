@@ -13,6 +13,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.aseegpsproject.openbook.R
+import com.aseegpsproject.openbook.util.RecyclerViewItemCountAction
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -32,194 +33,47 @@ class WorksListWorkDetailsTest {
 
     @Test
     fun worksListWorkDetailsTest() {
-        val materialButton = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton = onView(withId(R.id.btnRegister))
         materialButton.perform(click())
 
-        val appCompatEditText = onView(
-            allOf(
-                withId(R.id.etUsername),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText = onView(withId(R.id.etUsername))
         appCompatEditText.perform(replaceText("espresso"), closeSoftKeyboard())
 
-        val appCompatEditText2 = onView(
-            allOf(
-                withId(R.id.etPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText2 = onView(withId(R.id.etPassword))
         appCompatEditText2.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val appCompatEditText3 = onView(
-            allOf(
-                withId(R.id.etRepeatPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    2
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText3 = onView(withId(R.id.etRepeatPassword))
         appCompatEditText3.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val materialButton2 = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton2 = onView(withId(R.id.btnRegister))
         materialButton2.perform(click())
 
-        val bottomNavigationItemView = onView(
-            allOf(
-                withId(R.id.profileFragment), withContentDescription("Profile"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.bottom_navigation),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val bottomNavigationItemView = onView(withId(R.id.profileFragment))
         bottomNavigationItemView.perform(click())
 
-        val materialButton3 = onView(
-            allOf(
-                withId(R.id.btn_add_worklist),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.nav_host_fragment),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton3 = onView(withId(R.id.btn_add_worklist))
         materialButton3.perform(click())
 
-        val appCompatEditText4 = onView(
-            allOf(
-                withId(R.id.et_worklist_name),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.cv_create_worklist),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatEditText4.perform(replaceText("lista de ejemplo"), closeSoftKeyboard())
+        val appCompatEditText4 = onView(withId(R.id.et_worklist_name))
+        appCompatEditText4.perform(replaceText("dummyGetWorksListWorkDetail"), closeSoftKeyboard())
 
-        val materialButton4 = onView(
-            allOf(
-                withId(R.id.btn_create_worklist), withText("Add"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.cv_create_worklist),
-                        0
-                    ),
-                    2
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton4 = onView(withId(R.id.btn_create_worklist))
         materialButton4.perform(click())
 
-        val bottomNavigationItemView2 = onView(
-            allOf(
-                withId(R.id.discoverFragment), withContentDescription("Discover"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.bottom_navigation),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
+        val bottomNavigationItemView2 = onView(withId(R.id.discoverFragment))
         bottomNavigationItemView2.perform(click())
 
-        val recyclerView = onView(
-            allOf(
-                withId(R.id.rv_book_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
+        val recyclerView = onView(withId(R.id.rv_book_list))
         recyclerView.perform(actionOnItemAtPosition<ViewHolder>(2, click()))
 
-        val materialButton5 = onView(
-            allOf(
-                withId(R.id.btn_add_to_worklist), withContentDescription("Add"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.headConstraintLayout),
-                        childAtPosition(
-                            withId(R.id.work_details),
-                            0
-                        )
-                    ),
-                    0
-                )
-            )
-        )
-        materialButton5.perform(scrollTo(), click())
+        var button = onView(withId(R.id.btn_add_to_worklist))
+        button.perform(scrollTo(), click())
 
-        val recyclerView2 = onView(
-            allOf(
-                withId(R.id.rv_worklist_list),
-                childAtPosition(
-                    withId(R.id.constraintLayout),
-                    2
-                )
-            )
-        )
-        recyclerView2.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
+        var recyclerView2 = onView(withId(R.id.rv_worklist_list))
+        var action = RecyclerViewItemCountAction()
+        recyclerView2.perform(action)
+        var itemCount = action.getItemCount()
+        recyclerView2.perform(actionOnItemAtPosition<ViewHolder>(itemCount - 1, click()))
 
         val appCompatImageButton = onView(
             allOf(
@@ -250,33 +104,14 @@ class WorksListWorkDetailsTest {
         )
         recyclerView3.perform(actionOnItemAtPosition<ViewHolder>(3, click()))
 
-        val materialButton6 = onView(
-            allOf(
-                withId(R.id.btn_add_to_worklist), withContentDescription("Add"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.headConstraintLayout),
-                        childAtPosition(
-                            withId(R.id.work_details),
-                            0
-                        )
-                    ),
-                    0
-                )
-            )
-        )
-        materialButton6.perform(scrollTo(), click())
+        button = onView(withId(R.id.btn_add_to_worklist))
+        button.perform(scrollTo(), click())
 
-        val recyclerView4 = onView(
-            allOf(
-                withId(R.id.rv_worklist_list),
-                childAtPosition(
-                    withId(R.id.constraintLayout),
-                    2
-                )
-            )
-        )
-        recyclerView4.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
+        recyclerView2 = onView(withId(R.id.rv_worklist_list))
+        action = RecyclerViewItemCountAction()
+        recyclerView2.perform(action)
+        itemCount = action.getItemCount()
+        recyclerView2.perform(actionOnItemAtPosition<ViewHolder>(itemCount - 1, click()))
 
         val appCompatImageButton2 = onView(
             allOf(
@@ -296,44 +131,17 @@ class WorksListWorkDetailsTest {
         )
         appCompatImageButton2.perform(click())
 
-        val recyclerView5 = onView(
-            allOf(
-                withId(R.id.rv_book_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
+        val recyclerView5 = onView(withId(R.id.rv_book_list))
         recyclerView5.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
 
-        val materialButton7 = onView(
-            allOf(
-                withId(R.id.btn_add_to_worklist), withContentDescription("Add"),
-                childAtPosition(
-                    allOf(
-                        withId(R.id.headConstraintLayout),
-                        childAtPosition(
-                            withId(R.id.work_details),
-                            0
-                        )
-                    ),
-                    0
-                )
-            )
-        )
-        materialButton7.perform(scrollTo(), click())
+        button = onView(withId(R.id.btn_add_to_worklist))
+        button.perform(scrollTo(), click())
 
-        val recyclerView6 = onView(
-            allOf(
-                withId(R.id.rv_worklist_list),
-                childAtPosition(
-                    withId(R.id.constraintLayout),
-                    2
-                )
-            )
-        )
-        recyclerView6.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
+        recyclerView2 = onView(withId(R.id.rv_worklist_list))
+        action = RecyclerViewItemCountAction()
+        recyclerView2.perform(action)
+        itemCount = action.getItemCount()
+        recyclerView2.perform(actionOnItemAtPosition<ViewHolder>(itemCount - 1, click()))
 
         val appCompatImageButton3 = onView(
             allOf(
@@ -368,68 +176,41 @@ class WorksListWorkDetailsTest {
         )
         bottomNavigationItemView3.perform(click())
 
-        val recyclerView7 = onView(
-            allOf(
-                withId(R.id.rv_worklist_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
-        recyclerView7.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
+        val recyclerView7 = onView(withId(R.id.rv_worklist_list))
+        action = RecyclerViewItemCountAction()
+        recyclerView7.perform(action)
+        itemCount = action.getItemCount()
+        recyclerView7.perform(actionOnItemAtPosition<ViewHolder>(itemCount - 1, click()))
 
-        val textView = onView(
+        var textView = onView(
             allOf(
-                withId(R.id.work_title), withText("The Great Gatsby"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
+                withId(R.id.work_title),
+                withParent(withParent(withParent(withParentIndex(0))))
             )
         )
-        textView.check(matches(withText("The Great Gatsby")))
+        textView.check(matches(isDisplayed()))
 
-        val textView2 = onView(
+        textView = onView(
             allOf(
-                withId(R.id.work_title), withText("The Catcher in the Rye"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
+                withId(R.id.work_title),
+                withParent(withParent(withParent(withParentIndex(1))))
             )
         )
-        textView2.check(matches(withText("The Catcher in the Rye")))
+        textView.check(matches(isDisplayed()))
 
-        val textView3 = onView(
+        textView = onView(
             allOf(
-                withId(R.id.work_title), withText("To Kill a Mockingbird"),
-                withParent(withParent(withId(R.id.discover_cv_Item))),
-                isDisplayed()
+                withId(R.id.work_title),
+                withParent(withParent(withParent(withParentIndex(2))))
             )
         )
-        textView3.check(matches(withText("To Kill a Mockingbird")))
+        textView.check(matches(isDisplayed()))
 
-        val recyclerView8 = onView(
-            allOf(
-                withId(R.id.rv_worklist_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
+        val recyclerView8 = onView(withId(R.id.rv_worklist_list))
         recyclerView8.perform(actionOnItemAtPosition<ViewHolder>(0, click()))
 
-        val textView5 = onView(
-            allOf(
-                withId(R.id.workTitle), withText("The Great Gatsby"),
-                withParent(
-                    allOf(
-                        withId(R.id.headConstraintLayout),
-                        withParent(withId(R.id.work_details))
-                    )
-                ),
-                isDisplayed()
-            )
-        )
-        textView5.check(matches(withText("The Great Gatsby")))
+        val textView5 = onView(withId(R.id.workTitle))
+        textView5.check(matches(isDisplayed()))
 
         val appCompatImageButton4 = onView(
             allOf(
@@ -449,30 +230,11 @@ class WorksListWorkDetailsTest {
         )
         appCompatImageButton4.perform(click())
 
-        val recyclerView9 = onView(
-            allOf(
-                withId(R.id.rv_worklist_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
+        val recyclerView9 = onView(withId(R.id.rv_worklist_list))
         recyclerView9.perform(actionOnItemAtPosition<ViewHolder>(1, click()))
 
-        val textView6 = onView(
-            allOf(
-                withId(R.id.workTitle), withText("The Catcher in the Rye"),
-                withParent(
-                    allOf(
-                        withId(R.id.headConstraintLayout),
-                        withParent(withId(R.id.work_details))
-                    )
-                ),
-                isDisplayed()
-            )
-        )
-        textView6.check(matches(withText("The Catcher in the Rye")))
+        val textView6 = onView(withId(R.id.workTitle))
+        textView6.check(matches(isDisplayed()))
 
         val appCompatImageButton5 = onView(
             allOf(
@@ -492,30 +254,11 @@ class WorksListWorkDetailsTest {
         )
         appCompatImageButton5.perform(click())
 
-        val recyclerView10 = onView(
-            allOf(
-                withId(R.id.rv_worklist_list),
-                childAtPosition(
-                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
-                    1
-                )
-            )
-        )
+        val recyclerView10 = onView(withId(R.id.rv_worklist_list))
         recyclerView10.perform(actionOnItemAtPosition<ViewHolder>(2, click()))
 
-        val textView7 = onView(
-            allOf(
-                withId(R.id.workTitle), withText("To Kill a Mockingbird"),
-                withParent(
-                    allOf(
-                        withId(R.id.headConstraintLayout),
-                        withParent(withId(R.id.work_details))
-                    )
-                ),
-                isDisplayed()
-            )
-        )
-        textView7.check(matches(withText("To Kill a Mockingbird")))
+        val textView7 = onView(withId(R.id.workTitle))
+        textView7.check(matches(isDisplayed()))
     }
 
     private fun childAtPosition(

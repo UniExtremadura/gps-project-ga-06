@@ -50,6 +50,38 @@ val dummyNetworkTrendingResponse = TrendingQuery(
             coverI = 5,
             authorName = arrayListOf("George Orwell"),
             authorKey = arrayListOf("/authors/OL5A")
+        ),
+        TrendingWork(
+            key = "/works/OL6W",
+            title = "Romeo and Juliet",
+            firstPublishYear = 1597,
+            coverI = 6,
+            authorName = arrayListOf("William Shakespeare"),
+            authorKey = arrayListOf("/authors/OL6A")
+        ),
+        TrendingWork(
+            key = "/works/OL7W",
+            title = "Harry Potter and the Sorcerer's Stone",
+            firstPublishYear = 1997,
+            coverI = 7,
+            authorName = arrayListOf("J. K. Rowling"),
+            authorKey = arrayListOf("/authors/OL7A")
+        ),
+        TrendingWork(
+            key = "/works/OL8W",
+            title = "Pride and Prejudice",
+            firstPublishYear = 1813,
+            coverI = 8,
+            authorName = arrayListOf("Jane Austen"),
+            authorKey = arrayListOf("/authors/OL8A")
+        ),
+        TrendingWork(
+            key = "/works/OL9W",
+            title = "The Shining",
+            firstPublishYear = 1977,
+            coverI = 9,
+            authorName = arrayListOf("Stephen King"),
+            authorKey = arrayListOf("/authors/OL9A")
         )
     )
 )
@@ -194,7 +226,46 @@ val dummyNetworkSearchAuthorsResponse = SearchQuery(
         Doc(
             key = "OL66457A",
             name = "William Shakespeare",
-            alternateNames = arrayListOf("William Shakspere", "William Shakspeare", "William Shakespear", "William Shaksper", "William Shakspe", "William Shakspea", "William Shakespe", "William Shakspear", "William Shakespear", "William Shakspeare", "William Shakspe", "William Shakspea", "William Shakespe", "William Shakspear", "William Shakespear", "William Shakspeare", "William Shakspe", "William Shakspea", "William Shakespe", "William Shakspear", "William Shakespear", "William Shakspeare", "William Shakspe", "William Shakspea", "William Shakespe", "William Shakspear", "William Shakespear", "William Shakspeare", "William Shakspe", "William Shakspea", "William Shakespe", "William Shakspear", "William Shakespear", "William Shakspeare", "William Shakspe", "William Shakspea", "William Shakespe", "William Shakspear"),
+            alternateNames = arrayListOf(
+                "William Shakspere",
+                "William Shakspeare",
+                "William Shakespear",
+                "William Shaksper",
+                "William Shakspe",
+                "William Shakspea",
+                "William Shakespe",
+                "William Shakspear",
+                "William Shakespear",
+                "William Shakspeare",
+                "William Shakspe",
+                "William Shakspea",
+                "William Shakespe",
+                "William Shakspear",
+                "William Shakespear",
+                "William Shakspeare",
+                "William Shakspe",
+                "William Shakspea",
+                "William Shakespe",
+                "William Shakspear",
+                "William Shakespear",
+                "William Shakspeare",
+                "William Shakspe",
+                "William Shakspea",
+                "William Shakespe",
+                "William Shakspear",
+                "William Shakespear",
+                "William Shakspeare",
+                "William Shakspe",
+                "William Shakspea",
+                "William Shakespe",
+                "William Shakspear",
+                "William Shakespear",
+                "William Shakspeare",
+                "William Shakspe",
+                "William Shakspea",
+                "William Shakespe",
+                "William Shakspear"
+            ),
             birthDate = "1564",
             deathDate = "1616",
             topWork = "/works/OL6W",
@@ -203,7 +274,11 @@ val dummyNetworkSearchAuthorsResponse = SearchQuery(
         Doc(
             key = "OL66456A",
             name = "J. K. Rowling",
-            alternateNames = arrayListOf("Newt Scamander", "Kennilworthy Whisp", "Robert Galbraith"),
+            alternateNames = arrayListOf(
+                "Newt Scamander",
+                "Kennilworthy Whisp",
+                "Robert Galbraith"
+            ),
             birthDate = "1965",
             deathDate = null,
             topWork = "/works/OL7W",
