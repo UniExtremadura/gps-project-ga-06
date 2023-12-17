@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import com.aseegpsproject.openbook.R
 import com.aseegpsproject.openbook.data.model.Work
 import com.aseegpsproject.openbook.databinding.FragmentWorkDetailBinding
 import com.bumptech.glide.Glide
@@ -35,6 +37,13 @@ class WorkDetailFragment : Fragment() {
         binding = FragmentWorkDetailBinding.bind(view)
 
         viewModel.work = args.work
+
+        subscribeUI()
+        setUpListeners()
+        setUpRecyclerView()
+    }
+
+    private fun subscribeUI() {
         homeViewModel.user.observe(viewLifecycleOwner) {
             viewModel.user = it
         }
@@ -44,6 +53,13 @@ class WorkDetailFragment : Fragment() {
                 viewModel.onToastShown()
             }
         }
+        viewModel.isFavorite.observe(viewLifecycleOwner) { isFavorite ->
+            if (isFavorite) {
+                binding.btnFavorite.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.yellow))
+            } else {
+                binding.btnFavorite.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.purple))
+            }
+        }
         viewModel.workListDialog.observe(viewLifecycleOwner) { show ->
             if (show) {
                 binding.rvWorklistList.visibility = View.VISIBLE
@@ -51,13 +67,6 @@ class WorkDetailFragment : Fragment() {
                 binding.rvWorklistList.visibility = View.GONE
             }
         }
-
-        subscribeUI()
-        setUpListeners()
-        setUpRecyclerView()
-    }
-
-    private fun subscribeUI() {
         viewModel.workListsInLibrary.observe(viewLifecycleOwner) { userWithWorkLists ->
             adapter.updateData(userWithWorkLists.workLists)
         }

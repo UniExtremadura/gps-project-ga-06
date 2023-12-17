@@ -29,6 +29,10 @@ class WorkDetailViewModel(
     val workListDialog: LiveData<Boolean>
         get() = _workListDialog
 
+    private val _isFavorite = MutableLiveData(false)
+    val isFavorite: LiveData<Boolean>
+        get() = _isFavorite
+
     var user: User? = null
     var work: Work? = null
         set(value) {
@@ -49,6 +53,7 @@ class WorkDetailViewModel(
             viewModelScope.launch {
                 try {
                     _workDetail.value = repository.fetchWorkDetails(work!!)
+                    _isFavorite.value = workDetail.value?.isFavorite
                 } catch (error: APIError) {
                     _toast.value = error.message
                 }
@@ -60,10 +65,12 @@ class WorkDetailViewModel(
             if (work?.isFavorite == true) {
                 work!!.isFavorite = false
                 user?.userId?.let { repository.deleteWorkFromLibrary(work!!, it) }
+                _isFavorite.value = false
                 _toast.value = application.getString(R.string.remove_fav)
             } else {
                 work?.isFavorite = true
                 user?.userId?.let { repository.workToLibrary(work!!, it) }
+                _isFavorite.value = true
                 _toast.value = application.getString(R.string.add_fav)
             }
         }

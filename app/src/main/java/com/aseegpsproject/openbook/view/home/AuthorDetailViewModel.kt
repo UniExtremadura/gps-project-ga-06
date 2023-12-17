@@ -30,6 +30,10 @@ class AuthorDetailViewModel(
     val authorDetail: LiveData<Author>
         get() = _authorDetail
 
+    private val _isFavorite = MutableLiveData(false)
+    val isFavorite: LiveData<Boolean>
+        get() = _isFavorite
+
     private val _toast = MutableLiveData<String?>()
     val toast: LiveData<String?>
         get() = _toast
@@ -43,6 +47,7 @@ class AuthorDetailViewModel(
             viewModelScope.launch {
                 try {
                     _authorDetail.value = repository.fetchAuthorDetails(author!!)
+                    _isFavorite.value = authorDetail.value?.isFavorite
                 } catch (error: APIError) {
                     _toast.value = error.message
                 }
@@ -54,10 +59,12 @@ class AuthorDetailViewModel(
             if (author?.isFavorite == true) {
                 author!!.isFavorite = false
                 repository.deleteAuthorFromLibrary(author!!, user?.userId!!)
+                _isFavorite.value = false
                 _toast.value = application.getString(R.string.remove_fav)
             } else {
                 author?.isFavorite = true
                 repository.authorToLibrary(author!!, user?.userId!!)
+                _isFavorite.value = true
                 _toast.value = application.getString(R.string.add_fav)
             }
         }
