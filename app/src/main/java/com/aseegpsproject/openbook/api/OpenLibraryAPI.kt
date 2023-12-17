@@ -7,9 +7,9 @@ import com.aseegpsproject.openbook.data.apimodel.APIWorkDeserializer
 import com.aseegpsproject.openbook.data.apimodel.Rating
 import com.aseegpsproject.openbook.data.apimodel.SearchQuery
 import com.aseegpsproject.openbook.data.apimodel.TrendingQuery
+import com.aseegpsproject.openbook.util.SkipNetworkInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -20,7 +20,8 @@ private const val BASE_URL = "https://openlibrary.org/"
 
 private val service: OpenLibraryAPI by lazy {
     val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor())
+        .addInterceptor(SkipNetworkInterceptor())
+        //.addInterceptor(HttpLoggingInterceptor())
         .build()
 
     val retrofit = Retrofit.Builder()
