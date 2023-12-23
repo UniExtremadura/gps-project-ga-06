@@ -10,7 +10,6 @@ import com.aseegpsproject.openbook.data.apimodel.TrendingQuery
 import com.aseegpsproject.openbook.util.SkipNetworkInterceptor
 import com.google.gson.GsonBuilder
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
