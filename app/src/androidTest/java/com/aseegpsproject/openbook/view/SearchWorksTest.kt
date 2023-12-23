@@ -14,6 +14,7 @@ import com.aseegpsproject.openbook.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
@@ -21,14 +22,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class LoginTest {
+class SearchWorksTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)
 
     @Test
-    fun loginTest() {
+    fun loginActivityTest() {
         val materialButton = onView(withId(R.id.btnRegister))
         materialButton.perform(click())
 
@@ -44,34 +45,53 @@ class LoginTest {
         val materialButton2 = onView(withId(R.id.btnRegister))
         materialButton2.perform(click())
 
-        val frameLayout = onView(
+        val searchAutoComplete = onView(
             allOf(
-                withId(R.id.bottom_navigation),
-                withParent(withParent(withId(android.R.id.content))),
-                isDisplayed()
-            )
-        )
-        frameLayout.check(matches(isDisplayed()))
-
-        val textView = onView(
-            allOf(
-                withId(com.google.android.material.R.id.navigation_bar_item_large_label_view),
-                withText("Discover"),
-                withParent(
+                withClassName(`is`("android.widget.SearchView\$SearchAutoComplete")),
+                childAtPosition(
                     allOf(
-                        withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
-                        withParent(
-                            allOf(
-                                withId(R.id.discoverFragment),
-                                withContentDescription("Discover")
-                            )
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        childAtPosition(
+                            withClassName(`is`("android.widget.LinearLayout")),
+                            1
                         )
-                    )
+                    ),
+                    0
                 ),
                 isDisplayed()
             )
         )
-        textView.check(matches(withText("Discover")))
+        searchAutoComplete.perform(replaceText("the"), closeSoftKeyboard())
+
+        val searchAutoComplete2 = onView(
+            allOf(
+                withClassName(`is`("android.widget.SearchView\$SearchAutoComplete")),
+                withText("the"),
+                childAtPosition(
+                    allOf(
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        childAtPosition(
+                            withClassName(`is`("android.widget.LinearLayout")),
+                            1
+                        )
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        searchAutoComplete2.perform(pressImeActionButton())
+
+        Thread.sleep(1000)
+
+        val textView = onView(
+            allOf(
+                withId(R.id.work_title), withText("To Kill a Mockingbird"),
+                withParent(withParent(withId(R.id.discover_cv_Item))),
+                isDisplayed()
+            )
+        )
+        textView.check(matches(withText("To Kill a Mockingbird")))
     }
 
     private fun childAtPosition(

@@ -3,16 +3,20 @@ package com.aseegpsproject.openbook.util
 import com.aseegpsproject.openbook.data.dummyNetworkAuthorDetailResponse
 import com.aseegpsproject.openbook.data.dummyNetworkSearchAuthorsResponse
 import com.aseegpsproject.openbook.data.dummyNetworkSearchWorksResponse
-import com.google.gson.Gson
 import com.aseegpsproject.openbook.data.dummyNetworkTrendingResponse
 import com.aseegpsproject.openbook.data.dummyNetworkWorkDetailResponse
-import okhttp3.*
+import com.google.gson.Gson
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.Protocol
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.ResponseBody
 
 /**
  * This class will return fake [Response] objects to Retrofit, without actually using the network.
  */
-class SkipNetworkInterceptor: Interceptor {
+class SkipNetworkInterceptor : Interceptor {
     //    private var lastResult: String = ""
     val gson = Gson()
 
@@ -64,9 +68,12 @@ class SkipNetworkInterceptor: Interceptor {
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .message("Bad server day")
-            .body(ResponseBody.create(
-                "application/json".toMediaType(),
-                gson.toJson(mapOf("cause" to "not sure"))))
+            .body(
+                ResponseBody.create(
+                    "application/json".toMediaType(),
+                    gson.toJson(mapOf("cause" to "not sure"))
+                )
+            )
             .build()
     }
 
@@ -76,9 +83,12 @@ class SkipNetworkInterceptor: Interceptor {
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .message("OK")
-            .body(ResponseBody.create(
-                "application/json".toMediaType(),
-                gson.toJson(dummyNetworkSearchWorksResponse)))
+            .body(
+                ResponseBody.create(
+                    "application/json".toMediaType(),
+                    gson.toJson(dummyNetworkSearchWorksResponse)
+                )
+            )
             .build()
     }
 
@@ -99,9 +109,12 @@ class SkipNetworkInterceptor: Interceptor {
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .message("OK")
-            .body(ResponseBody.create(
-                "application/json".toMediaType(),
-                gson.toJson(dummyNetworkSearchAuthorsResponse)))
+            .body(
+                ResponseBody.create(
+                    "application/json".toMediaType(),
+                    gson.toJson(dummyNetworkSearchAuthorsResponse)
+                )
+            )
             .build()
     }
 
@@ -121,9 +134,12 @@ class SkipNetworkInterceptor: Interceptor {
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .message("OK")
-            .body(ResponseBody.create(
-                "application/json".toMediaType(),
-                gson.toJson(dummyNetworkTrendingResponse)))
+            .body(
+                ResponseBody.create(
+                    "application/json".toMediaType(),
+                    gson.toJson(dummyNetworkTrendingResponse)
+                )
+            )
             .build()
     }
 
@@ -133,9 +149,12 @@ class SkipNetworkInterceptor: Interceptor {
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .message("OK")
-            .body(ResponseBody.create(
-                "application/json".toMediaType(),
-                gson.toJson(dummyNetworkWorkDetailResponse)))
+            .body(
+                ResponseBody.create(
+                    "application/json".toMediaType(),
+                    gson.toJson(dummyNetworkWorkDetailResponse)
+                )
+            )
             .build()
     }
 
@@ -145,9 +164,12 @@ class SkipNetworkInterceptor: Interceptor {
             .request(request)
             .protocol(Protocol.HTTP_1_1)
             .message("OK")
-            .body(ResponseBody.create(
-                "application/json".toMediaType(),
-                gson.toJson(dummyNetworkAuthorDetailResponse)))
+            .body(
+                ResponseBody.create(
+                    "application/json".toMediaType(),
+                    gson.toJson(dummyNetworkAuthorDetailResponse)
+                )
+            )
             .build()
     }
 }

@@ -14,6 +14,7 @@ import com.aseegpsproject.openbook.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
@@ -21,14 +22,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class LoginTest {
+class SearchAuthorsTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)
 
     @Test
-    fun loginTest() {
+    fun searchAuthorsTest() {
         val materialButton = onView(withId(R.id.btnRegister))
         materialButton.perform(click())
 
@@ -44,26 +45,32 @@ class LoginTest {
         val materialButton2 = onView(withId(R.id.btnRegister))
         materialButton2.perform(click())
 
-        val frameLayout = onView(
+        val bottomNavigationItemView = onView(
             allOf(
-                withId(R.id.bottom_navigation),
-                withParent(withParent(withId(android.R.id.content))),
+                withId(R.id.authorsFragment), withContentDescription("Authors"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.bottom_navigation),
+                        0
+                    ),
+                    2
+                ),
                 isDisplayed()
             )
         )
-        frameLayout.check(matches(isDisplayed()))
+        bottomNavigationItemView.perform(click())
 
         val textView = onView(
             allOf(
                 withId(com.google.android.material.R.id.navigation_bar_item_large_label_view),
-                withText("Discover"),
+                withText("Authors"),
                 withParent(
                     allOf(
                         withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
                         withParent(
                             allOf(
-                                withId(R.id.discoverFragment),
-                                withContentDescription("Discover")
+                                withId(R.id.authorsFragment),
+                                withContentDescription("Authors")
                             )
                         )
                     )
@@ -71,7 +78,56 @@ class LoginTest {
                 isDisplayed()
             )
         )
-        textView.check(matches(withText("Discover")))
+        textView.check(matches(withText("Authors")))
+
+        val searchAutoComplete = onView(
+            allOf(
+                withClassName(`is`("android.widget.SearchView\$SearchAutoComplete")),
+                childAtPosition(
+                    allOf(
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        childAtPosition(
+                            withClassName(`is`("android.widget.LinearLayout")),
+                            1
+                        )
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        searchAutoComplete.perform(replaceText("test"), closeSoftKeyboard())
+
+        val searchAutoComplete2 = onView(
+            allOf(
+                withClassName(`is`("android.widget.SearchView\$SearchAutoComplete")),
+                withText("test"),
+                childAtPosition(
+                    allOf(
+                        withClassName(`is`("android.widget.LinearLayout")),
+                        childAtPosition(
+                            withClassName(`is`("android.widget.LinearLayout")),
+                            1
+                        )
+                    ),
+                    0
+                ),
+                isDisplayed()
+            )
+        )
+        searchAutoComplete2.perform(pressImeActionButton())
+
+        Thread.sleep(1000)
+
+        val textView2 = onView(
+            allOf(
+                withId(R.id.author_name),
+                withParent(withParent(withId(R.id.author_cv_Item))),
+                withParent(withParent(withParent(withParentIndex(0)))),
+                isDisplayed()
+            )
+        )
+        textView2.check(matches(isDisplayed()))
     }
 
     private fun childAtPosition(
