@@ -1,8 +1,6 @@
 package com.aseegpsproject.openbook.view
 
 
-import android.view.View
-import android.view.ViewGroup
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
@@ -11,11 +9,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.aseegpsproject.openbook.R
-import org.hamcrest.Description
-import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
-import org.hamcrest.TypeSafeMatcher
-import org.hamcrest.core.IsInstanceOf
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,196 +24,45 @@ class CreateWorksListTest {
 
     @Test
     fun createWorksListTest() {
-        val materialButton = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton = onView(withId(R.id.btnRegister))
         materialButton.perform(click())
 
-        val appCompatEditText = onView(
-            allOf(
-                withId(R.id.etUsername),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    0
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText = onView(withId(R.id.etUsername))
         appCompatEditText.perform(replaceText("espresso"), closeSoftKeyboard())
 
-        val appCompatEditText2 = onView(
-            allOf(
-                withId(R.id.etPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText2 = onView(withId(R.id.etPassword))
         appCompatEditText2.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val appCompatEditText3 = onView(
-            allOf(
-                withId(R.id.etRepeatPassword),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    2
-                ),
-                isDisplayed()
-            )
-        )
+        val appCompatEditText3 = onView(withId(R.id.etRepeatPassword))
         appCompatEditText3.perform(replaceText("latte"), closeSoftKeyboard())
 
-        val materialButton2 = onView(
-            allOf(
-                withId(R.id.btnRegister), withText("Register"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(android.R.id.content),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton2 = onView(withId(R.id.btnRegister))
         materialButton2.perform(click())
 
-        val bottomNavigationItemView = onView(
-            allOf(
-                withId(R.id.profileFragment), withContentDescription("Profile"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.bottom_navigation),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val bottomNavigationItemView = onView(withId(R.id.profileFragment))
         bottomNavigationItemView.perform(click())
 
         val textView = onView(
             allOf(
                 withId(com.google.android.material.R.id.navigation_bar_item_large_label_view),
-                withText("Profile"),
-                withParent(
-                    allOf(
-                        withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
-                        withParent(
-                            allOf(
-                                withId(R.id.profileFragment),
-                                withContentDescription("Profile")
-                            )
-                        )
-                    )
-                ),
-                isDisplayed()
+                withParent(withParent(withId(R.id.profileFragment)))
             )
         )
-        textView.check(matches(withText("Profile")))
+        textView.check(matches(withText(R.string.profile_option)))
 
-        val materialButton3 = onView(
-            allOf(
-                withId(R.id.btn_add_worklist),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.nav_host_fragment),
-                        0
-                    ),
-                    3
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton3 = onView(withId(R.id.btn_add_worklist))
         materialButton3.perform(click())
 
-        val textView2 = onView(
-            allOf(
-                withId(R.id.tv_create_worklist), withText("Create works list"),
-                withParent(withParent(withId(R.id.cv_create_worklist))),
-                isDisplayed()
-            )
-        )
-        textView2.check(matches(withText("Create works list")))
+        val textView2 = onView(withId(R.id.tv_create_worklist))
+        textView2.check(matches(withText(R.string.create_worklist)))
 
-        val viewGroup = onView(
-            allOf(
-                withParent(
-                    allOf(
-                        withId(R.id.cv_create_worklist),
-                        withParent(IsInstanceOf.instanceOf(android.view.ViewGroup::class.java))
-                    )
-                ),
-                isDisplayed()
-            )
-        )
+        val viewGroup = onView(withParent(withId(R.id.cv_create_worklist)))
         viewGroup.check(matches(isDisplayed()))
 
-        val appCompatEditText4 = onView(
-            allOf(
-                withId(R.id.et_worklist_name),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.cv_create_worklist),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatEditText4.perform(click())
+        val appCompatEditText4 = onView(withId(R.id.et_worklist_name))
+        appCompatEditText4.perform(replaceText("dummyTestWorksList"), closeSoftKeyboard())
 
-        val appCompatEditText5 = onView(
-            allOf(
-                withId(R.id.et_worklist_name),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.cv_create_worklist),
-                        0
-                    ),
-                    1
-                ),
-                isDisplayed()
-            )
-        )
-        appCompatEditText5.perform(replaceText("test"), closeSoftKeyboard())
-
-        val materialButton4 = onView(
-            allOf(
-                withId(R.id.btn_create_worklist), withText("Add"),
-                childAtPosition(
-                    childAtPosition(
-                        withId(R.id.cv_create_worklist),
-                        0
-                    ),
-                    2
-                ),
-                isDisplayed()
-            )
-        )
+        val materialButton4 = onView(withId(R.id.btn_create_worklist))
         materialButton4.perform(click())
 
         val linearLayout = onView(
@@ -237,29 +80,10 @@ class CreateWorksListTest {
 
         val textView3 = onView(
             allOf(
-                withId(R.id.tv_worklist_name), withText("test"),
-                withParent(withParent(withId(R.id.cvWorklistItem))),
-                isDisplayed()
+                withId(R.id.tv_worklist_name),
+                withText("dummyTestWorksList")
             )
         )
-        textView3.check(matches(withText("test")))
-    }
-
-    private fun childAtPosition(
-        parentMatcher: Matcher<View>, position: Int
-    ): Matcher<View> {
-
-        return object : TypeSafeMatcher<View>() {
-            override fun describeTo(description: Description) {
-                description.appendText("Child at position $position in parent ")
-                parentMatcher.describeTo(description)
-            }
-
-            public override fun matchesSafely(view: View): Boolean {
-                val parent = view.parent
-                return parent is ViewGroup && parentMatcher.matches(parent)
-                        && view == parent.getChildAt(position)
-            }
-        }
+        textView3.check(matches(isDisplayed()))
     }
 }
