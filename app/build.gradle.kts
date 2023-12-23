@@ -57,6 +57,12 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
 
+    // Mockito
+    testImplementation("org.mockito:mockito-core:5.7.0")
+    testImplementation("org.mockito:mockito-inline:4.0.0")
+    testImplementation("org.mockito:mockito-android:4.0.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+
     // Room
     val roomVersion = "2.6.1"
 
