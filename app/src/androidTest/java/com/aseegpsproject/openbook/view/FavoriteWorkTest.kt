@@ -3,9 +3,11 @@ package com.aseegpsproject.openbook.view
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
+import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -14,6 +16,7 @@ import com.aseegpsproject.openbook.R
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.`is`
 import org.hamcrest.TypeSafeMatcher
 import org.junit.Rule
 import org.junit.Test
@@ -21,14 +24,14 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class LoginTest {
+class FavoriteWorkTest {
 
     @Rule
     @JvmField
     var mActivityScenarioRule = ActivityScenarioRule(LoginActivity::class.java)
 
     @Test
-    fun loginTest() {
+    fun favoriteWorkTest() {
         val materialButton = onView(withId(R.id.btnRegister))
         materialButton.perform(click())
 
@@ -44,34 +47,40 @@ class LoginTest {
         val materialButton2 = onView(withId(R.id.btnRegister))
         materialButton2.perform(click())
 
-        val frameLayout = onView(
+        val recyclerView = onView(
             allOf(
-                withId(R.id.bottom_navigation),
-                withParent(withParent(withId(android.R.id.content))),
-                isDisplayed()
+                withId(R.id.rv_book_list),
+                childAtPosition(
+                    withClassName(`is`("androidx.constraintlayout.widget.ConstraintLayout")),
+                    1
+                )
             )
         )
-        frameLayout.check(matches(isDisplayed()))
+        recyclerView.perform(actionOnItemAtPosition<ViewHolder>(0, longClick()))
 
-        val textView = onView(
+        val bottomNavigationItemView = onView(
             allOf(
-                withId(com.google.android.material.R.id.navigation_bar_item_large_label_view),
-                withText("Discover"),
-                withParent(
-                    allOf(
-                        withId(com.google.android.material.R.id.navigation_bar_item_labels_group),
-                        withParent(
-                            allOf(
-                                withId(R.id.discoverFragment),
-                                withContentDescription("Discover")
-                            )
-                        )
-                    )
+                withId(R.id.worksFragment), withContentDescription("Books"),
+                childAtPosition(
+                    childAtPosition(
+                        withId(R.id.bottom_navigation),
+                        0
+                    ),
+                    1
                 ),
                 isDisplayed()
             )
         )
-        textView.check(matches(withText("Discover")))
+        bottomNavigationItemView.perform(click())
+
+        val textView = onView(
+            allOf(
+                withId(R.id.work_title), withText("To Kill a Mockingbird"),
+                withParent(withParent(withId(R.id.discover_cv_Item))),
+                isDisplayed()
+            )
+        )
+        textView.check(matches(withText("To Kill a Mockingbird")))
     }
 
     private fun childAtPosition(
