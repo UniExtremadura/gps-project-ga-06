@@ -3,8 +3,11 @@ package com.aseegpsproject.openbook.data
 import com.aseegpsproject.openbook.data.apimodel.APIAuthor
 import com.aseegpsproject.openbook.data.apimodel.APIWork
 import com.aseegpsproject.openbook.data.apimodel.Authors
+import com.aseegpsproject.openbook.data.apimodel.Counts
 import com.aseegpsproject.openbook.data.apimodel.Doc
+import com.aseegpsproject.openbook.data.apimodel.Rating
 import com.aseegpsproject.openbook.data.apimodel.SearchQuery
+import com.aseegpsproject.openbook.data.apimodel.Summary
 import com.aseegpsproject.openbook.data.apimodel.TrendingQuery
 import com.aseegpsproject.openbook.data.apimodel.TrendingWork
 import com.aseegpsproject.openbook.data.apimodel.WorkAuthor
@@ -324,4 +327,9 @@ val dummyNetworkAuthorDetailResponse = APIAuthor(
     alternateNames = arrayListOf("Nelle Harper Lee"),
     fullerName = "Nelle Harper Lee",
     key = "OL66452A"
+)
+
+val dummyNetworkWorkRatingsResponse = Rating(
+    summary = Summary(average = 4.5, count = 2, sortable = 4.5),
+    counts = Counts(one = 0, two = 0, three = 0, four = 1, five = 1)
 )
